@@ -4,7 +4,7 @@
 import Head from 'next/head'
 import { NextPage } from 'next'
 import CustomTextField from 'src/components/text-field'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import {
   Avatar,
   Box,
@@ -14,26 +14,37 @@ import {
   CssBaseline,
   FormControlLabel,
   Grid,
+  IconButton,
+  InputAdornment,
   Link,
   ThemeProvider,
   Typography
 } from '@mui/material'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
+import { useState } from 'react'
+import IconifyIcon from 'src/components/Icon'
+import { Icon } from '@iconify/react/dist/iconify.js'
 
 type Tprops = {}
 
 const LoginPage: NextPage<Tprops> = () => {
+  const [showPassword, setShowPassword] = useState(false)
   const schema = yup
     .object()
     .shape({
-      email: yup.string().required(),
-      password: yup.string().required()
+      email: yup.string().required('This field is required').matches(EMAIL_REG, 'Must be email type'),
+      password: yup
+        .string()
+        .required('This field is required')
+        .matches(PASSWORD_REG, 'Alphanumeric with special characters')
     })
     .required()
 
   const {
     handleSubmit,
+    control,
     formState: { errors }
   } = useForm({
     defaultValues: {
@@ -44,6 +55,7 @@ const LoginPage: NextPage<Tprops> = () => {
     resolver: yupResolver(schema)
   })
 
+  console.log({ errors })
   const onSubmit = (data: { email: string; password: string }) => {
     console.log(data)
   }
@@ -63,29 +75,69 @@ const LoginPage: NextPage<Tprops> = () => {
           Sign in
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)} autoComplete='off' noValidate>
-          <Box>
-            
+          <Box sx={{ mt: 2 }}>
+            <Controller
+              control={control}
+              rules={{
+                required: true
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <CustomTextField
+                  required
+                  fullWidth
+                  label='Email'
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  value={value}
+                  placeholder='Email'
+                  error={Boolean(errors?.email)}
+                  helperText={errors?.email?.message}
+                />
+              )}
+              name='email'
+            />
           </Box>
-          <CustomTextField
-            margin='normal'
-            required
-            fullWidth
-            id='email'
-            label='Email Address'
-            name='email'
-            autoComplete='email'
-            autoFocus
-          />
-          <CustomTextField
-            margin='normal'
-            required
-            fullWidth
-            name='password'
-            label='Password'
-            type='password'
-            id='password'
-            autoComplete='current-password'
-          />
+          <Box sx={{ mt: 2 }}>
+            <Controller
+              control={control}
+              rules={{
+                required: true
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <CustomTextField
+                  required
+                  fullWidth
+                  label='Password'
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  value={value}
+                  placeholder='Password'
+                  error={Boolean(errors?.password)}
+                  helperText={errors?.password?.message}
+                  type={showPassword ? 'text' : 'password'}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position='end'>
+                        <IconButton
+                          edge='end'
+                          onClick={() => {
+                            setShowPassword(!showPassword)
+                          }}
+                        >
+                          {showPassword ? (
+                            <Icon icon='material-symbols:visibility' />
+                          ) : (
+                            <Icon icon='material-symbols:visibility-off-rounded' />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
+                />
+              )}
+              name='password'
+            />
+          </Box>
           <FormControlLabel control={<Checkbox value='remember' color='primary' />} label='Remember me' />
           <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
             Sign In
