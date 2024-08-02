@@ -27,6 +27,7 @@ import {
   Checkbox,
   Container,
   CssBaseline,
+  Divider,
   FormControlLabel,
   Grid,
   IconButton,
@@ -97,8 +98,7 @@ const RegisterPage: NextPage<Tprops> = () => {
           width: '100vw',
           backgroundColor: theme.palette.background.paper,
           display: 'flex',
-          alignItems: 'center',
-          padding: '40px'
+          alignItems: 'center'
         }}
       >
         <Box
@@ -112,15 +112,15 @@ const RegisterPage: NextPage<Tprops> = () => {
             borderRadius: '20px',
             backgroundColor: theme.palette.customColors.bodyBg,
             height: '100%',
-            minWidth: '50vw'
+            minWidth: '68vw'
           }}
         >
           <Image
             src={theme.palette.mode == 'light' ? RegisterLight : RegisterDark}
             alt='login image'
             style={{
-              height: '100%',
-              width: '100%',
+              height: '80%',
+              width: '80%',
               objectFit: 'contain'
             }}
           />
@@ -142,11 +142,14 @@ const RegisterPage: NextPage<Tprops> = () => {
               alignItems: 'center'
             }}
           >
-            <Typography component='h1' variant='h5'>
-              Register
-            </Typography>
             <form onSubmit={handleSubmit(onSubmit)} autoComplete='off' noValidate>
-              <Box sx={{ mt: 2, width: "300px" }}>
+              <Box sx={{ mb: 6 }}>
+                <Typography variant='h4' sx={{ mb: 1.5 }}>
+                  {`Adventure starts here 🚀`}
+                </Typography>
+                <Typography sx={{ color: 'text.secondary' }}>Make your app management easy and fun!</Typography>
+              </Box>
+              <Box sx={{ mt: 5, width: '370px', mb: 2 }}>
                 <Controller
                   control={control}
                   rules={{
@@ -168,7 +171,7 @@ const RegisterPage: NextPage<Tprops> = () => {
                   name='email'
                 />
               </Box>
-              <Box sx={{ mt: 2, width: "300px" }}>
+              <Box sx={{ mt: 5, width: '370px', mb: 2 }}>
                 <Controller
                   control={control}
                   rules={{
@@ -209,7 +212,7 @@ const RegisterPage: NextPage<Tprops> = () => {
                   name='confirmPassword'
                 />
               </Box>
-              <Box sx={{ mt: 2, width: "300px" }}>
+              <Box sx={{ mt: 5, width: '370px', mb: 2 }}>
                 <Controller
                   control={control}
                   rules={{
@@ -259,50 +262,33 @@ const RegisterPage: NextPage<Tprops> = () => {
 
                 <Link href='/login'>{'Login'}</Link>
               </Box>
-              <Typography sx={{ textAlign: 'center', mt: 2, mb: 2 }}>Or</Typography>
-              <Box
+              <Divider
                 sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px'
+                  color: 'text.disabled',
+                  '& .MuiDivider-wrapper': { px: 6 },
+                  fontSize: theme.typography.body2.fontSize,
+                  my: theme => `${theme.spacing(6)} !important`
                 }}
               >
-                <IconButton sx={{ color: '#497ce2' }}>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    xmlnsXlink='http://www.w3.org/1999/xlink'
-                    aria-hidden='true'
-                    role='img'
-                    fontSize='1.375rem'
-                    className='iconify iconify--mdi'
-                    width='1em'
-                    height='1em'
-                    viewBox='0 0 24 24'
-                  >
-                    <path
-                      fill='currentColor'
-                      d='M12 2.04c-5.5 0-10 4.49-10 10.02c0 5 3.66 9.15 8.44 9.9v-7H7.9v-2.9h2.54V9.85c0-2.51 1.49-3.89 3.78-3.89c1.09 0 2.23.19 2.23.19v2.47h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.45 2.9h-2.33v7a10 10 0 0 0 8.44-9.9c0-5.53-4.5-10.02-10-10.02Z'
-                    />
-                  </svg>
+                or
+              </Divider>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <IconButton href='/' component={Link} sx={{ color: '#497ce2' }} onClick={e => e.preventDefault()}>
+                  <Icon icon='mdi:facebook' />
                 </IconButton>
-                <IconButton sx={{ color: theme.palette.error.main }}>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    xmlnsXlink='http://www.w3.org/1999/xlink'
-                    aria-hidden='true'
-                    role='img'
-                    fontSize='1.375rem'
-                    className='iconify iconify--mdi'
-                    width='1em'
-                    height='1em'
-                    viewBox='0 0 24 24'
-                  >
-                    <path
-                      fill='currentColor'
-                      d='M21.35 11.1h-9.17v2.73h6.51c-.33 3.81-3.5 5.44-6.5 5.44C8.36 19.27 5 16.25 5 12c0-4.1 3.2-7.27 7.2-7.27c3.09 0 4.9 1.97 4.9 1.97L19 4.72S16.56 2 12.1 2C6.42 2 2.03 6.8 2.03 12c0 5.05 4.13 10 10.22 10c5.35 0 9.25-3.67 9.25-9.09c0-1.15-.15-1.81-.15-1.81Z'
-                    />
-                  </svg>
+                <IconButton href='/' component={Link} sx={{ color: '#1da1f2' }} onClick={e => e.preventDefault()}>
+                  <Icon icon='mdi:twitter' />
+                </IconButton>
+                <IconButton
+                  href='/'
+                  component={Link}
+                  onClick={e => e.preventDefault()}
+                  sx={{ color: theme => (theme.palette.mode === 'light' ? '#272727' : 'grey.300') }}
+                >
+                  <Icon icon='mdi:github' />
+                </IconButton>
+                <IconButton href='/' component={Link} sx={{ color: '#db4437' }} onClick={e => e.preventDefault()}>
+                  <Icon icon='mdi:google' />
                 </IconButton>
               </Box>
             </form>

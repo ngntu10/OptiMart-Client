@@ -98,7 +98,6 @@ const LoginPage: NextPage<Tprops> = () => {
           backgroundColor: theme.palette.background.paper,
           display: 'flex',
           alignItems: 'center',
-          padding: '0px'
         }}
       >
         <Box
