@@ -3,7 +3,8 @@
 'use client'
 
 // ** Next
-import Head from 'next/head'
+
+import Link from 'next/link'
 import { NextPage } from 'next'
 import Image from 'next/image'
 
@@ -30,7 +31,6 @@ import {
   Grid,
   IconButton,
   InputAdornment,
-  Link,
   ThemeProvider,
   Typography,
   useTheme,
@@ -51,7 +51,7 @@ import GoogleSVG from '/public/svgs/google.svg'
 
 type Tprops = {}
 
-const LoginPage: NextPage<Tprops> = () => {
+const RegisterPage: NextPage<Tprops> = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [isRemember, setisRemember] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -64,7 +64,11 @@ const LoginPage: NextPage<Tprops> = () => {
     password: yup
       .string()
       .required('This field is required')
-      .matches(PASSWORD_REG, 'Alphanumeric with special characters')
+      .matches(PASSWORD_REG, 'Alphanumeric with special characters'),
+    confirmPassword: yup
+      .string()
+      .required('Confirm password is required')
+      .oneOf([yup.ref('password')], 'Confirm Password does not match password')
   })
 
   const {
@@ -74,7 +78,8 @@ const LoginPage: NextPage<Tprops> = () => {
   } = useForm({
     defaultValues: {
       email: '',
-      password: ''
+      password: '',
+      confirmPassword: ''
     },
     mode: 'onBlur',
     resolver: yupResolver(schema)
@@ -178,8 +183,8 @@ const LoginPage: NextPage<Tprops> = () => {
                       onChange={onChange}
                       value={value}
                       placeholder='Password'
-                      error={Boolean(errors?.password)}
-                      helperText={errors?.password?.message}
+                      error={Boolean(errors?.confirmPassword)}
+                      helperText={errors?.confirmPassword?.message}
                       type={showPassword ? 'text' : 'password'}
                       InputProps={{
                         endAdornment: (
@@ -201,7 +206,7 @@ const LoginPage: NextPage<Tprops> = () => {
                       }}
                     />
                   )}
-                  name='password'
+                  name='confirmPassword'
                 />
               </Box>
               <Box sx={{ mt: 2 }}>
@@ -245,38 +250,14 @@ const LoginPage: NextPage<Tprops> = () => {
                   name='password'
                 />
               </Box>
-              <Box
-                sx={{
-                  mt: 2,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between'
-                }}
-              >
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      value='remember'
-                      color='primary'
-                      checked={isRemember}
-                      onChange={e => setisRemember(e.target.checked)}
-                    />
-                  }
-                  label='Remember me'
-                />
-                <Link href='#' variant='body2'>
-                  Forgot password?
-                </Link>
-              </Box>
+
               <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
-                Sign In
+                Register
               </Button>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
-                <Typography>{"Don't have an account?"}</Typography>
+                <Typography>{'Do you have a account'}</Typography>
 
-                <Link href='#' variant='body2'>
-                  {'Sign Up'}
-                </Link>
+                <Link href='/login'>{'Login'}</Link>
               </Box>
               <Typography sx={{ textAlign: 'center', mt: 2, mb: 2 }}>Or</Typography>
               <Box
@@ -332,4 +313,4 @@ const LoginPage: NextPage<Tprops> = () => {
   )
 }
 
-export default LoginPage
+export default RegisterPage

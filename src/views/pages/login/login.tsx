@@ -3,7 +3,7 @@
 'use client'
 
 // ** Next
-import Head from 'next/head'
+import Link from 'next/link'
 import { NextPage } from 'next'
 import Image from 'next/image'
 
@@ -30,7 +30,6 @@ import {
   Grid,
   IconButton,
   InputAdornment,
-  Link,
   ThemeProvider,
   Typography,
   useTheme,
@@ -58,15 +57,13 @@ const LoginPage: NextPage<Tprops> = () => {
   //** Theme
   const theme = useTheme()
 
-  const schema = yup
-    .object()
-    .shape({
-      email: yup.string().required('This field is required').matches(EMAIL_REG, 'Must be email type'),
-      password: yup
-        .string()
-        .required('This field is required')
-        .matches(PASSWORD_REG, 'Alphanumeric with special characters')
-    })
+  const schema = yup.object().shape({
+    email: yup.string().required('This field is required').matches(EMAIL_REG, 'Must be email type'),
+    password: yup
+      .string()
+      .required('This field is required')
+      .matches(PASSWORD_REG, 'Alphanumeric with special characters')
+  })
 
   const {
     handleSubmit,
@@ -224,9 +221,9 @@ const LoginPage: NextPage<Tprops> = () => {
                   }
                   label='Remember me'
                 />
-                <Link href='#' variant='body2'>
+                <Typography  variant='body2'>
                   Forgot password?
-                </Link>
+                </Typography>
               </Box>
               <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
                 Sign In
@@ -234,7 +231,7 @@ const LoginPage: NextPage<Tprops> = () => {
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
                 <Typography>{"Don't have an account?"}</Typography>
 
-                <Link href='#' variant='body2'>
+                <Link href='/register'>
                   {'Sign Up'}
                 </Link>
               </Box>
