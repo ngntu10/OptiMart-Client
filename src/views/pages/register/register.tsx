@@ -146,7 +146,7 @@ const RegisterPage: NextPage<Tprops> = () => {
               Register
             </Typography>
             <form onSubmit={handleSubmit(onSubmit)} autoComplete='off' noValidate>
-              <Box sx={{ mt: 2 }}>
+              <Box sx={{ mt: 2, width: "300px" }}>
                 <Controller
                   control={control}
                   rules={{
@@ -168,7 +168,7 @@ const RegisterPage: NextPage<Tprops> = () => {
                   name='email'
                 />
               </Box>
-              <Box sx={{ mt: 2 }}>
+              <Box sx={{ mt: 2, width: "300px" }}>
                 <Controller
                   control={control}
                   rules={{
@@ -183,8 +183,8 @@ const RegisterPage: NextPage<Tprops> = () => {
                       onChange={onChange}
                       value={value}
                       placeholder='Password'
-                      error={Boolean(errors?.confirmPassword)}
-                      helperText={errors?.confirmPassword?.message}
+                      error={Boolean(errors?.password)}
+                      helperText={errors?.password?.message}
                       type={showPassword ? 'text' : 'password'}
                       InputProps={{
                         endAdornment: (
@@ -209,7 +209,7 @@ const RegisterPage: NextPage<Tprops> = () => {
                   name='confirmPassword'
                 />
               </Box>
-              <Box sx={{ mt: 2 }}>
+              <Box sx={{ mt: 2, width: "300px" }}>
                 <Controller
                   control={control}
                   rules={{
@@ -224,8 +224,8 @@ const RegisterPage: NextPage<Tprops> = () => {
                       onChange={onChange}
                       value={value}
                       placeholder='Confirm Password'
-                      error={Boolean(errors?.password)}
-                      helperText={errors?.password?.message}
+                      error={Boolean(errors?.confirmPassword)}
+                      helperText={errors?.confirmPassword?.message}
                       type={showConfirmPassword ? 'text' : 'password'}
                       InputProps={{
                         endAdornment: (

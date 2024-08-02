@@ -33,7 +33,9 @@ import {
   ThemeProvider,
   Typography,
   useTheme,
-  useThemeProps
+  useThemeProps,
+  Divider,
+  Alert
 } from '@mui/material'
 
 // ** Configs
@@ -47,12 +49,17 @@ import LoginDark from '/public/images/login-dark.png'
 import LoginLight from '/public/images/login-light.png'
 import FacebookSVG from '/public/svgs/facebook.svg'
 import GoogleSVG from '/public/svgs/google.svg'
+import themeConfig from 'src/configs/themeConfig'
+import UseBgColor from 'src/hooks/useBgColor'
+
+// ** Hooks
 
 type Tprops = {}
 
 const LoginPage: NextPage<Tprops> = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [isRemember, setisRemember] = useState(false)
+  const bgColors = UseBgColor()
 
   //** Theme
   const theme = useTheme()
@@ -91,7 +98,7 @@ const LoginPage: NextPage<Tprops> = () => {
           backgroundColor: theme.palette.background.paper,
           display: 'flex',
           alignItems: 'center',
-          padding: '40px'
+          padding: '0px'
         }}
       >
         <Box
@@ -105,15 +112,15 @@ const LoginPage: NextPage<Tprops> = () => {
             borderRadius: '20px',
             backgroundColor: theme.palette.customColors.bodyBg,
             height: '100%',
-            minWidth: '50vw'
+            minWidth: '68vw'
           }}
         >
           <Image
             src={theme.palette.mode == 'light' ? LoginLight : LoginDark}
             alt='login image'
             style={{
-              height: '100%',
-              width: '100%',
+              height: '80%',
+              width: '80%',
               objectFit: 'contain'
             }}
           />
@@ -135,11 +142,24 @@ const LoginPage: NextPage<Tprops> = () => {
               alignItems: 'center'
             }}
           >
-            <Typography component='h1' variant='h5'>
-              Sign in
-            </Typography>
             <form onSubmit={handleSubmit(onSubmit)} autoComplete='off' noValidate>
-              <Box sx={{ mt: 2 }}>
+              <Typography variant='h3' sx={{ mb: 1.5, mt: 5.5, fontSize: '27px' }}>
+                {`Welcome to ${themeConfig.templateName}! 👋🏻`}
+              </Typography>
+              <Typography sx={{ color: 'text.secondary', mb: 5.5 }}>
+                Please sign-in to your account and start the adventure
+              </Typography>
+              <Box
+                sx={{ p: 3, mb: 6, ...bgColors.primaryLight, borderRadius: '10px', '& .MuiAlert-message': { p: 0 } }}
+              >
+                <Typography variant='body2' sx={{ mb: 2, color: 'primary.main' }}>
+                  Admin: <strong>admin@gmail.com</strong> / Pass: <strong>admin</strong>
+                </Typography>
+                <Typography variant='body2' sx={{ color: 'primary.main' }}>
+                  Client: <strong>client@gmail.com</strong> / Pass: <strong>client</strong>
+                </Typography>
+              </Box>
+              <Box sx={{ mt: 5, width: '370px', mb: 8 }}>
                 <Controller
                   control={control}
                   rules={{
@@ -161,7 +181,7 @@ const LoginPage: NextPage<Tprops> = () => {
                   name='email'
                 />
               </Box>
-              <Box sx={{ mt: 2 }}>
+              <Box sx={{ mt: 8, width: '370px', mb: 6 }}>
                 <Controller
                   control={control}
                   rules={{
@@ -204,8 +224,9 @@ const LoginPage: NextPage<Tprops> = () => {
               </Box>
               <Box
                 sx={{
-                  mt: 2,
+                  mb: 1.75,
                   display: 'flex',
+                  flexWrap: 'wrap',
                   alignItems: 'center',
                   justifyContent: 'space-between'
                 }}
@@ -221,7 +242,10 @@ const LoginPage: NextPage<Tprops> = () => {
                   }
                   label='Remember me'
                 />
-                <Typography  variant='body2'>
+                <Typography
+                  variant='body2'
+                  style={{ color: `${theme.palette.primary.main} !important`, fontSize: '15px' }}
+                >
                   Forgot password?
                 </Typography>
               </Box>
@@ -229,56 +253,39 @@ const LoginPage: NextPage<Tprops> = () => {
                 Sign In
               </Button>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
-                <Typography>{"Don't have an account?"}</Typography>
+                <Typography>{"Don't have an account ?"}</Typography>
 
-                <Link href='/register'>
+                <Link href='/register' style={{ color: `${theme.palette.primary.main} !important`, fontSize: '16px' }}>
                   {'Sign Up'}
                 </Link>
               </Box>
-              <Typography sx={{ textAlign: 'center', mt: 2, mb: 2 }}>Or</Typography>
-              <Box
+              <Divider
                 sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px'
+                  color: 'text.disabled',
+                  '& .MuiDivider-wrapper': { px: 6 },
+                  fontSize: theme.typography.body2.fontSize,
+                  my: theme => `${theme.spacing(6)} !important`
                 }}
               >
-                <IconButton sx={{ color: '#497ce2' }}>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    xmlnsXlink='http://www.w3.org/1999/xlink'
-                    aria-hidden='true'
-                    role='img'
-                    fontSize='1.375rem'
-                    className='iconify iconify--mdi'
-                    width='1em'
-                    height='1em'
-                    viewBox='0 0 24 24'
-                  >
-                    <path
-                      fill='currentColor'
-                      d='M12 2.04c-5.5 0-10 4.49-10 10.02c0 5 3.66 9.15 8.44 9.9v-7H7.9v-2.9h2.54V9.85c0-2.51 1.49-3.89 3.78-3.89c1.09 0 2.23.19 2.23.19v2.47h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.45 2.9h-2.33v7a10 10 0 0 0 8.44-9.9c0-5.53-4.5-10.02-10-10.02Z'
-                    />
-                  </svg>
+                or
+              </Divider>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <IconButton href='/' component={Link} sx={{ color: '#497ce2' }} onClick={e => e.preventDefault()}>
+                  <Icon icon='mdi:facebook' />
                 </IconButton>
-                <IconButton sx={{ color: theme.palette.error.main }}>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    xmlnsXlink='http://www.w3.org/1999/xlink'
-                    aria-hidden='true'
-                    role='img'
-                    fontSize='1.375rem'
-                    className='iconify iconify--mdi'
-                    width='1em'
-                    height='1em'
-                    viewBox='0 0 24 24'
-                  >
-                    <path
-                      fill='currentColor'
-                      d='M21.35 11.1h-9.17v2.73h6.51c-.33 3.81-3.5 5.44-6.5 5.44C8.36 19.27 5 16.25 5 12c0-4.1 3.2-7.27 7.2-7.27c3.09 0 4.9 1.97 4.9 1.97L19 4.72S16.56 2 12.1 2C6.42 2 2.03 6.8 2.03 12c0 5.05 4.13 10 10.22 10c5.35 0 9.25-3.67 9.25-9.09c0-1.15-.15-1.81-.15-1.81Z'
-                    />
-                  </svg>
+                <IconButton href='/' component={Link} sx={{ color: '#1da1f2' }} onClick={e => e.preventDefault()}>
+                  <Icon icon='mdi:twitter' />
+                </IconButton>
+                <IconButton
+                  href='/'
+                  component={Link}
+                  onClick={e => e.preventDefault()}
+                  sx={{ color: theme => (theme.palette.mode === 'light' ? '#272727' : 'grey.300') }}
+                >
+                  <Icon icon='mdi:github' />
+                </IconButton>
+                <IconButton href='/' component={Link} sx={{ color: '#db4437' }} onClick={e => e.preventDefault()}>
+                  <Icon icon='mdi:google' />
                 </IconButton>
               </Box>
             </form>
