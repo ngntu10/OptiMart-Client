@@ -3,7 +3,7 @@
 import Head from 'next/head'
 import { NextPage } from 'next'
 import CustomTextField from 'src/components/text-field'
-import LoginPage from 'src/views/pages/login'
+import LoginPage from 'src/views/pages/login/login'
 
 type Tprops = {}
 
