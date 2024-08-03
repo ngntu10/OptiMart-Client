@@ -97,7 +97,7 @@ const LoginPage: NextPage<Tprops> = () => {
           width: '100vw',
           backgroundColor: theme.palette.background.paper,
           display: 'flex',
-          alignItems: 'center',
+          alignItems: 'center'
         }}
       >
         <Box
@@ -254,7 +254,13 @@ const LoginPage: NextPage<Tprops> = () => {
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
                 <Typography>{"Don't have an account ?"}</Typography>
 
-                <Link href='/register' style={{ color: `${theme.palette.primary.main} !important`, fontSize: '16px' }}>
+                <Link
+                  href='/register'
+                  style={{
+                    color: theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white,
+                    fontSize: '16px'
+                  }}
+                >
                   {'Sign Up'}
                 </Link>
               </Box>

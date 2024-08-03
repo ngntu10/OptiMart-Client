@@ -19,7 +19,11 @@ body {
   height: 100%;
 }
 
-a { 
+a {
   text-decoration: none;
-  
+}
+
+input[type='password']::-ms-reveal,
+input[type='password']::-ms-clear {
+  display: none;
 }

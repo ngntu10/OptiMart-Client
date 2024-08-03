@@ -144,7 +144,7 @@ const RegisterPage: NextPage<Tprops> = () => {
           >
             <form onSubmit={handleSubmit(onSubmit)} autoComplete='off' noValidate>
               <Box sx={{ mb: 6 }}>
-                <Typography variant='h4' sx={{ mb: 1.5 }}>
+                <Typography variant='h2' sx={{ mb: 1.5 }}>
                   {`Adventure starts here 🚀`}
                 </Typography>
                 <Typography sx={{ color: 'text.secondary' }}>Make your app management easy and fun!</Typography>
@@ -253,14 +253,40 @@ const RegisterPage: NextPage<Tprops> = () => {
                   name='password'
                 />
               </Box>
-
+              <FormControlLabel
+                control={<Checkbox />}
+                sx={{ mb: 4, mt: 1.5, '& .MuiFormControlLabel-label': { fontSize: theme.typography.body2.fontSize } }}
+                label={
+                  <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+                    <Typography sx={{ color: 'text.secondary' }}>I agree to</Typography>
+                    <Typography
+                      style={{ color: `${theme.palette.primary.main} !important`, fontSize: '16px' }}
+                      onClick={e => e.preventDefault()}
+                      sx={{ ml: 1 }}
+                    >
+                      privacy policy & terms
+                    </Typography>
+                  </Box>
+                }
+              />
               <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
                 Register
               </Button>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
-                <Typography>{'Do you have a account'}</Typography>
+                <Typography>{'Do you have an account ?'}</Typography>
 
-                <Link href='/login'>{'Login'}</Link>
+                <Link
+                  style={{
+                    color:
+                      theme.palette.mode === 'light'
+                        ? theme.palette.common.black
+                        : theme.palette.common.white,
+                    fontSize: '16px'
+                  }}
+                  href='/login'
+                >
+                  {'Login'}
+                </Link>
               </Box>
               <Divider
                 sx={{
