@@ -277,10 +277,7 @@ const RegisterPage: NextPage<Tprops> = () => {
 
                 <Link
                   style={{
-                    color:
-                      theme.palette.mode === 'light'
-                        ? theme.palette.common.black
-                        : theme.palette.common.white,
+                    color: theme.palette.primary.main,
                     fontSize: '16px'
                   }}
                   href='/login'

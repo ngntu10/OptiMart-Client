@@ -53,16 +53,21 @@ import themeConfig from 'src/configs/themeConfig'
 import UseBgColor from 'src/hooks/useBgColor'
 
 // ** Hooks
+import { useAuth } from 'src/hooks/useAuth'
 
 type Tprops = {}
 
 const LoginPage: NextPage<Tprops> = () => {
+  // ** State
   const [showPassword, setShowPassword] = useState(false)
   const [isRemember, setisRemember] = useState(false)
-  const bgColors = UseBgColor()
 
   //** Theme
   const theme = useTheme()
+  const bgColors = UseBgColor()
+
+  // ** context
+  const {login} = useAuth()
 
   const schema = yup.object().shape({
     email: yup.string().required('This field is required').matches(EMAIL_REG, 'Must be email type'),
@@ -86,6 +91,10 @@ const LoginPage: NextPage<Tprops> = () => {
   })
 
   const onSubmit = (data: { email: string; password: string }) => {
+
+    if (Object.keys(errors)?.length == 0) {
+      login({ ...data, rememberMe:isRemember })
+    }
     console.log(data)
   }
 
