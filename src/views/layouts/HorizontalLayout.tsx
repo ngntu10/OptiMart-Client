@@ -7,13 +7,14 @@ import { NextPage } from 'next'
 
 // ** Mui
 import { styled } from '@mui/material/styles'
-import CssBaseline from '@mui/material/CssBaseline'
-import Box from '@mui/material/Box'
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import Badge from '@mui/material/Badge'
+
+// ** components
+import IconifyIcon from 'src/components/Icon'
 
 const drawerWidth: number = 240
 
@@ -22,8 +23,8 @@ interface AppBarProps extends MuiAppBarProps {
 }
 
 type TProps = {
-    open: boolean,
-    toggleDrawer: () => void
+  open: boolean
+  toggleDrawer: () => void
 }
 
 const AppBar = styled(MuiAppBar, {
@@ -44,36 +45,36 @@ const AppBar = styled(MuiAppBar, {
   })
 }))
 
-const HorizontalLayout:NextPage<TProps> = ({open, toggleDrawer}) => {
-
-
+const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer }) => {
   return (
-        <AppBar position='absolute' open={open}>
-          <Toolbar
-            sx={{
-              pr: '24px' // keep right padding when drawer closed
-            }}
-          >
-            <IconButton
-              edge='start'
-              color='inherit'
-              aria-label='open drawer'
-              onClick={toggleDrawer}
-              sx={{
-                marginRight: '36px',
-                ...(open && { display: 'none' })
-              }}
-            >
-            </IconButton>
-            <Typography component='h1' variant='h6' color='inherit' noWrap sx={{ flexGrow: 1 }}>
-              Dashboard
-            </Typography>
-            <IconButton color='inherit'>
-              <Badge badgeContent={4} color='secondary'>
-              </Badge>
-            </IconButton>
-          </Toolbar>
-        </AppBar>
+    <AppBar position='absolute' open={open}>
+      <Toolbar
+        sx={{
+          pr: '24px' // keep right padding when drawer closed
+        }}
+      >
+        <IconButton
+          edge='start'
+          color='inherit'
+          aria-label='open drawer'
+          onClick={toggleDrawer}
+          sx={{
+            marginRight: '36px',
+            ...(open && { display: 'none' })
+          }}
+        >
+          <IconifyIcon icon='ic:round-menu'></IconifyIcon>
+        </IconButton>
+        <Typography component='h1' variant='h6' color='inherit' noWrap sx={{ flexGrow: 1 }}>
+          Dashboard
+        </Typography>
+        <IconButton color='inherit'>
+          <Badge badgeContent={4} color='secondary'>
+            <IconifyIcon icon='mingcute:notification-fill'></IconifyIcon>
+          </Badge>
+        </IconButton>
+      </Toolbar>
+    </AppBar>
   )
 }
 
