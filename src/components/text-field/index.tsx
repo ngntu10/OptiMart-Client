@@ -61,6 +61,9 @@ const TextFieldStyle = styled(TextField)<TextFieldProps>(({ theme }) => {
       '&.Mui-disabled': {
         backgroundColor: `${theme.palette.action.selected} !important`
       },
+      '&. MuiInputBase-inputAdornedEnd': {
+        borderRadius: 8
+      },
       '& .MuiInputAdornment-root': {
         marginTop: '0 !important'
       },

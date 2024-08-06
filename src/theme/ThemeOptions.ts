@@ -3,7 +3,7 @@ import { deepmerge } from '@mui/utils'
 import { PaletteMode, ThemeOptions } from '@mui/material'
 
 // ** User Theme Options
-import UserThemeOptions from 'src/layouts/UserThemeOptions'
+import UserThemeOptions from 'src/views/layouts/UserThemeOptions'
 
 // ** Type Import
 
