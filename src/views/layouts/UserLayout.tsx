@@ -28,7 +28,7 @@ const UserLayout: NextPage<TProps> = ({ children }) => {
   }
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex'}}>
       <CssBaseline />
       <VerticalLayout toggleDrawer={toggleDrawer} open={open} />
       <HorizontalLayout toggleDrawer={toggleDrawer} open={open} />
