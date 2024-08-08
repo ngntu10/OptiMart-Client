@@ -24,15 +24,17 @@ interface AppBarProps extends MuiAppBarProps {
 
 type TProps = {
   open: boolean
+  isHideMenu?: boolean
   toggleDrawer: () => void
 }
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: prop => prop !== 'open'
 })<AppBarProps>(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,  
-  backgroundColor: theme.palette.mode === 'light' ? theme.palette.customColors.lightPaperBg : theme.palette.customColors.darkPaperBg,
-  color : theme.palette.primary.main,
+  zIndex: theme.zIndex.drawer + 1,
+  backgroundColor:
+    theme.palette.mode === 'light' ? theme.palette.customColors.lightPaperBg : theme.palette.customColors.darkPaperBg,
+  color: theme.palette.primary.main,
   transition: theme.transitions.create(['width', 'margin'], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen
@@ -47,7 +49,7 @@ const AppBar = styled(MuiAppBar, {
   })
 }))
 
-const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer }) => {
+const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHideMenu }) => {
   return (
     <AppBar position='absolute' open={open}>
       <Toolbar
@@ -66,13 +68,13 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer }) => {
             ...(open && { display: 'none' })
           }}
         >
-          <IconifyIcon icon='ic:round-menu'></IconifyIcon>
+          {!isHideMenu && <IconifyIcon icon='ic:round-menu'></IconifyIcon>}
         </IconButton>
         <Typography component='h1' variant='h6' color='inherit' noWrap sx={{ flexGrow: 1 }}>
           Dashboard
         </Typography>
         <IconButton color='inherit'>
-          <Badge badgeContent={4} color='secondary'>
+          <Badge badgeContent={4} color='primary'>
             <IconifyIcon icon='mingcute:notification-fill'></IconifyIcon>
           </Badge>
         </IconButton>
