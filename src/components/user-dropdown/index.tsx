@@ -27,7 +27,7 @@ type TProps = {}
 
 const UserDropDown = (props: TProps) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-  const { user } = useAuth()
+  const { user, logout } = useAuth()
 
   const open = Boolean(anchorEl)
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -117,7 +117,7 @@ const UserDropDown = (props: TProps) => {
           <ListItemIcon>{/* <Settings fontSize='small' /> */}</ListItemIcon>
           Settings
         </MenuItem>
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={logout}>
           <ListItemIcon>{/* <Logout fontSize='small' /> */}</ListItemIcon>
           Logout
         </MenuItem>

@@ -15,6 +15,8 @@ import authConfig from 'src/configs/auth'
 // ** Types
 import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './types'
 import { loginAuth } from 'src/services/auth'
+import { CONFIG_API } from 'src/configs/api'
+import { error } from 'console'
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
@@ -32,6 +34,18 @@ type Props = {
   children: ReactNode
 }
 
+const cleanUserData = (data: any): UserDataType => {
+  return {
+    id: data.id,
+    role: data.role,
+    email: data.email,
+    fullName: data.fullName,
+    username: data.username,
+    password: data.password,
+    avatar: data.avatar || null
+  }
+}
+
 const AuthProvider = ({ children }: Props) => {
   // ** States
   const [user, setUser] = useState<UserDataType | null>(defaultProvider.user)
@@ -40,66 +54,54 @@ const AuthProvider = ({ children }: Props) => {
   // ** Hooks
   const router = useRouter()
 
-  // useEffect(() => {
-  //   const initAuth = async (): Promise<void> => {
-  //     const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)!
-  //     if (storedToken) {
-  //       setLoading(true)
-  //       await axios
-  //         .get(authConfig.meEndpoint, {
-  //           headers: {
-  //             Authorization: storedToken
-  //           }
-  //         })
-  //         .then(async response => {
-  //           setLoading(false)
-  //           setUser({ ...response.data.userData })
-  //         })
-  //         .catch(() => {
-  //           localStorage.removeItem('userData')
-  //           localStorage.removeItem('refreshToken')
-  //           localStorage.removeItem('accessToken')
-  //           setUser(null)
-  //           setLoading(false)
-  //           if (authConfig.onTokenExpiration === 'logout' && !router.pathname.includes('login')) {
-  //             router.replace('/login')
-  //           }
-  //         })
-  //     } else {
-  //       setLoading(false)
-  //     }
-  //   }
-
-  //   initAuth()
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [])
-
-  const cleanUserData = (data: any): UserDataType => {
-    return {
-      id: data.id,
-      role: data.role,
-      email: data.email,
-      fullName: data.fullName,
-      username: data.username,
-      password: data.password,
-      avatar: data.avatar || null
+  useEffect(() => {
+    const initAuth = async (): Promise<void> => {
+      const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)
+      if (storedToken) {
+        console.log(storedToken);
+        setLoading(true)
+        await axios
+          .get(CONFIG_API.AUTH.AUTH_ME, {
+            headers: {
+              Authorization: `Bearer ${storedToken}`
+            }
+          })
+          .then(async response => {
+            setLoading(false)
+            console.log(response);
+            const user = cleanUserData(response.data)
+            setUser(user)
+          })
+          .catch((e) => {
+            localStorage.removeItem('userData')
+            localStorage.removeItem('refreshToken')
+            localStorage.removeItem('accessToken')
+            setUser(null)
+            setLoading(false)
+            if (!router.pathname.includes('login')) {
+              router.replace('/login')
+            }
+          })
+      } else {
+        setLoading(false)
+      }
     }
-  }
+
+    initAuth()
+  }, [])
 
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
     loginAuth({ email: params.email, password: params.password })
       .then(async response => {
         params.rememberMe
-          ? window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.accessToken)
+          ? window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.access_token)
           : null
         const returnUrl = router.query.returnUrl
         console.log(response)
 
-
         const user = cleanUserData(response.data.user)
         setUser(user)
-        console.log(user)
-        params.rememberMe ? window.localStorage.setItem('userData', JSON.stringify(response.data.userData)) : null
+        params.rememberMe ? window.localStorage.setItem('userData', JSON.stringify(user)) : null
 
         const redirectURL = returnUrl && returnUrl != '/' ? returnUrl : '/'
         router.replace(redirectURL as string)
