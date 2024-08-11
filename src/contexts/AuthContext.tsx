@@ -74,6 +74,18 @@ const AuthProvider = ({ children }: Props) => {
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [])
 
+  const cleanUserData = (data: any): UserDataType => {
+    return {
+      id: data.id,
+      role: data.role,
+      email: data.email,
+      fullName: data.fullName,
+      username: data.username,
+      password: data.password,
+      avatar: data.avatar || null
+    }
+  }
+
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
     loginAuth({ email: params.email, password: params.password })
       .then(async response => {
@@ -82,12 +94,14 @@ const AuthProvider = ({ children }: Props) => {
           : null
         const returnUrl = router.query.returnUrl
         console.log(response)
-        // setUser({ ...response.data.userData })
+
+
+        const user = cleanUserData(response.data.user)
+        setUser(user)
+        console.log(user)
         params.rememberMe ? window.localStorage.setItem('userData', JSON.stringify(response.data.userData)) : null
 
         const redirectURL = returnUrl && returnUrl != '/' ? returnUrl : '/'
-        console.log(1)
-        console.log(redirectURL)
         router.replace(redirectURL as string)
       })
 
