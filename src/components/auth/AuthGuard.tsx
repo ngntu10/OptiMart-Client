@@ -35,8 +35,8 @@ const AuthGuard = (props: AuthGuardProps) => {
     }
     if (
       authContext.user === null &&
-      window.localStorage.getItem(ACCESS_TOKEN) &&
-      window.localStorage.getItem(USER_DATA)
+      !window.localStorage.getItem(ACCESS_TOKEN) &&
+      !window.localStorage.getItem(USER_DATA)
     ) {
       if (router.asPath !== '/') {
         router.replace({

@@ -57,7 +57,9 @@ const AuthProvider = ({ children }: Props) => {
 
   useEffect(() => {
     const initAuth = async (): Promise<void> => {
+      console.log(window.localStorage.getItem(authConfig.storageTokenKeyName));
       const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)
+      console.log(storedToken);
       if (storedToken) {
         console.log(storedToken)
         setLoading(true)
