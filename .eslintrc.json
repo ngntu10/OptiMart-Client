@@ -1,5 +1,5 @@
 {
-  "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended", "prettier"],
+  "extends": ["next/core-web-vitals", "prettier"],
   "rules": {
     "react/display-name": "off",
     "@next/next/no-img-element": "off",
@@ -30,15 +30,15 @@
         "count": 1
       }
     ],
-    "@typescript-eslint/ban-types": [
-      "error",
-      {
-        "extendDefaults": true,
-        "types": {
-          "{}": false
-        }
-      }
-    ]
+    // "@typescript-eslint/ban-types": [
+    //   "error",
+    //   {
+    //     "extendDefaults": false,
+    //     "types": {
+    //       "{}": false
+    //     }
+    //   }
+    // ]
   },
   "plugins": ["import"],
   "settings": {

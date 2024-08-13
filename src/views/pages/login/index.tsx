@@ -95,7 +95,6 @@ const LoginPage: NextPage<Tprops> = () => {
     if (Object.keys(errors)?.length == 0) {
       login({ ...data, rememberMe:isRemember })
     }
-    console.log(data)
   }
 
   return (

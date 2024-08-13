@@ -46,12 +46,11 @@ const AuthGuard = (props: AuthGuardProps) => {
       } else {
         router.replace('/login')
       }
-      authContext.setUser(null)
-      clearLocalUserData()
+      
     }
   }, [router.route])
 
-  // if(authContext.loading || authContext.user === null) return fallback
+  if(authContext.loading || authContext.user === null) return fallback
 
   return <>{children}</>
 }

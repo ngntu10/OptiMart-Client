@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+
 /* eslint-disable lines-around-comment */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // ** React Imports
@@ -10,14 +12,14 @@ import { useRouter } from 'next/router'
 import axios from 'axios'
 
 // ** Config
-import authConfig from 'src/configs/auth'
+import authConfig, { ACCESS_TOKEN } from 'src/configs/auth'
 
 // ** Types
 import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './types'
 import { loginAuth, logoutAuth } from 'src/services/auth'
 import { CONFIG_API } from 'src/configs/api'
-import { error } from 'console'
 import { clearLocalUserData, setLocalUserData } from 'src/helpers/storage'
+import instanceAxios from 'src/helpers/axios'
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
@@ -57,13 +59,10 @@ const AuthProvider = ({ children }: Props) => {
 
   useEffect(() => {
     const initAuth = async (): Promise<void> => {
-      console.log(window.localStorage.getItem(authConfig.storageTokenKeyName));
-      const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)
-      console.log(storedToken);
+      const storedToken = window.localStorage.getItem(ACCESS_TOKEN)
       if (storedToken) {
-        console.log(storedToken)
         setLoading(true)
-        await axios
+        await instanceAxios
           .get(CONFIG_API.AUTH.AUTH_ME, {
             headers: {
               Authorization: `Bearer ${storedToken}`
@@ -71,7 +70,6 @@ const AuthProvider = ({ children }: Props) => {
           })
           .then(async response => {
             setLoading(false)
-            console.log(response)
             const user = cleanUserData(response.data)
             setUser(user)
           })
@@ -95,9 +93,9 @@ const AuthProvider = ({ children }: Props) => {
     loginAuth({ email: params.email, password: params.password })
       .then(async response => {
         const user = cleanUserData(response.data.user)
-        params.rememberMe
-          ? setLocalUserData(JSON.stringify(user), response.data.access_token, response.data.refresh_token)
-          : null
+        // params.rememberMe ?
+        setLocalUserData(JSON.stringify(user), response.data.access_token, response.data.refresh_token)
+        // : setLocalUserData(JSON.stringify(user))
         const returnUrl = router.query.returnUrl
         setUser(user)
         const redirectURL = returnUrl && returnUrl != '/' ? returnUrl : '/'

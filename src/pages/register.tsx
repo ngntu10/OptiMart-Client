@@ -10,13 +10,10 @@ import RegisterPage from 'src/views/pages/register/register'
 type Tprops = {}
 
 const Register: NextPage<Tprops> = () => {
-  
-
-  return (
-        <RegisterPage />
-  )
+  return <RegisterPage />
 }
 
 export default Register
 
 Register.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
+Register.guestGuard = true
