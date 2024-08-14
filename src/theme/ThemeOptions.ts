@@ -31,7 +31,7 @@ const themeOptions = (settings: Settings, overrideMode: PaletteMode): ThemeOptio
       palette: palette(mode === 'semi-dark' ? overrideMode : mode, skin),
       ...spacing,
       shape: {
-        borderRadius: 6
+        borderRadius: 1
       },
       mixins: {
         toolbar: {

@@ -67,7 +67,7 @@ const LoginPage: NextPage<Tprops> = () => {
   const bgColors = UseBgColor()
 
   // ** context
-  const {login} = useAuth()
+  const { login } = useAuth()
 
   const schema = yup.object().shape({
     email: yup.string().required('This field is required').matches(EMAIL_REG, 'Must be email type'),
@@ -91,9 +91,8 @@ const LoginPage: NextPage<Tprops> = () => {
   })
 
   const onSubmit = (data: { email: string; password: string }) => {
-
     if (Object.keys(errors)?.length == 0) {
-      login({ ...data, rememberMe:isRemember })
+      login({ ...data, rememberMe: isRemember })
     }
   }
 
@@ -116,7 +115,7 @@ const LoginPage: NextPage<Tprops> = () => {
           sx={{
             alignItems: 'center',
             justifyContent: 'center',
-            borderRadius: '20px',
+            borderRadius: theme.shape.borderRadius,
             backgroundColor: theme.palette.customColors.bodyBg,
             height: '100%',
             minWidth: '68vw'

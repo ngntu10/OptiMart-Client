@@ -27,17 +27,30 @@ import { AuthProvider } from 'src/contexts/AuthContext'
 // ** Global css styles
 import 'src/styles/globals.scss'
 
+// ** redux
 import { store } from 'src/stores'
+
+// ** Context
+import { SettingsConsumer, SettingsProvider } from 'src/contexts/SettingsContext'
+
+// ** Components
 import GuestGuard from 'src/components/auth/GuestGuard'
 import AuthGuard from 'src/components/auth/AuthGuard'
 import FallbackSpinner from 'src/components/fall-back'
-import { SettingsConsumer, SettingsProvider } from 'src/contexts/SettingsContext'
 import AclGuard from 'src/components/auth/AclGuard'
 import ReactHotToast from 'src/components/react-hot-toast'
-import { useSettings } from 'src/hooks/useSettings'
+
+// ** Theme
 import ThemeComponent from 'src/theme/ThemeComponent'
-import UserLayout from 'src/views/layouts/UserLayout'
+
+// ** Hooks
+import { useSettings } from 'src/hooks/useSettings'
+
+// ** Helper
 import { AxiosInterceptor } from 'src/helpers/axios'
+
+// ** Layouts
+import UserLayout from 'src/views/layouts/UserLayout'
 
 type ExtendedAppProps = AppProps & {
   Component: NextPage

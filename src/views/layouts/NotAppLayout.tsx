@@ -14,6 +14,7 @@ import Container from '@mui/material/Container'
 // ** Layouts
 import HorizontalLayout from './HorizontalLayout'
 import VerticalLayout from './VerticalLayout'
+import { useTheme } from '@mui/material'
 
 type TProps = {
   children: React.ReactNode
@@ -22,12 +23,13 @@ type TProps = {
 // TODO remove, this demo shouldn't need to reset the theme.
 
 const NotAppLayout: NextPage<TProps> = ({ children }) => {
+  const theme = useTheme()
 
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       {/* <VerticalLayout toggleDrawer={() => {}} open={open} /> */}
-      <HorizontalLayout toggleDrawer={() => { }} open={false} isHideMenu={true} />
+      <HorizontalLayout toggleDrawer={() => {}} open={false} isHideMenu={true} />
       <Box
         component='main'
         sx={{
@@ -39,7 +41,17 @@ const NotAppLayout: NextPage<TProps> = ({ children }) => {
         }}
       >
         <Toolbar />
-        <Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
+        <Container
+          sx={{
+            m: 4,
+            width: 'calc(100vw - 32px)',
+            maxWidth: 'unset !important',
+            overflow: 'auto',
+            maxHeight: `calc(100vh - ${theme.mixins.toolbar.minHeight} - 32px)`,
+            padding: '0 !important',
+            borderRadius: '15px'
+          }}
+        >
           {children}
         </Container>
       </Box>

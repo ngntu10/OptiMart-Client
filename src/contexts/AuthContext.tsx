@@ -8,16 +8,17 @@ import { createContext, useEffect, useState, ReactNode } from 'react'
 // ** Next Import
 import { useRouter } from 'next/router'
 
-// ** Axios
-import axios from 'axios'
-
 // ** Config
-import authConfig, { ACCESS_TOKEN } from 'src/configs/auth'
+import { ACCESS_TOKEN } from 'src/configs/auth'
+import { CONFIG_API } from 'src/configs/api'
 
 // ** Types
 import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './types'
+
+// ** services
 import { loginAuth, logoutAuth } from 'src/services/auth'
-import { CONFIG_API } from 'src/configs/api'
+
+// ** helper
 import { clearLocalUserData, setLocalUserData } from 'src/helpers/storage'
 import instanceAxios from 'src/helpers/axios'
 
@@ -90,8 +91,10 @@ const AuthProvider = ({ children }: Props) => {
   }, [])
 
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
+    setLoading(true)
     loginAuth({ email: params.email, password: params.password })
       .then(async response => {
+        setLoading(false)
         const user = cleanUserData(response.data.user)
         // params.rememberMe ?
         setLocalUserData(JSON.stringify(user), response.data.access_token, response.data.refresh_token)
@@ -103,6 +106,7 @@ const AuthProvider = ({ children }: Props) => {
       })
 
       .catch(err => {
+        setLoading(false)
         if (errorCallback) errorCallback(err)
       })
   }
