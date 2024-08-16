@@ -15,7 +15,7 @@ interface AclGuardProps {
   authGuard?: boolean
   guestGuard?: boolean
   aclAbilities: ACLObj
-}
+} 
 
 const AclGuard = (props: AclGuardProps) => {
   // ** Props
