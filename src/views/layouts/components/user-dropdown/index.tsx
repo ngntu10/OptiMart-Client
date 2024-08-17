@@ -20,12 +20,14 @@ import Tooltip from '@mui/material/Tooltip'
 import { Badge, Typography, styled } from '@mui/material'
 
 //** Components
-import IconifyIcon from 'src/components/Icon'
+import Icon from 'src/components/Icon'
 
 //**  Hooks
 import { useAuth } from 'src/hooks/useAuth'
 import { useTranslation } from 'react-i18next'
 import { ROUTE_CONFIG } from 'src/configs/route'
+
+// ** Utils
 import { toFullName } from 'src/utils'
 
 type TProps = {}
@@ -72,12 +74,18 @@ const UserDropDown = (props: TProps) => {
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }
+
   const handleClose = () => {
     setAnchorEl(null)
   }
 
   const handleNavigateMyProfile = () => {
-    router.push(ROUTE_CONFIG.MY_PROFILE)
+    router.replace(ROUTE_CONFIG.MY_PROFILE)
+    handleClose()
+  }
+
+  const handleNavigateChangePassword = () => {
+    router.push(ROUTE_CONFIG.CHANGE_PASSWORD)
     handleClose()
   }
 
@@ -108,7 +116,7 @@ const UserDropDown = (props: TProps) => {
                     }}
                   />
                 ) : (
-                  <IconifyIcon icon='ph:user-thin' />
+                  <Icon icon='ph:user-thin' />
                 )}
               </Avatar>
             </StyledBadge>
@@ -121,6 +129,32 @@ const UserDropDown = (props: TProps) => {
         open={open}
         onClose={handleClose}
         onClick={handleClose}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: 'visible',
+            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+            mt: 1.5,
+            '& .MuiAvatar-root': {
+              width: 32,
+              height: 32,
+              ml: -0.5,
+              mr: 1
+            },
+            '&::before': {
+              content: '""',
+              display: 'block',
+              position: 'absolute',
+              top: 0,
+              right: 14,
+              width: 10,
+              height: 10,
+              bgcolor: 'background.paper',
+              transform: 'translateY(-50%) rotate(45deg)',
+              zIndex: 0
+            }
+          }
+        }}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
@@ -140,7 +174,7 @@ const UserDropDown = (props: TProps) => {
                   }}
                 />
               ) : (
-                <IconifyIcon icon='ph:user-thin' />
+                <Icon icon='ph:user-thin' />
               )}
             </Avatar>
           </StyledBadge>
@@ -153,11 +187,22 @@ const UserDropDown = (props: TProps) => {
         </Box>
         <Divider />
         <MenuItem onClick={handleNavigateMyProfile}>
-          <Avatar /> {t('my_profile')}
+          <Avatar>
+            <Icon icon='ph:user-thin' />
+          </Avatar>{' '}
+          {t('My_profile')}
+        </MenuItem>
+        <MenuItem onClick={handleNavigateChangePassword}>
+          <Avatar sx={{ backgroundColor: 'transparent' }}>
+            <Icon icon='arcticons:password' />
+          </Avatar>
+          {t('Change_password')}
         </MenuItem>
         <MenuItem onClick={logout}>
-          <ListItemIcon></ListItemIcon>
-          Logout
+          <Avatar sx={{ backgroundColor: 'transparent' }}>
+            <Icon icon='material-symbols-light:logout' />
+          </Avatar>
+          {t('Logout')}
         </MenuItem>
       </Menu>
     </React.Fragment>

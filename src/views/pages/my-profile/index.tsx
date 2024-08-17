@@ -46,6 +46,7 @@ import FallbackSpinner from 'src/components/fall-back'
 
 // ** Other
 import toast from 'react-hot-toast'
+import Spinner from 'src/components/spinner'
 
 type TProps = {}
 
@@ -72,6 +73,10 @@ const MyProfilePage: NextPage<TProps> = () => {
   const { isLoading, isErrorUpdateMe, messageUpdateMe, isSuccessUpdateMe } = useSelector(
     (state: RootState) => state.auth
   )
+
+  const { user, setUser } = useAuth()
+
+  // const userData = window.localStorage.getItem(USER_DATA)
 
   // ** theme
   const theme = useTheme()
@@ -110,16 +115,17 @@ const MyProfilePage: NextPage<TProps> = () => {
     await getAuthMe()
       .then(async response => {
         setLoading(false)
-        const data = response?.data
+        const data = response
         if (data) {
-          setRoleId(data?.role?._id)
+          console.log(data.email)
+          setRoleId(data?.role?.id)
           setAvatar(data?.avatar)
           reset({
-            email: data?.email,
-            address: data?.address,
-            city: data?.city,
-            phoneNumber: data?.phoneNumber,
-            role: data?.role?.name,
+            email: data.email,
+            address: data.address,
+            city: data.city,
+            phoneNumber: data.phoneNumber,
+            role: data.role.name,
             fullName: toFullName(data?.lastName, data?.middleName, data?.firstName, i18n.language)
           })
         }
@@ -161,13 +167,12 @@ const MyProfilePage: NextPage<TProps> = () => {
     )
   }
   const handleUploadAvatar = async (file: File) => {
-    const base64 = await convertBase64(file)
-    setAvatar(base64 as string)
+
   }
 
   return (
     <>
-      {loading || (isLoading && <FallbackSpinner />)}
+      {loading || (isLoading && <Spinner />)}
       <form onSubmit={handleSubmit(onSubmit)} autoComplete='off' noValidate>
         <Grid container>
           <Grid
@@ -227,7 +232,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                     >
                       <Button variant='outlined' sx={{ width: 'auto', display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Icon icon='ph:camera-thin'></Icon>
-                        {avatar ? t('change_avatar') : t('upload_avatar')}
+                        {avatar ? t('Change_avatar') : t('Upload_avatar')}
                       </Button>
                     </WrapperFileUpload>
                   </Box>
@@ -248,7 +253,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                         onChange={onChange}
                         onBlur={onBlur}
                         value={value}
-                        placeholder={t('enter_your_email')}
+                        placeholder={t('Enter_your_email')}
                         error={Boolean(errors?.email)}
                         helperText={errors?.email?.message}
                       />
@@ -272,7 +277,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                         onChange={onChange}
                         onBlur={onBlur}
                         value={value}
-                        placeholder={t('enter_your_role')}
+                        placeholder={t('Enter_your_role')}
                         error={Boolean(errors?.role)}
                         helperText={errors?.role?.message}
                       />
@@ -307,7 +312,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                         onChange={onChange}
                         onBlur={onBlur}
                         value={value}
-                        placeholder={t('enter_your_full_name')}
+                        placeholder={t('Enter_your_full_name')}
                         error={Boolean(errors?.fullName)}
                         helperText={errors?.fullName?.message}
                       />
@@ -327,7 +332,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                         onChange={onChange}
                         onBlur={onBlur}
                         value={value}
-                        placeholder={t('enter_your_address')}
+                        placeholder={t('Enter_your_address')}
                       />
                     )}
                   />
@@ -344,7 +349,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                         onChange={onChange}
                         onBlur={onBlur}
                         value={value}
-                        placeholder={t('enter_your_city')}
+                        placeholder={t('Enter_your_city')}
                       />
                     )}
                   />
@@ -369,7 +374,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                         }}
                         onBlur={onBlur}
                         value={value}
-                        placeholder={t('enter_your_phone')}
+                        placeholder={t('Enter_your_phone')}
                         error={Boolean(errors?.phoneNumber)}
                         helperText={errors?.phoneNumber?.message}
                       />

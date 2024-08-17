@@ -1,4 +1,4 @@
-export type ErrCallbackType = (err: { [key: string]: string }) => void
+export type ErrCallbackType = (err: any) => void
 
 export type LoginParams = {
   email: string

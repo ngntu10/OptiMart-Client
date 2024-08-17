@@ -54,17 +54,22 @@ import UseBgColor from 'src/hooks/useBgColor'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
+import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 type Tprops = {}
 
 const LoginPage: NextPage<Tprops> = () => {
   // ** State
   const [showPassword, setShowPassword] = useState(false)
-  const [isRemember, setisRemember] = useState(false)
+  const [isRemember, setIsRemember] = useState(false)
 
   //** Theme
   const theme = useTheme()
   const bgColors = UseBgColor()
+
+  // ** Translate
+  const { t } = useTranslation()
 
   // ** context
   const { login } = useAuth()
@@ -80,7 +85,8 @@ const LoginPage: NextPage<Tprops> = () => {
   const {
     handleSubmit,
     control,
-    formState: { errors }
+    formState: { errors },
+    setError
   } = useForm({
     defaultValues: {
       email: '',
@@ -92,7 +98,9 @@ const LoginPage: NextPage<Tprops> = () => {
 
   const onSubmit = (data: { email: string; password: string }) => {
     if (Object.keys(errors)?.length == 0) {
-      login({ ...data, rememberMe: isRemember })
+      login({ ...data, rememberMe: isRemember }, err => {
+        if (err?.response?.data?.typeError === 'INVALID') toast.error(t('the_email_or_password_wrong'))
+      })
     }
   }
 
@@ -243,7 +251,7 @@ const LoginPage: NextPage<Tprops> = () => {
                       value='remember'
                       color='primary'
                       checked={isRemember}
-                      onChange={e => setisRemember(e.target.checked)}
+                      onChange={e => setIsRemember(e.target.checked)}
                     />
                   }
                   label='Remember me'

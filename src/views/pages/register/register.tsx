@@ -99,12 +99,14 @@ const RegisterPage: NextPage<Tprops> = () => {
   })
 
   const onSubmit = (data: { email: string; password: string }) => {
-    dispatch(registerAuthAsync({ email: data.email, password: data.password }))
+    if (!Object.keys(errors)?.length) {
+      dispatch(registerAuthAsync({ email: data.email, password: data.password }))
+    }
   }
 
   useEffect(() => {
     if (message) {
-      console.log(message);
+      console.log(message)
       if (isError) {
         toast.error(message)
       } else if (isSuccess) {
@@ -134,14 +136,14 @@ const RegisterPage: NextPage<Tprops> = () => {
           sx={{
             alignItems: 'center',
             justifyContent: 'center',
-            borderRadius: '20px',
+            borderRadius: theme.shape.borderRadius,
             backgroundColor: theme.palette.customColors.bodyBg,
             height: '100%',
             minWidth: '68vw'
           }}
         >
           <Image
-            src={theme.palette.mode == 'light' ? RegisterLight : RegisterDark}
+            src={theme.palette.mode === 'light' ? RegisterLight : RegisterDark}
             alt='login image'
             style={{
               height: '80%',

@@ -1,35 +1,23 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable newline-before-return */
-// ** React
-import { FC } from 'react'
-
-// ** Next
-import { NextRouter, useRouter } from 'next/router'
-
-// ** lib
+// ** libraries
 import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
-
-// ** helpers
-import { clearLocalUserData, getLocalUserData } from '../storage'
-
-// ** types
-import { UserDataType } from 'src/contexts/types'
-
-// ** Hooks
-import { useAuth } from 'src/hooks/useAuth'
-
-// ** configs
-import { ACCESS_TOKEN } from 'src/configs/auth'
+// ** config
 import { BASE_URL, CONFIG_API } from 'src/configs/api'
-
+// ** helper
+import { clearLocalUserData, getLocalUserData } from 'src/helpers/storage'
+// ** Next
+import { NextRouter, useRouter } from 'next/router'
+// ** React
+import { FC } from 'react'
+// types
+import { UserDataType } from 'src/contexts/types'
+// ** hooks
+import { useAuth } from 'src/hooks/useAuth'
 type TAxiosInterceptor = {
   children: React.ReactNode
 }
-
 const instanceAxios = axios.create({ baseURL: BASE_URL })
-
-const handleRedirectlogin = (router: NextRouter, setUser: (data: UserDataType | null) => void) => {
+const handleRedirectLogin = (router: NextRouter, setUser: (data: UserDataType | null) => void) => {
   if (router.asPath !== '/') {
     router.replace({
       pathname: '/login',
@@ -44,59 +32,57 @@ const handleRedirectlogin = (router: NextRouter, setUser: (data: UserDataType | 
 
 const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
   const router = useRouter()
-  const { accessToken, refreshToken } = getLocalUserData()
   const { setUser } = useAuth()
 
   instanceAxios.interceptors.request.use(async config => {
+    const { accessToken, refreshToken } = getLocalUserData()
     if (accessToken) {
       const decodedAccessToken: any = jwtDecode(accessToken)
-      if (decodedAccessToken.exp > Date.now() / 1000) {
+
+      if (decodedAccessToken?.exp > Date.now() / 1000) {
         config.headers['Authorization'] = `Bearer ${accessToken}`
       } else {
-        console.log('old', accessToken)
         if (refreshToken) {
           const decodedRefreshToken: any = jwtDecode(refreshToken)
           if (decodedRefreshToken?.exp > Date.now() / 1000) {
-            try {
-              const res = await axios.post(
+            await axios
+              .post(
                 `${CONFIG_API.AUTH.INDEX}/refreshtoken`,
-                { refresh_token: refreshToken },
+                {},
                 {
                   headers: {
                     Authorization: `Bearer ${refreshToken}`
                   }
                 }
               )
-              const newAccessToken = res.data.accessToken
-              if (newAccessToken) {
-                window.localStorage.setItem(ACCESS_TOKEN, newAccessToken)
-                config.headers['Authorization'] = `Bearer ${newAccessToken}`
-              } else {
-                handleRedirectlogin(router, setUser)
-              }
-            } catch (e) {
-              handleRedirectlogin(router, setUser)
-            }
+              .then(res => {
+                console.log(res)
+                const newAccessToken = res?.data.accessToken
+                if (newAccessToken) {
+                  config.headers['Authorization'] = `Bearer ${newAccessToken}`
+                } else {
+                  handleRedirectLogin(router, setUser)
+                }
+              })
+              .catch(e => {
+                handleRedirectLogin(router, setUser)
+              })
           } else {
-            handleRedirectlogin(router, setUser)
+            handleRedirectLogin(router, setUser)
           }
         } else {
-          handleRedirectlogin(router, setUser)
+          handleRedirectLogin(router, setUser)
         }
       }
     } else {
-      handleRedirectlogin(router, setUser)
+      handleRedirectLogin(router, setUser)
     }
     return config
   })
-
   instanceAxios.interceptors.response.use(response => {
     return response
   })
-
   return <>{children}</>
 }
-
 export default instanceAxios
-
 export { AxiosInterceptor }
