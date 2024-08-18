@@ -24,6 +24,7 @@ export const registerAuth = async (data: TRegisterAuth) => {
 }
 
 export const updateAuthMe = async (data: any) => {
+  console.log(data)
   try {
     const res = await axios.put(`${CONFIG_API.AUTH.INDEX}/update-me`, data)
 
@@ -45,8 +46,7 @@ export const getAuthMe = async () => {
 export const changePasswordMe = async (data: TChangePassword) => {
   try {
     const res = await instanceAxios.patch(`${CONFIG_API.AUTH.INDEX}/change-password`, data)
-
-    return res.data
+    return res
   } catch (error) {
     return error
   }

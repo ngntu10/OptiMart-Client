@@ -111,14 +111,16 @@ const ChangePasswordPage: NextPage<TProps> = () => {
 
   useEffect(() => {
     if (messageChangePassword) {
+      console.log(messageChangePassword)  
       if (isErrorChangePassword) {
         toast.error(messageChangePassword)
       } else if (isSuccessChangePassword) {
         toast.success(messageChangePassword)
         setTimeout(() => {
           logout()
-        }, 500)
-      }
+        }, 100)
+      }   
+      console.log("reset...");
       dispatch(resetInitialState())
     }
   }, [isErrorChangePassword, isSuccessChangePassword, messageChangePassword])
@@ -128,33 +130,32 @@ const ChangePasswordPage: NextPage<TProps> = () => {
       {isLoading && <FallbackSpinner />}
       <Box
         sx={{
-          height: '100vh',
-          width: '100vw',
           backgroundColor: theme.palette.background.paper,
           display: 'flex',
-          alignItems: 'center'
+          alignItems: 'center',
+          padding: '40px'
         }}
       >
         <Box
           display={{
-            sm: 'flex',
-            xs: 'none'
+            xs: 'none',
+            sm: 'flex'
           }}
           sx={{
             alignItems: 'center',
             justifyContent: 'center',
+            borderRadius: theme.shape.borderRadius,
             backgroundColor: theme.palette.customColors.bodyBg,
-            height: 'calc(100vh - 64px - 32px)',   //theme/mergedThemeConfig.mixins.toolbar.minHeight
-            minWidth: '60vw',
+            height: '100%',
+            minWidth: '50vw'
           }}
         >
           <Image
             src={theme.palette.mode === 'light' ? RegisterLight : RegisterDark}
-            alt='image'
+            alt='login image'
             style={{
-              height: '80%',
-              width: '100%',
-              objectFit: 'contain'
+              height: '74vh',
+              width: 'auto'
             }}
           />
         </Box>
@@ -169,7 +170,7 @@ const ChangePasswordPage: NextPage<TProps> = () => {
           <CssBaseline />
           <Box
             sx={{
-            //   marginTop: 8,
+              //   marginTop: 8,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center'
@@ -179,7 +180,7 @@ const ChangePasswordPage: NextPage<TProps> = () => {
               {t('Change_password')}
             </Typography>
             <form onSubmit={handleSubmit(onSubmit)} autoComplete='off' noValidate>
-            <Box sx={{ mt: 5, width: '370px', mb: 2 }}>
+              <Box sx={{ mt: 5, width: '370px', mb: 2 }}>
                 <Controller
                   control={control}
                   rules={{

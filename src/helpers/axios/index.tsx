@@ -36,6 +36,10 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
 
   instanceAxios.interceptors.request.use(async config => {
     const { accessToken, refreshToken } = getLocalUserData()
+    const requestUrl = config.url
+    const requestMethod = config.method
+    console.log('Request URL:', requestUrl)
+    console.log('Request Method:', requestMethod)
     if (accessToken) {
       const decodedAccessToken: any = jwtDecode(accessToken)
 
@@ -48,7 +52,7 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
             await axios
               .post(
                 `${CONFIG_API.AUTH.INDEX}/refreshtoken`,
-                {},
+                { refresh_token: refreshToken },
                 {
                   headers: {
                     Authorization: `Bearer ${refreshToken}`

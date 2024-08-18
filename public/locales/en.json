@@ -327,5 +327,6 @@
   "Payment_vn_pay_failed": "Payment VNPay failed",
   "ratings": "ratings",
   "comments": "comments",
-  "Product_details": "Details product"
+  "Product_details": "Details product",
+  "Invalid_file": "Invalid file. Please check the format"
 }

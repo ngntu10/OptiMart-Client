@@ -160,15 +160,12 @@ const MyProfilePage: NextPage<TProps> = () => {
         middleName: middleName,
         role: roleId,
         phoneNumber: data.phoneNumber,
-        avatar,
         address: data.address
         // city: data.city
       })
     )
   }
-  const handleUploadAvatar = async (file: File) => {
-
-  }
+  const handleUploadAvatar = async (file: File) => {}
 
   return (
     <>
@@ -230,7 +227,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                         'image/png': ['.png']
                       }}
                     >
-                      <Button variant='outlined' sx={{ width: 'auto', display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Button  variant='outlined' sx={{ width: 'auto', display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Icon icon='ph:camera-thin'></Icon>
                         {avatar ? t('Change_avatar') : t('Upload_avatar')}
                       </Button>
