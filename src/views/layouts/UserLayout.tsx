@@ -14,6 +14,7 @@ import Container from '@mui/material/Container'
 // ** Layouts
 import HorizontalLayout from './HorizontalLayout'
 import VerticalLayout from './VerticalLayout'
+import { useTheme } from '@mui/material'
 
 type TProps = {
   children: React.ReactNode
@@ -27,8 +28,10 @@ const UserLayout: NextPage<TProps> = ({ children }) => {
     setOpen(!open)
   }
 
+  const theme = useTheme()
+
   return (
-    <Box sx={{ display: 'flex'}}>
+    <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <VerticalLayout toggleDrawer={toggleDrawer} open={open} />
       <HorizontalLayout toggleDrawer={toggleDrawer} open={open} />
@@ -43,7 +46,18 @@ const UserLayout: NextPage<TProps> = ({ children }) => {
         }}
       >
         <Toolbar />
-        <Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
+        <Container
+          sx={{
+            m: 4,
+            width: `calc(100% - 32px)`,
+            maxWidth: `calc(100% - 32px) !important`,
+            overflow: 'auto',
+            maxHeight: `calc(100vh - ${theme.mixins.toolbar.minHeight}px - 32px)`,
+            height: `calc(100vh - ${theme.mixins.toolbar.minHeight}px - 32px)`,
+            padding: '0 !important',
+            borderRadius: '15px'
+          }}
+        >
           {children}
         </Container>
       </Box>

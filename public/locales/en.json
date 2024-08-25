@@ -328,5 +328,6 @@
   "ratings": "ratings",
   "comments": "comments",
   "Product_details": "Details product",
-  "Invalid_file": "Invalid file. Please check the format"
+  "Invalid_file": "Invalid file. Please check the format",
+  "Logout_success": "Logout success"
 }

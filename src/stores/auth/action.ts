@@ -20,13 +20,13 @@ export const registerAuthAsync = createAsyncThunk('auth/register', async (data: 
 })
 
 export const updateAuthMeAsync = createAsyncThunk('auth/update-info', async (data: any) => {
-  const response = await updateAuthMe(data)
-  if (response?.data) {
+  const response = await updateAuthMe(data) as any
+  if (response) {
     return response
   }
   return {
     data: null,
-    message: response?.response?.data?.message
+    message: response
   }
 })
 

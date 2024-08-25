@@ -2,13 +2,15 @@
 import { configureStore } from '@reduxjs/toolkit'
 
 // ** Reducers
-import auth from 'src/stores/apps/auth'
+import auth from 'src/stores/auth'
 import user from 'src/stores/apps/user'
+import role from './role'
 
 export const store = configureStore({
   reducer: {
     user,
-    auth
+    auth,
+    role,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

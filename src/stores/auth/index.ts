@@ -4,7 +4,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 // ** Axios Imports
 import axios from 'axios'
-import { registerAuthAsync, updateAuthMeAsync, changePasswordMeAsync } from './action'
+import { changePasswordMeAsync, registerAuthAsync, updateAuthMeAsync } from './action'
 
 interface DataParams {
   q: string
@@ -75,9 +75,9 @@ export const authSlice = createSlice({
     builder.addCase(updateAuthMeAsync.fulfilled, (state, action) => {
       console.log('action', { action })
       state.isLoading = false
-      state.isSuccessUpdateMe = !!action.payload?.data?.email
-      state.isErrorUpdateMe = !action.payload?.data?.email
-      state.messageUpdateMe = action.payload?.message
+      state.isSuccessUpdateMe = !!action.payload?.data
+      state.isErrorUpdateMe = !action.payload?.data
+      state.messageUpdateMe = action.payload?.data?.message
     })
     builder.addCase(updateAuthMeAsync.rejected, (state, action) => {
       state.isLoading = false
@@ -91,7 +91,6 @@ export const authSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(changePasswordMeAsync.fulfilled, (state, action) => {
-      console.log(action)
       state.isLoading = false
       state.isSuccessChangePassword = !!action.payload?.data
       state.isErrorChangePassword = !action.payload?.data

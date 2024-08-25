@@ -5,13 +5,13 @@ const DataGrid = () => {
   return {
     MuiDataGrid: {
       styleOverrides: {
-        root: ({ theme }: OwnerStateThemeType) => ({
-          border: 0,
-          color: theme.palette.text.primary,
-          '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within': {
-            outline: 'none'
-          }
-        }),
+        // root: ({ theme }: OwnerStateThemeType) => ({
+        //   border: 0,
+        //   color: theme.palette.text.primary,
+        //   '& .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within': {
+        //     outline: 'none'
+        //   }
+        // }),
         toolbarContainer: ({ theme }: OwnerStateThemeType) => ({
           paddingRight: `${theme.spacing(6)} !important`,
           paddingLeft: `${theme.spacing(3.25)} !important`

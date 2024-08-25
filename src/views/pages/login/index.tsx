@@ -73,13 +73,13 @@ const LoginPage: NextPage<Tprops> = () => {
 
   // ** context
   const { login } = useAuth()
-
+  
   const schema = yup.object().shape({
-    email: yup.string().required('This field is required').matches(EMAIL_REG, 'Must be email type'),
+    email: yup.string().required(t('required_field')).matches(EMAIL_REG, 'The field is must email type'),
     password: yup
       .string()
-      .required('This field is required')
-      .matches(PASSWORD_REG, 'Alphanumeric with special characters')
+      .required(t('required_field'))
+      .matches(PASSWORD_REG, 'The password is contain charactor, special character, number')
   })
 
   const {

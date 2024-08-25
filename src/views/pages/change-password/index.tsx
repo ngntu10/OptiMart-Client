@@ -29,7 +29,7 @@ import RegisterLight from '/public/images/register-light.png'
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
-import { resetInitialState } from 'src/stores/apps/auth'
+import { resetInitialState } from 'src/stores/auth'
 
 // ** Components
 import FallbackSpinner from 'src/components/fall-back'
@@ -37,7 +37,7 @@ import FallbackSpinner from 'src/components/fall-back'
 // ** Others
 import toast from 'react-hot-toast'
 import { useAuth } from 'src/hooks/useAuth'
-import { changePasswordMeAsync } from 'src/stores/apps/auth/action'
+import { changePasswordMeAsync } from 'src/stores/auth/action'
 
 type TProps = {}
 
@@ -74,15 +74,15 @@ const ChangePasswordPage: NextPage<TProps> = () => {
   const schema = yup.object().shape({
     currentPassword: yup
       .string()
-      .required('The field is required')
+      .required(t('required_field'))
       .matches(PASSWORD_REG, 'The password is contain charactor, special character, number'),
     newPassword: yup
       .string()
-      .required('The field is required')
+      .required(t('required_field'))
       .matches(PASSWORD_REG, 'The password is contain charactor, special character, number'),
     confirmNewPassword: yup
       .string()
-      .required('The field is required')
+      .required(t('required_field'))
       .matches(PASSWORD_REG, 'The password is contain charactor, special character, number')
       .oneOf([yup.ref('newPassword'), ''], 'The confirm is must match with password')
   })
@@ -111,7 +111,6 @@ const ChangePasswordPage: NextPage<TProps> = () => {
 
   useEffect(() => {
     if (messageChangePassword) {
-      console.log(messageChangePassword)  
       if (isErrorChangePassword) {
         toast.error(messageChangePassword)
       } else if (isSuccessChangePassword) {
@@ -119,8 +118,7 @@ const ChangePasswordPage: NextPage<TProps> = () => {
         setTimeout(() => {
           logout()
         }, 100)
-      }   
-      console.log("reset...");
+      }
       dispatch(resetInitialState())
     }
   }, [isErrorChangePassword, isSuccessChangePassword, messageChangePassword])

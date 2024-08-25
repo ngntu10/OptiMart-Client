@@ -1,9 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 import Head from 'next/head'
-import Button from '@mui/material/Button'
-import { Box } from '@mui/material'
-import CustomTextField from 'src/components/text-field'
 import { ReactNode } from 'react'
 import NotAppLayout from 'src/views/layouts/NotAppLayout'
 

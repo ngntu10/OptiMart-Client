@@ -3,16 +3,19 @@
 'use client'
 
 // ** Next
-
 import Link from 'next/link'
 import { NextPage } from 'next'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 
 //** React
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import toast from 'react-hot-toast'
 
 // ** Components
 import CustomTextField from 'src/components/text-field'
+import FallbackSpinner from 'src/components/fall-back'
 
 // ** form
 import { Controller, useForm } from 'react-hook-form'
@@ -25,36 +28,29 @@ import {
   Box,
   Button,
   Checkbox,
-  Container,
   CssBaseline,
   Divider,
   FormControlLabel,
-  Grid,
   IconButton,
   InputAdornment,
-  ThemeProvider,
   Typography,
-  useTheme,
-  useThemeProps
+  useTheme
 } from '@mui/material'
 
 // ** Configs
 import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
-
-import IconifyIcon from 'src/components/Icon'
 import { Icon } from '@iconify/react/dist/iconify.js'
 
 // ** Images
 import RegisterDark from '/public/images/register-dark.png'
 import RegisterLight from '/public/images/register-light.png'
+
+// ** Redux
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
-import toast from 'react-hot-toast'
-import FallbackSpinner from 'src/components/fall-back'
-import { resetInitialState } from 'src/stores/apps/auth'
-import { useRouter } from 'next/router'
+import { resetInitialState } from 'src/stores/auth'
+import { registerAuthAsync } from 'src/stores/auth/action'
 import { ROUTE_CONFIG } from 'src/configs/route'
-import { registerAuthAsync } from 'src/stores/apps/auth/action'
 
 type Tprops = {}
 
@@ -72,15 +68,15 @@ const RegisterPage: NextPage<Tprops> = () => {
   //** Theme
   const theme = useTheme()
 
+  // ** Translate
+  const { t } = useTranslation()
+
   const schema = yup.object().shape({
-    email: yup.string().required('This field is required').matches(EMAIL_REG, 'Must be email type'),
-    password: yup
-      .string()
-      .required('This field is required')
-      .matches(PASSWORD_REG, 'Alphanumeric with special characters'),
+    email: yup.string().required(t('Required_field')).matches(EMAIL_REG, 'Must be email type'),
+    password: yup.string().required(t('Required_field')).matches(PASSWORD_REG, 'Alphanumeric with special characters'),
     confirmPassword: yup
       .string()
-      .required('Confirm password is required')
+      .required(t('Required_field'))
       .oneOf([yup.ref('password')], 'Confirm Password does not match password')
   })
 

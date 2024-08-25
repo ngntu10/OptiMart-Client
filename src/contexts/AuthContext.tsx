@@ -10,7 +10,9 @@ import { useRouter } from 'next/router'
 
 // ** Config
 import { ACCESS_TOKEN } from 'src/configs/auth'
-import { CONFIG_API } from 'src/configs/api'
+
+// ** Config
+import { API_ENDPOINT } from 'src/configs/api'
 
 // ** Types
 import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './types'
@@ -19,7 +21,7 @@ import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './ty
 import { loginAuth } from 'src/services/auth'
 
 // ** helper
-import { clearLocalUserData, setLocalUserData } from 'src/helpers/storage'
+import { clearLocalUserData, setLocalUserData, setTemporaryToken } from 'src/helpers/storage'
 import instanceAxios from 'src/helpers/axios'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
@@ -52,8 +54,6 @@ const cleanUserData = (data: any): UserDataType => {
   }
 }
 
-
-
 const AuthProvider = ({ children }: Props) => {
   // ** States
   const [user, setUser] = useState<UserDataType | null>(defaultProvider.user)
@@ -62,7 +62,7 @@ const AuthProvider = ({ children }: Props) => {
   // ** Hooks
   const router = useRouter()
 
-  const { t} = useTranslation()
+  const { t } = useTranslation()
 
   useEffect(() => {
     const initAuth = async (): Promise<void> => {
@@ -70,7 +70,7 @@ const AuthProvider = ({ children }: Props) => {
       if (storedToken) {
         setLoading(true)
         await instanceAxios
-          .get(CONFIG_API.AUTH.AUTH_ME, {
+          .get(API_ENDPOINT.AUTH.AUTH_ME, {
             headers: {
               Authorization: `Bearer ${storedToken}`
             }
@@ -100,12 +100,14 @@ const AuthProvider = ({ children }: Props) => {
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
     loginAuth({ email: params.email, password: params.password })
       .then(async response => {
-        setLoading(false)
         const user = cleanUserData(response.data.user)
-        // params.rememberMe ?
-        setLocalUserData(JSON.stringify(user), response.data.access_token, response.data.refresh_token)
-        // : setLocalUserData(JSON.stringify(user))
-        toast.success(t("Login_success"));
+        if (params.rememberMe) {
+          setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
+        } else {
+          setTemporaryToken(response.data.access_token)
+        }
+
+        toast.success(t('Login_success'))
         const returnUrl = router.query.returnUrl
         setUser(user)
         const redirectURL = returnUrl && returnUrl != '/' ? returnUrl : '/'
@@ -121,7 +123,7 @@ const AuthProvider = ({ children }: Props) => {
     setUser(null)
     clearLocalUserData()
     router.push('/login')
-    toast.success('Logout success')
+    toast.success(t('Logout_success'))
   }
 
   const values = {

@@ -352,5 +352,6 @@
   "ratings": "đánh giá",
   "comments": "bình luận",
   "Product_details": "Chi tiết sản phẩm",
-  "Invalid_file": "File không hợp lệ. Vui lòng kiểm tra lại định dạng"
+  "Invalid_file": "File không hợp lệ. Vui lòng kiểm tra lại định dạng",
+  "Logout_success" : "Đăng xuất thành công"
 }
