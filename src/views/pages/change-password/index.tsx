@@ -72,19 +72,13 @@ const ChangePasswordPage: NextPage<TProps> = () => {
   const theme = useTheme()
 
   const schema = yup.object().shape({
-    currentPassword: yup
-      .string()
-      .required(t('required_field'))
-      .matches(PASSWORD_REG, 'The password is contain charactor, special character, number'),
-    newPassword: yup
-      .string()
-      .required(t('required_field'))
-      .matches(PASSWORD_REG, 'The password is contain charactor, special character, number'),
+    currentPassword: yup.string().required(t('Required_field')).matches(PASSWORD_REG, t('Rules_password')),
+    newPassword: yup.string().required(t('Required_field')).matches(PASSWORD_REG, t('Rules_password')),
     confirmNewPassword: yup
       .string()
-      .required(t('required_field'))
-      .matches(PASSWORD_REG, 'The password is contain charactor, special character, number')
-      .oneOf([yup.ref('newPassword'), ''], 'The confirm is must match with password')
+      .required(t('Required_field'))
+      .matches(PASSWORD_REG, t('Rules_password'))
+      .oneOf([yup.ref('newPassword'), ''], t('Rules_confirm_new_password'))
   })
 
   const defaultValues: TDefaultValue = {
@@ -193,7 +187,7 @@ const ChangePasswordPage: NextPage<TProps> = () => {
                       onChange={onChange}
                       onBlur={onBlur}
                       value={value}
-                      placeholder='Input password'
+                      placeholder={t('Enter_password')}
                       error={Boolean(errors?.currentPassword)}
                       helperText={errors?.currentPassword?.message}
                       type={showCurrentPassword ? 'text' : 'password'}

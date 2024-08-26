@@ -5,7 +5,7 @@ import { ReactNode } from 'react'
 
 //** views
 import BlankLayout from 'src/views/layouts/BlankLayout'
-import RegisterPage from 'src/views/pages/register/register'
+import RegisterPage from 'src/views/pages/register'
 
 type Tprops = {}
 

@@ -73,13 +73,10 @@ const LoginPage: NextPage<Tprops> = () => {
 
   // ** context
   const { login } = useAuth()
-  
+
   const schema = yup.object().shape({
-    email: yup.string().required(t('required_field')).matches(EMAIL_REG, 'The field is must email type'),
-    password: yup
-      .string()
-      .required(t('required_field'))
-      .matches(PASSWORD_REG, 'The password is contain charactor, special character, number')
+    email: yup.string().required(t('Required_field')).matches(EMAIL_REG, t('Rules_email')),
+    password: yup.string().required(t('Required_field')).matches(PASSWORD_REG, t('Rules_password'))
   })
 
   const {
@@ -99,7 +96,7 @@ const LoginPage: NextPage<Tprops> = () => {
   const onSubmit = (data: { email: string; password: string }) => {
     if (Object.keys(errors)?.length == 0) {
       login({ ...data, rememberMe: isRemember }, err => {
-        if (err?.response?.data?.typeError === 'INVALID') toast.error(t('the_email_or_password_wrong'))
+        if (err?.response?.data?.typeError === 'INVALID') toast.error(t('The_email_or_password_wrong'))
       })
     }
   }
@@ -183,11 +180,11 @@ const LoginPage: NextPage<Tprops> = () => {
                     <CustomTextField
                       required
                       fullWidth
-                      label='Email'
+                      label={t('Email')}
                       onBlur={onBlur}
                       onChange={onChange}
                       value={value}
-                      placeholder='Email'
+                      placeholder={t('Enter_email')}
                       error={Boolean(errors?.email)}
                       helperText={errors?.email?.message}
                     />
@@ -205,11 +202,11 @@ const LoginPage: NextPage<Tprops> = () => {
                     <CustomTextField
                       required
                       fullWidth
-                      label='Password'
+                      label={t('Password')}
                       onBlur={onBlur}
                       onChange={onChange}
                       value={value}
-                      placeholder='Password'
+                      placeholder={t('Enter_password')}
                       error={Boolean(errors?.password)}
                       helperText={errors?.password?.message}
                       type={showPassword ? 'text' : 'password'}
@@ -254,20 +251,20 @@ const LoginPage: NextPage<Tprops> = () => {
                       onChange={e => setIsRemember(e.target.checked)}
                     />
                   }
-                  label='Remember me'
+                  label={t('Remember_me')}
                 />
                 <Typography
                   variant='body2'
                   style={{ color: `${theme.palette.primary.main} !important`, fontSize: '15px' }}
                 >
-                  Forgot password?
+                  {t('Forgot_password')}?
                 </Typography>
               </Box>
               <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
-                Sign In
+                {t('Login')}
               </Button>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
-                <Typography>{"Don't have an account ?"}</Typography>
+                <Typography>{t('You_have_account')}</Typography>
 
                 <Link
                   href='/register'
@@ -276,7 +273,7 @@ const LoginPage: NextPage<Tprops> = () => {
                     fontSize: '16px'
                   }}
                 >
-                  {'Sign Up'}
+                  {t('Register')}
                 </Link>
               </Box>
               <Divider
@@ -287,7 +284,7 @@ const LoginPage: NextPage<Tprops> = () => {
                   my: theme => `${theme.spacing(6)} !important`
                 }}
               >
-                or
+                {t('Or')}
               </Divider>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <IconButton href='/' component={Link} sx={{ color: '#497ce2' }} onClick={e => e.preventDefault()}>

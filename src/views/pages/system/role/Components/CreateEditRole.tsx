@@ -66,7 +66,8 @@ const CreateEditRole = (props: TCreateEditRole) => {
 
   const onSubmit = (data: { name: string }) => {
     if (!Object.keys(errors).length) {
-      if (idRole) {// update
+      if (idRole) {
+        // update
         dispatch(updateRoleAsync({ name: data?.name, id: idRole }))
       } else {
         dispatch(createRoleAsync({ name: data?.name }))
@@ -108,20 +109,31 @@ const CreateEditRole = (props: TCreateEditRole) => {
       {loading && <Spinner />}
       <CustomModal open={open} onClose={onClose}>
         <Box
-          sx={{ backgroundColor: theme.palette.background.paper, padding: '20px', borderRadius: '15px' }}
+          sx={{
+            padding: '20px',
+            borderRadius: '15px',
+            backgroundColor: theme.palette.customColors.bodyBg
+          }}
           minWidth={{ md: '400px', xs: '80vw' }}
         >
           <Box sx={{ display: 'flex', justifyContent: 'center', position: 'relative', paddingBottom: '20px' }}>
             <Typography variant='h4' sx={{ fontWeight: 600 }}>
               {' '}
-              {idRole ? t('Chỉnh sửa nhóm vai trò') : t('Tạo nhóm vai trò')}
+              {idRole ? t('Edit_role') : t('Create_role')}
             </Typography>
             <IconButton sx={{ position: 'absolute', top: '-4px', right: '-10px' }} onClick={onClose}>
               <Icon icon='material-symbols-light:close' fontSize={'30px'} />
             </IconButton>
           </Box>
           <form onSubmit={handleSubmit(onSubmit)} autoComplete='off' noValidate>
-            <Box sx={{ width: '100%' }}>
+            <Box
+              sx={{
+                width: '100%',
+                backgroundColor: theme.palette.background.paper,
+                padding: '30px 20px',
+                borderRadius: '15px'
+              }}
+            >
               <Controller
                 control={control}
                 rules={{
@@ -136,7 +148,7 @@ const CreateEditRole = (props: TCreateEditRole) => {
                     onChange={onChange}
                     onBlur={onBlur}
                     value={value}
-                    placeholder={t('enter_name')}
+                    placeholder={t('Enter_name')}
                     error={Boolean(errors?.name)}
                     helperText={errors?.name?.message}
                   />

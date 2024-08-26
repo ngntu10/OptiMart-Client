@@ -15,7 +15,6 @@ import toast from 'react-hot-toast'
 
 // ** Components
 import CustomTextField from 'src/components/text-field'
-import FallbackSpinner from 'src/components/fall-back'
 
 // ** form
 import { Controller, useForm } from 'react-hook-form'
@@ -56,7 +55,6 @@ type Tprops = {}
 
 const RegisterPage: NextPage<Tprops> = () => {
   const [showPassword, setShowPassword] = useState(false)
-  const [isRemember, setisRemember] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   // ** router
   const router = useRouter()
@@ -72,12 +70,13 @@ const RegisterPage: NextPage<Tprops> = () => {
   const { t } = useTranslation()
 
   const schema = yup.object().shape({
-    email: yup.string().required(t('Required_field')).matches(EMAIL_REG, 'Must be email type'),
-    password: yup.string().required(t('Required_field')).matches(PASSWORD_REG, 'Alphanumeric with special characters'),
+    email: yup.string().required(t('Required_field')).matches(EMAIL_REG, t('Rules_email')),
+    password: yup.string().required(t('Required_field')).matches(PASSWORD_REG, t('Rules_password')),
     confirmPassword: yup
       .string()
       .required(t('Required_field'))
-      .oneOf([yup.ref('password')], 'Confirm Password does not match password')
+      .matches(PASSWORD_REG, t('Rules_password'))
+      .oneOf([yup.ref('password')], t('Rules_confirm_password'))
   })
 
   const {
@@ -182,11 +181,11 @@ const RegisterPage: NextPage<Tprops> = () => {
                     <CustomTextField
                       required
                       fullWidth
-                      label='Email'
+                      label={t('Email')}
                       onBlur={onBlur}
                       onChange={onChange}
                       value={value}
-                      placeholder='Email'
+                      placeholder={t('Enter_email')}
                       error={Boolean(errors?.email)}
                       helperText={errors?.email?.message}
                     />
@@ -204,11 +203,11 @@ const RegisterPage: NextPage<Tprops> = () => {
                     <CustomTextField
                       required
                       fullWidth
-                      label='Password'
+                      label={t('Password')}
                       onBlur={onBlur}
                       onChange={onChange}
                       value={value}
-                      placeholder='Password'
+                      placeholder={t('Enter_password')}
                       error={Boolean(errors?.password)}
                       helperText={errors?.password?.message}
                       type={showPassword ? 'text' : 'password'}
@@ -245,11 +244,11 @@ const RegisterPage: NextPage<Tprops> = () => {
                     <CustomTextField
                       required
                       fullWidth
-                      label='Confirm Password'
+                      label={t('Confirm_password')}
                       onBlur={onBlur}
                       onChange={onChange}
                       value={value}
-                      placeholder='Confirm Password'
+                      placeholder={t('Enter_confirm_password')}
                       error={Boolean(errors?.confirmPassword)}
                       helperText={errors?.confirmPassword?.message}
                       type={showConfirmPassword ? 'text' : 'password'}
@@ -293,10 +292,10 @@ const RegisterPage: NextPage<Tprops> = () => {
                 }
               />
               <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }}>
-                Register
+                {t('Register')}
               </Button>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
-                <Typography>{'Do you have an account ?'}</Typography>
+                <Typography>{t('You_have_account')}</Typography>
 
                 <Link
                   style={{
@@ -305,7 +304,7 @@ const RegisterPage: NextPage<Tprops> = () => {
                   }}
                   href='/login'
                 >
-                  {'Login'}
+                  {t('Login')}
                 </Link>
               </Box>
               <Divider
@@ -316,7 +315,7 @@ const RegisterPage: NextPage<Tprops> = () => {
                   my: theme => `${theme.spacing(6)} !important`
                 }}
               >
-                or
+                {t('Or')}
               </Divider>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <IconButton href='/' component={Link} sx={{ color: '#497ce2' }} onClick={e => e.preventDefault()}>

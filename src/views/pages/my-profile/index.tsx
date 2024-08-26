@@ -48,6 +48,7 @@ import FallbackSpinner from 'src/components/fall-back'
 import toast from 'react-hot-toast'
 import Spinner from 'src/components/spinner'
 import CustomSelect from 'src/components/custom-select'
+import { getAllRoles } from 'src/services/role'
 
 type TProps = {}
 
@@ -64,7 +65,7 @@ const MyProfilePage: NextPage<TProps> = () => {
   // State
   const [loading, setLoading] = useState(false)
   const [avatar, setAvatar] = useState('')
-  const [roleId, setRoleId] = useState('')
+  const [optionRoles, setOptionRoles] = useState<{ label: string; value: string }[]>([])
 
   // ** translate
   const { i18n } = useTranslation()
@@ -74,10 +75,6 @@ const MyProfilePage: NextPage<TProps> = () => {
   const { isLoading, isErrorUpdateMe, messageUpdateMe, isSuccessUpdateMe } = useSelector(
     (state: RootState) => state.auth
   )
-
-  const { user, setUser } = useAuth()
-
-  // const userData = window.localStorage.getItem(USER_DATA)
 
   // ** theme
   const theme = useTheme()
@@ -119,14 +116,13 @@ const MyProfilePage: NextPage<TProps> = () => {
         const data = response
         if (data) {
           console.log(data)
-          setRoleId(data?.role?.id)
-          setAvatar(data?.avatar)
+          console.log(data.role.name)
           reset({
             email: data.email,
             address: data.address,
             city: data.city,
             phoneNumber: data.phoneNumber,
-            role: data.role.name,
+            role: data.role.id,
             fullName: toFullName(data?.lastName, data?.middleName, data?.firstName, i18n.language)
           })
         }
@@ -135,6 +131,25 @@ const MyProfilePage: NextPage<TProps> = () => {
         setLoading(false)
       })
   }
+
+  const fetchAllRoles = async () => {
+    setLoading(true)
+    await getAllRoles({ params: { limit: 20, page: 1 } })
+      .then(res => {
+        const data = res?.data?.data.roleList
+        if (data) {
+          setOptionRoles(data?.map((item: { name: string; id: string }) => ({ label: item.name, value: item.id })))
+        }
+        setLoading(false)
+      })
+      .catch(e => {
+        setLoading(false)
+      })
+  }
+
+  useEffect(() => {
+    fetchAllRoles()
+  }, [])
 
   useEffect(() => {
     fetchGetAuthMe()
@@ -159,7 +174,7 @@ const MyProfilePage: NextPage<TProps> = () => {
         firstName: firstName,
         lastName: lastName,
         middleName: middleName,
-        role: roleId,
+        role: data.role,
         phoneNumber: data.phoneNumber,
         address: data.address
         // city: data.city
@@ -282,13 +297,13 @@ const MyProfilePage: NextPage<TProps> = () => {
                         <CustomSelect
                           fullWidth
                           onChange={onChange}
-                          options={[]}
+                          options={optionRoles}
                           error={Boolean(errors?.role)}
                           onBlur={onBlur}
                           value={value}
-                          placeholder={t('enter_your_role')}
+                          placeholder={t('Enter_your_role')}
                         />
-                        {!errors?.email?.message && (
+                        {!errors?.role?.message && (
                           <FormHelperText
                             sx={{
                               color: !errors?.role
@@ -324,40 +339,17 @@ const MyProfilePage: NextPage<TProps> = () => {
                   <Controller
                     control={control}
                     render={({ field: { onChange, onBlur, value } }) => (
-                      <Box>
-                        <InputLabel
-                          sx={{
-                            fontSize: '13px',
-                            marginBottom: '4px',
-                            display: 'block',
-                            color: errors?.role
-                              ? theme.palette.error.main
-                              : `rgba(${theme.palette.customColors.main}, 0.42)`
-                          }}
-                        >
-                          {t('City')}
-                        </InputLabel>
-                        <CustomSelect
-                          fullWidth
-                          onChange={onChange}
-                          options={[]}
-                          error={Boolean(errors?.role)}
-                          onBlur={onBlur}
-                          value={value}
-                          placeholder={t('enter_your_city')}
-                        />
-                        {!errors?.email?.message && (
-                          <FormHelperText
-                            sx={{
-                              color: !errors?.role
-                                ? theme.palette.error.main
-                                : `rgba(${theme.palette.customColors.main}, 0.42)`
-                            }}
-                          >
-                            {errors?.email?.message}
-                          </FormHelperText>
-                        )}
-                      </Box>
+                      <CustomTextField
+                        autoFocus
+                        fullWidth
+                        label={t('Full_name')}
+                        onChange={onChange}
+                        onBlur={onBlur}
+                        value={value}
+                        placeholder={t('Enter_your_full_name')}
+                        error={Boolean(errors?.fullName)}
+                        helperText={errors?.fullName?.message}
+                      />
                     )}
                     name='fullName'
                   />
@@ -384,15 +376,40 @@ const MyProfilePage: NextPage<TProps> = () => {
                     name='city'
                     control={control}
                     render={({ field: { onChange, onBlur, value } }) => (
-                      <CustomTextField
-                        autoFocus
-                        fullWidth
-                        label={t('City')}
-                        onChange={onChange}
-                        onBlur={onBlur}
-                        value={value}
-                        placeholder={t('Enter_your_city')}
-                      />
+                      <Box>
+                        <InputLabel
+                          sx={{
+                            fontSize: '13px',
+                            marginBottom: '4px',
+                            display: 'block',
+                            color: errors?.city
+                              ? theme.palette.error.main
+                              : `rgba(${theme.palette.customColors.main}, 0.42)`
+                          }}
+                        >
+                          {t('City')}
+                        </InputLabel>
+                        <CustomSelect
+                          fullWidth
+                          onChange={onChange}
+                          options={[]}
+                          error={Boolean(errors?.city)}
+                          onBlur={onBlur}
+                          value={value}
+                          placeholder={t('Enter_your_city')}
+                        />
+                        {!errors?.city?.message && (
+                          <FormHelperText
+                            sx={{
+                              color: !errors?.city
+                                ? theme.palette.error.main
+                                : `rgba(${theme.palette.customColors.main}, 0.42)`
+                            }}
+                          >
+                            {errors?.city?.message}
+                          </FormHelperText>
+                        )}
+                      </Box>
                     )}
                   />
                 </Grid>
@@ -428,7 +445,6 @@ const MyProfilePage: NextPage<TProps> = () => {
             </Box>
           </Grid>
         </Grid>
-
         <Box sx={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'flex-end' }}>
           <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2 }}>
             {t('Update')}
@@ -438,5 +454,4 @@ const MyProfilePage: NextPage<TProps> = () => {
     </>
   )
 }
-
 export default MyProfilePage

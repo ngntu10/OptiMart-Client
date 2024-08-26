@@ -195,7 +195,7 @@ const UserDropDown = (props: TProps) => {
           <Avatar>
             <Icon icon='arcticons:phone-manager' />
           </Avatar>{' '}
-          {t('manage_system')}
+          {t('Manage_system')}
         </MenuItem>
 
         <MenuItem onClick={handleNavigateMyProfile}>

@@ -21,8 +21,7 @@ import GridEdit from 'src/components/grid-edit'
 import GridCreate from 'src/components/grid-create'
 import InputSearch from 'src/components/input-search'
 import CustomDataGrid from 'src/components/custom-data-grid'
-import CustomPagination from 'src/components/custom-pagination'
-import Spinner from 'src/components/spinner'
+import Icon from 'src/components/Icon'
 
 // ** Others
 import toast from 'react-hot-toast'
@@ -116,8 +115,8 @@ const RoleListPage: NextPage<TProps> = () => {
         const { row } = params
 
         return (
-          <Box>
-            {!row?.permissions?.some((per: string) => ['ADMIN.GRANTED', 'BASIC.PUBLIC']?.includes(per)) && (
+          <Box sx={{ width: '100%' }}>
+            {!row?.permissions?.some((per: string) => ['ADMIN.GRANTED', 'BASIC.PUBLIC']?.includes(per)) ? (
               <>
                 <GridEdit
                   onClick={() =>
@@ -136,6 +135,8 @@ const RoleListPage: NextPage<TProps> = () => {
                   }
                 />
               </>
+            ) : (
+              <Icon icon='material-symbols-light:lock-outline' fontSize={30} />
             )}
           </Box>
         )
