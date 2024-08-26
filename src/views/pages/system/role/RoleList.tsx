@@ -66,7 +66,7 @@ const RoleListPage: NextPage<TProps> = () => {
   // fetch api
 
   const handleGetListRoles = () => {
-    dispatch(getAllRolesAsync({ params: { limit: -1, page: -1, search: '' } }))
+    dispatch(getAllRolesAsync({ params: { limit: 20, page: 1, search: '' } }))
   }
 
   // handle
@@ -128,9 +128,9 @@ const RoleListPage: NextPage<TProps> = () => {
   useEffect(() => {
     if (isSuccessCreateEdit) {
       if (openCreateEdit.id) {
-        toast.success(t('update-role-success'))
+        toast.success(t('Update_role_success'))
       } else {
-        toast.success(t('create-role-success'))
+        toast.success(t('Create_role_success'))
       }
       handleGetListRoles()
       handleCloseCreateEdit()
@@ -143,7 +143,7 @@ const RoleListPage: NextPage<TProps> = () => {
 
   useEffect(() => {
     if (isSuccessDelete) {
-      toast.success(t('delete-role-success'))
+      toast.success(t('Delete_role_success'))
       handleGetListRoles()
       dispatch(resetInitialState())
     } else if (isErrorDelete && messageErrorDelete) {
@@ -155,7 +155,7 @@ const RoleListPage: NextPage<TProps> = () => {
   return (
     <>
       <CreateEditRole open={openCreateEdit.open} onClose={handleCloseCreateEdit} idRole={openCreateEdit.id} />
-      {isLoading && <Spinner />}
+      {/* {isLoading && <Spinner />} */}
       <Box
         sx={{
           backgroundColor: theme.palette.background.paper,
@@ -187,7 +187,7 @@ const RoleListPage: NextPage<TProps> = () => {
               // checkboxSelection
               autoHeight
               hideFooter
-              getRowId={row => row._id}
+              getRowId={row => row.id}
               disableRowSelectionOnClick
               slots={{
                 pagination: PaginationComponent

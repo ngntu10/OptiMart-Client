@@ -61,8 +61,8 @@ export const roleSlice = createSlice({
     })
     builder.addCase(getAllRolesAsync.fulfilled, (state, action) => {
       state.isLoading = false
-      state.roles.data = action.payload.data.roles
-      state.roles.total = action.payload.data.totalCount
+      state.roles.data = action.payload.data?.data.roleList
+      state.roles.total = action.payload.data?.data.totalCount
     })
     builder.addCase(getAllRolesAsync.rejected, (state, action) => {
       state.isLoading = false
@@ -75,11 +75,11 @@ export const roleSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(createRoleAsync.fulfilled, (state, action) => {
+      console.log(action)
       state.isLoading = false
-      state.isSuccessCreateEdit = !!action.payload?.data?.id
-      state.isErrorCreateEdit = !action.payload?.data?.id
-      state.messageErrorCreateEdit = action.payload?.message
-      state.typeError = action.payload?.typeError
+      state.isSuccessCreateEdit = !!action.payload?.data?.data?.id
+      state.isErrorCreateEdit = !action.payload?.data?.data?.id
+      state.messageErrorCreateEdit = action.payload?.data?.message
     })
 
     // ** update role
@@ -87,11 +87,11 @@ export const roleSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(updateRoleAsync.fulfilled, (state, action) => {
+      console.log(action)
       state.isLoading = false
-      state.isSuccessCreateEdit = !!action.payload?.data?.id
-      state.isErrorCreateEdit = !action.payload?.data?.id
-      state.messageErrorCreateEdit = action.payload?.message
-      state.typeError = action.payload?.typeError
+      state.isSuccessCreateEdit = !!action.payload?.data?.data.id
+      state.isErrorCreateEdit = !action.payload?.data?.data.id
+      state.messageErrorCreateEdit = action.payload?.data.data.message
     })
 
     // ** delete role
@@ -99,11 +99,11 @@ export const roleSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(deleteRoleAsync.fulfilled, (state, action) => {
+      console.log(action)
       state.isLoading = false
-      state.isSuccessDelete = !!action.payload?.data?.id
-      state.isErrorDelete = !action.payload?.data?.id
-      state.messageErrorDelete = action.payload?.message
-      state.typeError = action.payload?.typeError
+      state.isSuccessDelete = !!action.payload?.data.data
+      state.isErrorDelete = !action.payload?.data?.data
+      state.messageErrorDelete = action.payload?.data.data.message
     })
   }
 })

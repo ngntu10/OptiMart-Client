@@ -4,7 +4,7 @@ import { createRole, deleteRole, getAllRoles, updateRole } from 'src/services/ro
 // ** services
 import { TParamsCreateRole, TParamsEditRole, TParamsGetRoles } from 'src/types/role'
 
-export const getAllRolesAsync = createAsyncThunk('role/get-all', async (data: { params: TParamsGetRoles }) => {
+export const getAllRolesAsync = createAsyncThunk('roles', async (data: { params: TParamsGetRoles }) => {
   const response = await getAllRoles(data)
 
   return response
@@ -12,7 +12,6 @@ export const getAllRolesAsync = createAsyncThunk('role/get-all', async (data: { 
 
 export const createRoleAsync = createAsyncThunk('role/create', async (data: TParamsCreateRole) => {
   const response = await createRole(data)
-
   return response
 })
 

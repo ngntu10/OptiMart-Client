@@ -45,7 +45,7 @@ const CreateEditRole = (props: TCreateEditRole) => {
   const dispatch: AppDispatch = useDispatch()
 
   const schema = yup.object().shape({
-    name: yup.string().required(t('required_field'))
+    name: yup.string().required(t('Required_field'))
   })
 
   const defaultValues = {
@@ -66,9 +66,8 @@ const CreateEditRole = (props: TCreateEditRole) => {
 
   const onSubmit = (data: { name: string }) => {
     if (!Object.keys(errors).length) {
-      if (idRole) {
+      if (idRole) {// update
         dispatch(updateRoleAsync({ name: data?.name, id: idRole }))
-        // update
       } else {
         dispatch(createRoleAsync({ name: data?.name }))
       }
