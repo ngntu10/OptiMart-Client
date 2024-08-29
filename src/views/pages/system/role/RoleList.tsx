@@ -29,7 +29,7 @@ import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 import CreateEditRole from './Components/CreateEditRole'
 import { deleteRoleAsync, getAllRolesAsync } from 'src/stores/role/action'
 import ConfirmationDialog from 'src/components/confirmation-dialog'
-
+import { OBJECT_TYPE_ERROR_ROLE } from 'src/configs/role'
 type TProps = {}
 
 const RoleListPage: NextPage<TProps> = () => {
@@ -63,7 +63,8 @@ const RoleListPage: NextPage<TProps> = () => {
     messageErrorCreateEdit,
     isErrorDelete,
     isSuccessDelete,
-    messageErrorDelete
+    messageErrorDelete,
+    typeError
   } = useSelector((state: RootState) => state.role)
 
   // ** theme
@@ -171,11 +172,21 @@ const RoleListPage: NextPage<TProps> = () => {
       handleCloseCreateEdit()
       handleCloseConfirmDeleteRole()
       dispatch(resetInitialState())
-    } else if (isErrorCreateEdit && messageErrorCreateEdit) {
-      toast.error(t(messageErrorCreateEdit))
+    } else if (isErrorCreateEdit && messageErrorCreateEdit && typeError) {
+      const errorConfig = OBJECT_TYPE_ERROR_ROLE[typeError]
+      if (errorConfig) {
+        toast.error(t(errorConfig))
+      } else {
+        if (openCreateEdit.id) {
+          toast.error(t('Update-role-error'))
+        } else {
+          toast.error(t('Create_role_error'))
+        }
+      }
       dispatch(resetInitialState())
     }
-  }, [isSuccessCreateEdit, isErrorCreateEdit, messageErrorCreateEdit])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccessCreateEdit, isErrorCreateEdit, messageErrorCreateEdit, typeError])
 
   useEffect(() => {
     if (isSuccessDelete) {

@@ -1,6 +1,17 @@
 import { useTranslation } from 'react-i18next'
 import { ROUTE_CONFIG } from 'src/configs/route'
 
+export type TVertical = {
+  title: string
+  path?: string
+  icon: string
+  childrens?: {
+    title: string
+    path?: string
+    icon: string
+  }[]
+}
+
 export const VerticalItems = () => {
   const { t } = useTranslation()
 
