@@ -15,7 +15,7 @@ interface TInputSearch {
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
-  backgroundColor: theme.palette.common.white,
+  backgroundColor: theme.palette.background.paper,
   marginLeft: '0 !important',
   height: '38px',
   width: '100%',

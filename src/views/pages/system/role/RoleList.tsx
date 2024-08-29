@@ -7,8 +7,8 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** Mui
-import { Box, Grid, useTheme } from '@mui/material'
-import { GridColDef, GridSortModel } from '@mui/x-data-grid'
+import { Box, Button, Grid, useTheme } from '@mui/material'
+import { GridColDef, GridRowClassNameParams, GridSortModel } from '@mui/x-data-grid'
 
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
@@ -23,19 +23,26 @@ import InputSearch from 'src/components/input-search'
 import CustomDataGrid from 'src/components/custom-data-grid'
 import Icon from 'src/components/Icon'
 
+// ** Services
+import { getDetailsRole } from 'src/services/role'
+
 // ** Others
 import toast from 'react-hot-toast'
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 import CreateEditRole from './Components/CreateEditRole'
-import { deleteRoleAsync, getAllRolesAsync } from 'src/stores/role/action'
+import { deleteRoleAsync, getAllRolesAsync, updateRoleAsync } from 'src/stores/role/action'
 import ConfirmationDialog from 'src/components/confirmation-dialog'
 import { OBJECT_TYPE_ERROR_ROLE } from 'src/configs/role'
+import { PERMISSIONS } from 'src/configs/permission'
+import { getAllValueOfObject } from 'src/utils'
+import { hexToRGBA } from 'src/utils/hex-to-rgba'
+import Spinner from 'src/components/spinner'
+import TablePermission from './Components/TablePermission'
+
 type TProps = {}
 
 const RoleListPage: NextPage<TProps> = () => {
   // State
-  const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
   const [openCreateEdit, setOpenCreateEdit] = useState({
     open: false,
     id: ''
@@ -46,9 +53,13 @@ const RoleListPage: NextPage<TProps> = () => {
   })
   const [sortBy, setSortBy] = useState('createdAt asc')
   const [searchBy, setSearchBy] = useState('')
-
-  // ** router
-  const router = useRouter()
+  const [permissionSelected, setPermissionSelected] = useState<string[]>([])
+  const [selectedRow, setSelectedRow] = useState({
+    id: '',
+    name: ''
+  })
+  const [loading, setLoading] = useState(false)
+  const [isDisablePermission, setIsDisabledPermission] = useState(false)
 
   // ** Translate
   const { t } = useTranslation()
@@ -70,8 +81,11 @@ const RoleListPage: NextPage<TProps> = () => {
   // ** theme
   const theme = useTheme()
 
-  // fetch api
+  const handleUpdateRole = () => {
+    dispatch(updateRoleAsync({ name: selectedRow.name, id: selectedRow.id, permissions: permissionSelected }))
+  }
 
+  // fetch api
   const handleGetListRoles = () => {
     dispatch(getAllRolesAsync({ params: { limit: 20, page: 1, search: searchBy, order: sortBy } }))
   }
@@ -145,17 +159,35 @@ const RoleListPage: NextPage<TProps> = () => {
     }
   ]
 
-  // const PaginationComponent = () => {
-  //   return (
-  //     <CustomPagination
-  //       onChangePagination={handleOnchangePagination}
-  //       pageSizeOptions={PAGE_SIZE_OPTION}
-  //       pageSize={pageSize}
-  //       page={page}
-  //       rowLength={roles.total}
-  //     />
-  //   )
-  // }
+  // fetch api
+  const handleGetDetailsRole = async (id: string) => {
+    setLoading(true)
+    await getDetailsRole(id)
+      .then(res => {
+        if (res?.data) {
+          if (res?.data.permissions.includes(PERMISSIONS.ADMIN)) {
+            setIsDisabledPermission(true)
+            setPermissionSelected(getAllValueOfObject(PERMISSIONS, [PERMISSIONS.ADMIN, PERMISSIONS.BASIC]))
+          } else if (res?.data.permissions.includes(PERMISSIONS.BASIC)) {
+            setIsDisabledPermission(true)
+            setPermissionSelected(PERMISSIONS.DASHBOARD)
+          } else {
+            setIsDisabledPermission(false)
+            setPermissionSelected(res?.data?.permissions || [])
+          }
+        }
+        setLoading(false)
+      })
+      .catch(e => {
+        setLoading(false)
+      })
+  }
+
+  useEffect(() => {
+    if (selectedRow.id) {
+      handleGetDetailsRole(selectedRow.id)
+    }
+  }, [selectedRow])
 
   useEffect(() => {
     handleGetListRoles()
@@ -163,10 +195,10 @@ const RoleListPage: NextPage<TProps> = () => {
 
   useEffect(() => {
     if (isSuccessCreateEdit) {
-      if (openCreateEdit.id) {
-        toast.success(t('Update_role_success'))
-      } else {
+      if (!openCreateEdit.id) {
         toast.success(t('Create_role_success'))
+      } else {
+        toast.success(t('Update_role_success'))
       }
       handleGetListRoles()
       handleCloseCreateEdit()
@@ -202,6 +234,7 @@ const RoleListPage: NextPage<TProps> = () => {
 
   return (
     <>
+      {loading && <Spinner />}
       <ConfirmationDialog
         open={openDeleteRole.open}
         handleClose={handleCloseConfirmDeleteRole}
@@ -218,45 +251,83 @@ const RoleListPage: NextPage<TProps> = () => {
           display: 'flex',
           alignItems: 'center',
           padding: '20px',
-          height: '100%'
+          height: '100%',
+          width: '100%'
         }}
       >
         <Grid container sx={{ height: '100%', width: '100%' }}>
-          <Grid item md={5} xs={12}>
+          <Grid item md={4} xs={12}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
               <Box sx={{ width: '200px' }}>
                 <InputSearch value={searchBy} onChange={(value: string) => setSearchBy(value)} />
               </Box>
               <GridCreate
-                onClick={() =>
+                onClick={() => {
                   setOpenCreateEdit({
                     open: true,
                     id: ''
                   })
-                }
+                }}
               />
             </Box>
-            <CustomDataGrid
-              rows={roles.data}
-              columns={columns}
-              pageSizeOptions={[5]}
-              // checkboxSelection
-              autoHeight
-              sortingOrder={['desc', 'asc']}
-              sortingMode='server'
-              onSortModelChange={handleSort}
-              hideFooter
-              getRowId={row => row.id}
-              disableRowSelectionOnClick
-              // slots={{
-              //   pagination: PaginationComponent
-              // }}
-              disableColumnFilter
-              disableColumnMenu
-            />
+            <Box sx={{ maxHeight: '100%' }}>
+              <CustomDataGrid
+                rows={roles.data}
+                columns={columns}
+                pageSizeOptions={[5]}
+                autoHeight
+                sx={{
+                  '.row-selected': {
+                    backgroundColor: `${hexToRGBA(theme.palette.primary.main, 0.08)} !important`,
+                    color: `${theme.palette.primary.main} !important`
+                  }
+                }}
+                hideFooter
+                sortingOrder={['desc', 'asc']}
+                sortingMode='server'
+                onSortModelChange={handleSort}
+                getRowId={row => row._id}
+                disableRowSelectionOnClick
+                getRowClassName={(row: GridRowClassNameParams) => {
+                  return row.id === selectedRow.id ? 'row-selected' : ''
+                }}
+                onRowClick={row => {
+                  console.log('row', { row })
+                  setSelectedRow({ id: String(row.id), name: row?.row?.name })
+                  setOpenCreateEdit({
+                    open: false,
+                    id: String(row.id)
+                  })
+                }}
+                disableColumnFilter
+                disableColumnMenu
+              />
+            </Box>
           </Grid>
-          <Grid item md={7} xs={12}>
-            List permission
+          <Grid
+            item
+            md={8}
+            xs={12}
+            sx={{ maxHeight: '100%' }}
+            paddingLeft={{ md: '40px', xs: '0' }}
+            paddingTop={{ md: '0px', xs: '20px' }}
+          >
+            {selectedRow?.id && (
+              <>
+                <Box sx={{ height: 'calc(100% - 40px)' }}>
+                  <TablePermission
+                    setPermissionSelected={setPermissionSelected}
+                    permissionSelected={permissionSelected}
+                    disabled={isDisablePermission}
+                  />
+                </Box>
+                <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+                  <Button disabled={isDisablePermission} variant='contained' sx={{ mt: 3 }} onClick={handleUpdateRole}>
+                    {t('Update')}
+                  </Button>
+                </Box>
+              </>
+            )}
           </Grid>
         </Grid>
       </Box>
