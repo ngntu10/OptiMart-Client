@@ -286,7 +286,7 @@ const RoleListPage: NextPage<TProps> = () => {
                 sortingOrder={['desc', 'asc']}
                 sortingMode='server'
                 onSortModelChange={handleSort}
-                getRowId={row => row._id}
+                getRowId={row => row.id}
                 disableRowSelectionOnClick
                 getRowClassName={(row: GridRowClassNameParams) => {
                   return row.id === selectedRow.id ? 'row-selected' : ''

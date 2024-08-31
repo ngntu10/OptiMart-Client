@@ -23,9 +23,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
 
 // ** Images
-import IconifyIcon from 'src/components/Icon'
 import { t } from 'i18next'
-import { useAuth } from 'src/hooks/useAuth'
 
 import { useTranslation } from 'react-i18next'
 
@@ -182,7 +180,22 @@ const MyProfilePage: NextPage<TProps> = () => {
       })
     )
   }
-  const handleUploadAvatar = async (file: File) => {}
+
+  // ###### Base-64
+  // const handleUploadAvatar = async (file: File) => {
+  //   const reader = new FileReader()
+  //   reader.onload = () => {
+  //     if (typeof reader.result === 'string') {
+  //       setAvatar(reader.result)
+  //     }
+  //   }
+  //   reader.readAsDataURL(file)
+  // }
+
+  // ###### Cloudinary
+  const handleUploadAvatar = async (file: File) => {
+    
+  }
 
   return (
     <>
