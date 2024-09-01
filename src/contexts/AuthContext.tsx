@@ -43,6 +43,7 @@ type Props = {
 }
 
 const cleanUserData = (data: any): UserDataType => {
+  console.log(data)
   return {
     id: data.id,
     role: data.role,
@@ -50,7 +51,7 @@ const cleanUserData = (data: any): UserDataType => {
     fullName: data.fullName,
     username: data.username,
     password: data.password,
-    avatar: data.avatar || null
+    imageUrl: data.imageUrl || null
   }
 }
 
@@ -77,7 +78,6 @@ const AuthProvider = ({ children }: Props) => {
           })
           .then(async response => {
             setLoading(false)
-            console.log(response)
             const user = cleanUserData(response.data)
             setUser(user)
           })

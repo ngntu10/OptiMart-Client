@@ -37,7 +37,7 @@ import { convertBase64, separationFullName, toFullName } from 'src/utils'
 import { resetInitialState } from 'src/stores/auth'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
-import { updateAuthMeAsync } from 'src/stores/auth/action'
+import { changeAvatarAsync, updateAuthMeAsync } from 'src/stores/auth/action'
 
 // ** component
 import FallbackSpinner from 'src/components/fall-back'
@@ -63,6 +63,7 @@ const MyProfilePage: NextPage<TProps> = () => {
   // State
   const [loading, setLoading] = useState(false)
   const [avatar, setAvatar] = useState('')
+  const [fileAvatar, setFileAvatar] = useState<File>()
   const [optionRoles, setOptionRoles] = useState<{ label: string; value: string }[]>([])
   const [isDisabledRole, setIsDisabledRole] = useState(false)
 
@@ -112,7 +113,7 @@ const MyProfilePage: NextPage<TProps> = () => {
     setLoading(true)
     await getAuthMe()
       .then(async response => {
-        setLoading(false)
+        setAvatar(response.imageUrl)
         const data = response
         if (data) {
           setIsDisabledRole(!data?.role?.permissions?.length)
@@ -125,6 +126,7 @@ const MyProfilePage: NextPage<TProps> = () => {
             fullName: toFullName(data?.lastName, data?.middleName, data?.firstName, i18n.language)
           })
         }
+        setLoading(false)
       })
       .catch(() => {
         setLoading(false)
@@ -179,22 +181,26 @@ const MyProfilePage: NextPage<TProps> = () => {
         // city: data.city
       })
     )
+    if (fileAvatar) {
+      handleChangeAvatar(fileAvatar)
+    }
   }
 
   // ###### Base-64
-  // const handleUploadAvatar = async (file: File) => {
-  //   const reader = new FileReader()
-  //   reader.onload = () => {
-  //     if (typeof reader.result === 'string') {
-  //       setAvatar(reader.result)
-  //     }
-  //   }
-  //   reader.readAsDataURL(file)
-  // }
+  const handleUploadAvatar = async (file: File) => {
+    setFileAvatar(file)
+    const reader = new FileReader()
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        setAvatar(reader.result)
+      }
+    }
+    reader.readAsDataURL(file)
+  }
 
   // ###### Cloudinary
-  const handleUploadAvatar = async (file: File) => {
-    
+  const handleChangeAvatar = async (file: File) => {
+    dispatch(changeAvatarAsync(file))
   }
 
   return (
