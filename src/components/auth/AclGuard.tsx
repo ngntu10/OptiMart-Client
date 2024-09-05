@@ -9,26 +9,32 @@ import NotAuthorized from 'src/pages/401'
 import { useAuth } from 'src/hooks/useAuth'
 import { useRouter } from 'next/router'
 import { AbilityContext } from 'src/components/acl/Can'
+import { PERMISSIONS } from 'src/configs/permission'
 
 interface AclGuardProps {
   children: ReactNode
   authGuard?: boolean
   guestGuard?: boolean
   aclAbilities: ACLObj
-} 
+  permission: string[]
+}
 
 const AclGuard = (props: AclGuardProps) => {
   // ** Props
-  const { aclAbilities, children, guestGuard = false, authGuard = true } = props
+  const { aclAbilities, children, guestGuard = false, authGuard = true, permission } = props
 
   const auth = useAuth()
-  const permissionUser = auth.user?.role?.permissions ?? []
+  const permissionUser = auth.user?.role?.permissions
+    ? auth.user?.role?.permissions?.includes(PERMISSIONS.BASIC)
+      ? [PERMISSIONS.DASHBOARD]
+      : auth.user?.role?.permissions
+    : []
   const router = useRouter()
 
   let ability: AppAbility
 
   if (auth.user && !ability) {
-    ability = buildAbilityFor(permissionUser, aclAbilities.subject)
+    ability = buildAbilityFor(permissionUser, permission)
   }
 
   // if guest guard or no guard is tru or any error page

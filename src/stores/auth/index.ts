@@ -29,6 +29,7 @@ const initialState = {
   messageUpdateMe: '',
   isSuccessChangePassword: true,
   isErrorChangePassword: false,
+  isSuccessChangeAvatar: false,
   messageChangePassword: ''
 }
 

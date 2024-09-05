@@ -8,9 +8,11 @@ export const ROUTE_CONFIG = {
   },
   MANAGE_PRODUCT: {
     PRODUCT: '/manage-product/products',
-    MANAGE_ORDER: '/manage-product/orders',
-    MANAGE_REVIEW: '/manage-product/reviews',
     MANAGE_TYPE_PRODUCT: '/manage-product/type-products'
+  },
+  MANAGE_ORDER: {
+    ORDER: '/manage-product/orders',
+    MANAGE_REVIEW: '/manage-product/reviews'
   },
   SETTINGS: {
     CITY: '/settings/city',

@@ -1,42 +1,37 @@
 // ** Next
 import { NextPage } from 'next'
-import { useRouter } from 'next/router'
-
 // ** React
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-
 // ** Mui
 import { Box, Button, Grid, useTheme } from '@mui/material'
+import { deleteRoleAsync, getAllRolesAsync, updateRoleAsync } from 'src/stores/role/action'
 import { GridColDef, GridRowClassNameParams, GridSortModel } from '@mui/x-data-grid'
-
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
 import { resetInitialState } from 'src/stores/role'
-
 // ** Components
 import GridDelete from 'src/components/grid-delete'
 import GridEdit from 'src/components/grid-edit'
 import GridCreate from 'src/components/grid-create'
 import InputSearch from 'src/components/input-search'
 import CustomDataGrid from 'src/components/custom-data-grid'
+import Spinner from 'src/components/spinner'
+import ConfirmationDialog from 'src/components/confirmation-dialog'
 import Icon from 'src/components/Icon'
-
 // ** Services
 import { getDetailsRole } from 'src/services/role'
-
 // ** Others
 import toast from 'react-hot-toast'
-import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
-import CreateEditRole from './Components/CreateEditRole'
-import { deleteRoleAsync, getAllRolesAsync, updateRoleAsync } from 'src/stores/role/action'
-import ConfirmationDialog from 'src/components/confirmation-dialog'
 import { OBJECT_TYPE_ERROR_ROLE } from 'src/configs/role'
 import { PERMISSIONS } from 'src/configs/permission'
 import { getAllValueOfObject } from 'src/utils'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
-import Spinner from 'src/components/spinner'
+
+// ** Hooks
+import { usePermission } from 'src/hooks/usePermission'
+import CreateEditRole from './Components/CreateEditRole'
 import TablePermission from './Components/TablePermission'
 
 type TProps = {}
@@ -61,6 +56,9 @@ const RoleListPage: NextPage<TProps> = () => {
   const [loading, setLoading] = useState(false)
   const [isDisablePermission, setIsDisabledPermission] = useState(false)
 
+  // ** Permission
+  const { VIEW, UPDATE, DELETE, CREATE } = usePermission('SYSTEM.ROLE', ['CREATE', 'VIEW', 'UPDATE', 'DELETE'])
+
   // ** Translate
   const { t } = useTranslation()
 
@@ -77,19 +75,15 @@ const RoleListPage: NextPage<TProps> = () => {
     messageErrorDelete,
     typeError
   } = useSelector((state: RootState) => state.role)
-
   // ** theme
   const theme = useTheme()
-
+  // fetch api
+  const handleGetListRoles = () => {
+    dispatch(getAllRolesAsync({ params: { limit: 25, page: 1, search: searchBy, order: sortBy } }))
+  }
   const handleUpdateRole = () => {
     dispatch(updateRoleAsync({ name: selectedRow.name, id: selectedRow.id, permissions: permissionSelected }))
   }
-
-  // fetch api
-  const handleGetListRoles = () => {
-    dispatch(getAllRolesAsync({ params: { limit: 20, page: 1, search: searchBy, order: sortBy } }))
-  }
-
   // handle
   const handleCloseConfirmDeleteRole = () => {
     setOpenDeleteRole({
@@ -97,19 +91,16 @@ const RoleListPage: NextPage<TProps> = () => {
       id: ''
     })
   }
-
   const handleSort = (sort: GridSortModel) => {
     const sortOption = sort[0]
     setSortBy(`${sortOption.field} ${sortOption.sort}`)
   }
-
   const handleCloseCreateEdit = () => {
     setOpenCreateEdit({
       open: false,
       id: ''
     })
   }
-
   const handleDeleteRole = () => {
     dispatch(deleteRoleAsync(openDeleteRole.id))
   }
@@ -128,7 +119,6 @@ const RoleListPage: NextPage<TProps> = () => {
       align: 'left',
       renderCell: params => {
         const { row } = params
-
         return (
           <Box sx={{ width: '100%' }}>
             {!row?.permissions?.some((per: string) => ['ADMIN.GRANTED', 'BASIC.PUBLIC']?.includes(per)) ? (
@@ -182,17 +172,15 @@ const RoleListPage: NextPage<TProps> = () => {
         setLoading(false)
       })
   }
-
+  useEffect(() => {
+    handleGetListRoles()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortBy, searchBy])
   useEffect(() => {
     if (selectedRow.id) {
       handleGetDetailsRole(selectedRow.id)
     }
   }, [selectedRow])
-
-  useEffect(() => {
-    handleGetListRoles()
-  }, [sortBy, searchBy])
-
   useEffect(() => {
     if (isSuccessCreateEdit) {
       if (!openCreateEdit.id) {
@@ -202,7 +190,6 @@ const RoleListPage: NextPage<TProps> = () => {
       }
       handleGetListRoles()
       handleCloseCreateEdit()
-      handleCloseConfirmDeleteRole()
       dispatch(resetInitialState())
     } else if (isErrorCreateEdit && messageErrorCreateEdit && typeError) {
       const errorConfig = OBJECT_TYPE_ERROR_ROLE[typeError]
@@ -210,7 +197,7 @@ const RoleListPage: NextPage<TProps> = () => {
         toast.error(t(errorConfig))
       } else {
         if (openCreateEdit.id) {
-          toast.error(t('Update-role-error'))
+          toast.error(t('Update_role_error'))
         } else {
           toast.error(t('Create_role_error'))
         }
@@ -219,19 +206,17 @@ const RoleListPage: NextPage<TProps> = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccessCreateEdit, isErrorCreateEdit, messageErrorCreateEdit, typeError])
-
   useEffect(() => {
     if (isSuccessDelete) {
       toast.success(t('Delete_role_success'))
       handleGetListRoles()
-      handleCloseConfirmDeleteRole()
       dispatch(resetInitialState())
+      handleCloseConfirmDeleteRole()
     } else if (isErrorDelete && messageErrorDelete) {
-      toast.error(t(messageErrorDelete))
+      toast.error(t('Delete_role_error'))
       dispatch(resetInitialState())
     }
   }, [isSuccessDelete, isErrorDelete, messageErrorDelete])
-
   return (
     <>
       {loading && <Spinner />}
@@ -244,7 +229,7 @@ const RoleListPage: NextPage<TProps> = () => {
         description={t('Confirm_delete_role')}
       />
       <CreateEditRole open={openCreateEdit.open} onClose={handleCloseCreateEdit} idRole={openCreateEdit.id} />
-      {/* {isLoading && <Spinner />} */}
+      {isLoading && <Spinner />}
       <Box
         sx={{
           backgroundColor: theme.palette.background.paper,
@@ -295,7 +280,7 @@ const RoleListPage: NextPage<TProps> = () => {
                   console.log('row', { row })
                   setSelectedRow({ id: String(row.id), name: row?.row?.name })
                   setOpenCreateEdit({
-                    open: false,
+                    open: true,
                     id: String(row.id)
                   })
                 }}
@@ -334,5 +319,4 @@ const RoleListPage: NextPage<TProps> = () => {
     </>
   )
 }
-
 export default RoleListPage

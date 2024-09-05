@@ -1,7 +1,5 @@
 // ** Next
 import { NextPage } from 'next'
-import Image from 'next/image'
-import Link from 'next/link'
 
 // ** React
 import { useEffect, useState } from 'react'
@@ -102,7 +100,6 @@ const MyProfilePage: NextPage<TProps> = () => {
     control,
     formState: { errors },
     reset,
-    watch
   } = useForm({
     defaultValues,
     mode: 'onBlur',
