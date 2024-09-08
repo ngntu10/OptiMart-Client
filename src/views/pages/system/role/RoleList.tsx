@@ -46,7 +46,7 @@ const RoleListPage: NextPage<TProps> = () => {
     open: false,
     id: ''
   })
-  const [sortBy, setSortBy] = useState('createdAt asc')
+  const [sortBy, setSortBy] = useState('createdAt-asc')
   const [searchBy, setSearchBy] = useState('')
   const [permissionSelected, setPermissionSelected] = useState<string[]>([])
   const [selectedRow, setSelectedRow] = useState({
