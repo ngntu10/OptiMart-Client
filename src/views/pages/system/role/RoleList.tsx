@@ -124,6 +124,7 @@ const RoleListPage: NextPage<TProps> = () => {
             {!row?.permissions?.some((per: string) => ['ADMIN.GRANTED', 'BASIC.PUBLIC']?.includes(per)) ? (
               <>
                 <GridEdit
+                  disabled={!UPDATE}
                   onClick={() =>
                     setOpenCreateEdit({
                       open: true,
@@ -132,6 +133,7 @@ const RoleListPage: NextPage<TProps> = () => {
                   }
                 />
                 <GridDelete
+                  disabled={!DELETE}
                   onClick={() =>
                     setOpenDeleteRole({
                       open: true,
@@ -242,11 +244,12 @@ const RoleListPage: NextPage<TProps> = () => {
       >
         <Grid container sx={{ height: '100%', width: '100%' }}>
           <Grid item md={4} xs={12}>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 4 }}>
               <Box sx={{ width: '200px' }}>
                 <InputSearch value={searchBy} onChange={(value: string) => setSearchBy(value)} />
               </Box>
               <GridCreate
+                disabled={!CREATE}
                 onClick={() => {
                   setOpenCreateEdit({
                     open: true,
@@ -277,7 +280,6 @@ const RoleListPage: NextPage<TProps> = () => {
                   return row.id === selectedRow.id ? 'row-selected' : ''
                 }}
                 onRowClick={row => {
-                  console.log('row', { row })
                   setSelectedRow({ id: String(row.id), name: row?.row?.name })
                   setOpenCreateEdit({
                     open: true,

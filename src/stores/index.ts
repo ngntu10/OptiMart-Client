@@ -3,8 +3,8 @@ import { configureStore } from '@reduxjs/toolkit'
 
 // ** Reducers
 import auth from 'src/stores/auth'
-import user from 'src/stores/apps/user'
 import role from './role'
+import user from './user'
 
 export const store = configureStore({
   reducer: {

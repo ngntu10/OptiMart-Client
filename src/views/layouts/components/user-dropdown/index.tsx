@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 // ** React
-import * as React from 'react'
+import React, { useEffect } from 'react'
 
 //** Next
 import { useRouter } from 'next/router'
@@ -24,6 +24,10 @@ import Icon from 'src/components/Icon'
 import { useAuth } from 'src/hooks/useAuth'
 import { useTranslation } from 'react-i18next'
 import { ROUTE_CONFIG } from 'src/configs/route'
+
+// ** Redux
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/stores'
 
 // ** Utils
 import { toFullName } from 'src/utils'
@@ -65,9 +69,11 @@ const UserDropDown = (props: TProps) => {
   const { t, i18n } = useTranslation()
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-  const { user, logout } = useAuth()
+  const { user, logout, setUser } = useAuth()
+
+  // ** Redux
+  const { userData } = useSelector((state: RootState) => state.auth)
   const permissionUser = user?.role?.permissions ?? []
-  console.log(user)
 
   const open = Boolean(anchorEl)
   const router = useRouter()
@@ -94,6 +100,12 @@ const UserDropDown = (props: TProps) => {
     router.push(ROUTE_CONFIG.DASHBOARD)
     handleClose()
   }
+
+  useEffect(() => {
+    if (userData) {
+      setUser({ ...userData })
+    }
+  }, [userData])
 
   return (
     <React.Fragment>

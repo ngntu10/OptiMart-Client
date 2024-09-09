@@ -99,7 +99,7 @@ const MyProfilePage: NextPage<TProps> = () => {
     handleSubmit,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
     defaultValues,
     mode: 'onBlur',
@@ -321,10 +321,10 @@ const MyProfilePage: NextPage<TProps> = () => {
                             value={value}
                             placeholder={t('Enter_your_role')}
                           />
-                          {!errors?.role?.message && (
+                          {errors?.role?.message && (
                             <FormHelperText
                               sx={{
-                                color: !errors?.role
+                                color: errors?.role
                                   ? theme.palette.error.main
                                   : `rgba(${theme.palette.customColors.main}, 0.42)`
                               }}
@@ -417,10 +417,10 @@ const MyProfilePage: NextPage<TProps> = () => {
                           value={value}
                           placeholder={t('Enter_your_city')}
                         />
-                        {!errors?.city?.message && (
+                        {errors?.city?.message && (
                           <FormHelperText
                             sx={{
-                              color: !errors?.city
+                              color: errors?.city
                                 ? theme.palette.error.main
                                 : `rgba(${theme.palette.customColors.main}, 0.42)`
                             }}
