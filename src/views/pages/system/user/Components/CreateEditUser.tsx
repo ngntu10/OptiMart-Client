@@ -169,7 +169,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
             fullName: toFullName(data?.lastName, data?.middleName, data?.firstName, i18n.language),
             password: data.password,
             phoneNumber: data.phoneNumber,
-            role: data?.role?._id,
+            role: data?.role?.id,
             email: data.email,
             city: data.city,
             address: data?.address,
@@ -190,7 +190,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
       .then(res => {
         const data = res?.data.roles
         if (data) {
-          setOptionRoles(data?.map((item: { name: string; _id: string }) => ({ label: item.name, value: item._id })))
+          setOptionRoles(data?.map((item: { name: string; id: string }) => ({ label: item.name, value: item.id })))
         }
         setLoading(false)
       })

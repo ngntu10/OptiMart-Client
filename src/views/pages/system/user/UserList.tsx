@@ -53,7 +53,7 @@ const UserListPage: NextPage<TProps> = () => {
     open: false,
     id: ''
   })
-  const [sortBy, setSortBy] = useState('createdAt asc')
+  const [sortBy, setSortBy] = useState('createdAt-asc')
   const [searchBy, setSearchBy] = useState('')
 
   const [loading, setLoading] = useState(false)
@@ -147,7 +147,7 @@ const UserListPage: NextPage<TProps> = () => {
       renderCell: params => {
         const { row } = params
 
-        return <Typography>{row.role}</Typography>
+        return <Typography>{row.role.name}</Typography>
       }
     },
     {
@@ -158,7 +158,7 @@ const UserListPage: NextPage<TProps> = () => {
       renderCell: params => {
         const { row } = params
 
-        return <Typography>{row.role}</Typography>
+        return <Typography>{row.phoneNumber}</Typography>
       }
     },
     {
@@ -220,7 +220,6 @@ const UserListPage: NextPage<TProps> = () => {
   }
 
   // fetch api
-
   useEffect(() => {
     handleGetListUsers()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -315,7 +314,7 @@ const UserListPage: NextPage<TProps> = () => {
             sortingOrder={['desc', 'asc']}
             sortingMode='server'
             onSortModelChange={handleSort}
-            getRowId={row => row._id}
+            getRowId={row => row.id}
             disableRowSelectionOnClick
             slots={{
               pagination: PaginationComponent
