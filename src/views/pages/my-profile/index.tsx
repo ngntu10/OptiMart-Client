@@ -80,7 +80,7 @@ const MyProfilePage: NextPage<TProps> = () => {
   const schema = yup.object().shape({
     email: yup.string().required(t('Required_field')).matches(EMAIL_REG, 'The field is must email type'),
     fullName: yup.string().notRequired(),
-    phoneNumber: yup.string().required(t('Required_field')).min(8, 'The phone number is min 8 number'),
+    phoneNumber: yup.string().required(t('Required_field')).min(9, 'The phone number is min 9 number'),
     role: isDisabledRole ? yup.string().notRequired() : yup.string().required(t('Required_field')),
     city: yup.string().notRequired(),
     address: yup.string().notRequired()
@@ -310,7 +310,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                                 : `rgba(${theme.palette.customColors.main}, 0.42)`
                             }}
                           >
-                            {t('Role')}
+                            {t('Role')} <span style={{ color: theme.palette.error.main }}>*</span>
                           </label>
                           <CustomSelect
                             fullWidth

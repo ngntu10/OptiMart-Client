@@ -16,7 +16,8 @@
   "Change_avatar": "Thay đổi ảnh đại diện",
   "Update": "Cập nhật",
   "Logout": "Đăng xuất",
-  
+  "Active_user": "Hoạt động",
+  "Locked_user": "Tạm khóa",
   "Change_password": "Thay đổi mật khẩu",
   "The_email_or_password_wrong": "Email hoặc mật khẩu không chính xác",
   "Login_success": "Đăng nhập thành công",
@@ -354,5 +355,5 @@
   "comments": "bình luận",
   "Product_details": "Chi tiết sản phẩm",
   "Invalid_file": "File không hợp lệ. Vui lòng kiểm tra lại định dạng",
-  "Logout_success" : "Đăng xuất thành công"
+  "Logout_success": "Đăng xuất thành công"
 }

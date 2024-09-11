@@ -43,7 +43,6 @@ type Props = {
 }
 
 const cleanUserData = (data: any): UserDataType => {
-  console.log(data)
   return {
     id: data.id,
     role: data.role,

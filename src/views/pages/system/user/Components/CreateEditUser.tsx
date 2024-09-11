@@ -12,13 +12,17 @@ import {
   Avatar,
   Box,
   Button,
+  FormControl,
   FormControlLabel,
   FormHelperText,
   Grid,
   IconButton,
   InputAdornment,
   InputLabel,
+  MenuItem,
+  Select,
   Switch,
+  Theme,
   Typography,
   useTheme
 } from '@mui/material'
@@ -38,11 +42,12 @@ import { getDetailsUser } from 'src/services/user'
 import { AppDispatch } from 'src/stores'
 import { createUserAsync, updateUserAsync } from 'src/stores/user/actions'
 import { useDispatch } from 'react-redux'
-import { getAllRoles } from 'src/services/role'
 
 // ** Others
 import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
 import { convertBase64, separationFullName, toFullName } from 'src/utils'
+import { SelectChangeEvent } from '@mui/material'
+import { OutlinedInput } from '@mui/material'
 
 interface TCreateEditUser {
   open: boolean
@@ -84,12 +89,20 @@ const CreateEditUser = (props: TCreateEditUser) => {
       ? yup.string().nonNullable()
       : yup.string().required(t('Required_field')).matches(PASSWORD_REG, t('Rules_password')),
     fullName: yup.string().required(t('Required_field')),
-    phoneNumber: yup.string().required(t('Required_field')).min(8, 'The phone number is min 8 number'),
+    phoneNumber: yup.string().required(t('Required_field')).min(9, 'The phone number is min 9 number'),
     role: yup.string().required(t('Required_field')),
     city: yup.string().nonNullable(),
     address: yup.string().nonNullable(),
     status: yup.number().nonNullable()
   })
+
+  // const handleChangeAction = (event: SelectChangeEvent<typeof any>) => {
+  //   const {
+  //     target: { value }
+  //   } = event
+  // }
+
+  const names = [t('Active_user'), t('Locked_user')]
 
   const defaultValues: TDefaultValue = {
     password: '',
@@ -131,7 +144,8 @@ const CreateEditUser = (props: TCreateEditUser) => {
             city: data.city,
             address: data?.address,
             avatar: avatar,
-            id: idUser
+            id: idUser,
+            status: data.status ? 1 : 0
           })
         )
       } else {
@@ -184,35 +198,18 @@ const CreateEditUser = (props: TCreateEditUser) => {
       })
   }
 
-  const fetchAllRoles = async () => {
-    setLoading(true)
-    await getAllRoles({ params: { limit: -1, page: -1 } })
-      .then(res => {
-        const data = res?.data.roles
-        if (data) {
-          setOptionRoles(data?.map((item: { name: string; id: string }) => ({ label: item.name, value: item.id })))
-        }
-        setLoading(false)
-      })
-      .catch(e => {
-        setLoading(false)
-      })
-  }
-
   useEffect(() => {
     if (!open) {
       reset({
         ...defaultValues
       })
+      setAvatar('')
+      setShowPassword(false)
     } else if (idUser && open) {
       fetchDetailsUser(idUser)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, idUser])
-
-  useEffect(() => {
-    fetchAllRoles()
-  }, [])
 
   return (
     <>
@@ -338,7 +335,16 @@ const CreateEditUser = (props: TCreateEditUser) => {
                                     : `rgba(${theme.palette.customColors.main}, 0.42)`
                                 }}
                               >
-                                {t('Role')}
+                                {t('Role')}{' '}
+                                <span
+                                  style={{
+                                    color: errors?.role
+                                      ? theme.palette.error.main
+                                      : `rgba(${theme.palette.customColors.main}, 0.42)`
+                                  }}
+                                >
+                                  *
+                                </span>
                               </label>
                               <CustomSelect
                                 fullWidth
@@ -409,18 +415,19 @@ const CreateEditUser = (props: TCreateEditUser) => {
                             control={control}
                             render={({ field: { onChange, onBlur, value } }) => {
                               return (
-                                <FormControlLabel
-                                  control={
-                                    <Switch
-                                      value={value}
-                                      checked={Boolean(value)}
-                                      onChange={e => {
-                                        onChange(e.target.checked ? 1 : 0)
-                                      }}
-                                    />
-                                  }
-                                  label={Boolean(value) ? t('Active') : t('Block')}
-                                />
+                                <FormControl fullWidth>
+                                  <InputLabel id='demo-simple-select-label'>Status</InputLabel>
+                                  <Select
+                                    labelId='demo-simple-select-label'
+                                    id='demo-simple-select'
+                                    defaultValue={1}
+                                    label='Status'
+                                    // onChange={handleChangeAction}
+                                  >
+                                    <MenuItem value={1}>{t('Active_user')}</MenuItem>
+                                    <MenuItem value={0}>{t('Locked_user')}</MenuItem>
+                                  </Select>
+                                </FormControl>
                               )
                             }}
                             name='status'
@@ -438,6 +445,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
                           control={control}
                           render={({ field: { onChange, onBlur, value } }) => (
                             <CustomTextField
+                              required
                               fullWidth
                               label={t('Full_name')}
                               onChange={onChange}

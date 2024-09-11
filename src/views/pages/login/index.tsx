@@ -164,10 +164,10 @@ const LoginPage: NextPage<Tprops> = () => {
                 sx={{ p: 3, mb: 6, ...bgColors.primaryLight, borderRadius: '10px', '& .MuiAlert-message': { p: 0 } }}
               >
                 <Typography variant='body2' sx={{ mb: 2, color: 'primary.main' }}>
-                  Admin: <strong>admin@gmail.com</strong> / Pass: <strong>admin</strong>
+                  Admin: <strong>admin@gmail.com</strong> / Pass: <strong>Admin@123</strong>
                 </Typography>
                 <Typography variant='body2' sx={{ color: 'primary.main' }}>
-                  Client: <strong>client@gmail.com</strong> / Pass: <strong>client</strong>
+                  Client: <strong>client@gmail.com</strong> / Pass: <strong>Client@123</strong>
                 </Typography>
               </Box>
               <Box sx={{ mt: 5, width: '370px', mb: 8 }}>
