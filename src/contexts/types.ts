@@ -15,7 +15,6 @@ export type UserDataType = {
   email: string
   fullName: string
   username: string
-  password: string
   imageUrl?: string | null
 }
 

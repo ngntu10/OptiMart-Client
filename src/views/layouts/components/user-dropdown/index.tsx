@@ -70,6 +70,7 @@ const UserDropDown = (props: TProps) => {
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const { user, logout, setUser } = useAuth()
+  console.log(user)
 
   // ** Redux
   const { userData } = useSelector((state: RootState) => state.auth)
@@ -103,7 +104,6 @@ const UserDropDown = (props: TProps) => {
 
   useEffect(() => {
     if (userData) {
-      console.log(userData);
       setUser({ ...userData })
     }
   }, [userData])
@@ -124,7 +124,7 @@ const UserDropDown = (props: TProps) => {
               <Avatar sx={{ width: 32, height: 32 }}>
                 {user?.imageUrl ? (
                   <Image
-                    src={user?.imageUrl || ''}
+                    src={user?.imageUrl}
                     alt='avatar'
                     width={0}
                     height={0}
@@ -179,7 +179,7 @@ const UserDropDown = (props: TProps) => {
           </Box>
         </Box>
         <Divider />
-        {permissionUser.length > 0 && (
+        {1 > 0 && (
           <MenuItem onClick={handleNavigateManageSystem}>
             <Avatar>
               <Icon icon='arcticons:phone-manager' />

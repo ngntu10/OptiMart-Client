@@ -48,6 +48,7 @@ import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
 import { convertBase64, separationFullName, toFullName } from 'src/utils'
 import { SelectChangeEvent } from '@mui/material'
 import { OutlinedInput } from '@mui/material'
+import { getAllRoles } from 'src/services/role'
 
 interface TCreateEditUser {
   open: boolean
@@ -64,6 +65,7 @@ type TDefaultValue = {
   address?: string
   status?: number
   city?: string
+  imageUrl?: string
 }
 
 const CreateEditUser = (props: TCreateEditUser) => {
@@ -72,6 +74,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
   const [avatar, setAvatar] = useState('')
   const [optionRoles, setOptionRoles] = useState<{ label: string; value: string }[]>([])
   const [showPassword, setShowPassword] = useState(false)
+  const [roleSelected, setRoleSelected] = useState('')
 
   // ** Props
   const { open, onClose, idUser } = props
@@ -112,7 +115,8 @@ const CreateEditUser = (props: TCreateEditUser) => {
     phoneNumber: '',
     address: '',
     status: 1,
-    city: ''
+    city: '',
+    imageUrl: ''
   }
 
   const {
@@ -130,7 +134,6 @@ const CreateEditUser = (props: TCreateEditUser) => {
   const onSubmit = (data: TDefaultValue) => {
     if (!Object.keys(errors).length) {
       const { firstName, lastName, middleName } = separationFullName(data.fullName, i18n.language)
-
       if (idUser) {
         // update
         dispatch(
@@ -143,7 +146,6 @@ const CreateEditUser = (props: TCreateEditUser) => {
             email: data.email,
             city: data.city,
             address: data?.address,
-            avatar: avatar,
             id: idUser,
             status: data.status ? 1 : 0
           })
@@ -159,14 +161,28 @@ const CreateEditUser = (props: TCreateEditUser) => {
             role: data?.role,
             email: data.email,
             city: data.city,
-            address: data?.address,
-            avatar: avatar
+            address: data?.address
           })
         )
       }
     }
   }
 
+  const fetchAllRoles = async () => {
+    setLoading(true)
+    console.log(1)
+    await getAllRoles({ params: { limit: 20, page: 1 } })
+      .then(res => {
+        const data = res?.data?.data?.roleList
+        if (data) {
+          setOptionRoles(data?.map((item: { name: string; id: string }) => ({ label: item.name, value: item.id })))
+        }
+        setLoading(false)
+      })
+      .catch(e => {
+        setLoading(false)
+      })
+  }
   const handleUploadAvatar = async (file: File) => {
     const base64 = await convertBase64(file)
     setAvatar(base64 as string)
@@ -174,6 +190,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
 
   // fetch
   const fetchDetailsUser = async (id: string) => {
+    fetchAllRoles()
     setLoading(true)
     await getDetailsUser(id)
       .then(res => {
@@ -189,7 +206,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
             address: data?.address,
             status: data?.status
           })
-          setAvatar(data?.avatar)
+          setAvatar(data?.imageUrl)
         }
         setLoading(false)
       })
@@ -252,22 +269,6 @@ const CreateEditUser = (props: TCreateEditUser) => {
                           }}
                         >
                           <Box sx={{ position: 'relative' }}>
-                            {avatar && (
-                              <IconButton
-                                sx={{
-                                  position: 'absolute',
-                                  bottom: -4,
-                                  right: -6,
-                                  zIndex: 2,
-                                  color: theme.palette.error.main
-                                }}
-                                edge='start'
-                                color='inherit'
-                                onClick={() => setAvatar('')}
-                              >
-                                <Icon icon='material-symbols-light:delete-outline' />
-                              </IconButton>
-                            )}
                             {avatar ? (
                               <Avatar src={avatar} sx={{ width: 100, height: 100 }}>
                                 <Icon icon='ph:user-thin' fontSize={70} />
@@ -278,21 +279,6 @@ const CreateEditUser = (props: TCreateEditUser) => {
                               </Avatar>
                             )}
                           </Box>
-                          <WrapperFileUpload
-                            uploadFunc={handleUploadAvatar}
-                            objectAcceptFile={{
-                              'image/jpeg': ['.jpg', '.jpeg'],
-                              'image/png': ['.png']
-                            }}
-                          >
-                            <Button
-                              variant='outlined'
-                              sx={{ width: 'auto', display: 'flex', alignItems: 'center', gap: 1 }}
-                            >
-                              <Icon icon='ph:camera-thin'></Icon>
-                              {avatar ? t('Change_avatar') : t('Upload_avatar')}
-                            </Button>
-                          </WrapperFileUpload>
                         </Box>
                       </Grid>
                       <Grid item md={6} xs={12}>
@@ -346,15 +332,17 @@ const CreateEditUser = (props: TCreateEditUser) => {
                                   *
                                 </span>
                               </label>
-                              <CustomSelect
-                                fullWidth
-                                onChange={onChange}
-                                options={optionRoles}
-                                error={Boolean(errors?.role)}
-                                onBlur={onBlur}
-                                value={value}
-                                placeholder={t('Enter_your_role')}
-                              />
+                              <Box sx={{ width: '200px' }}>
+                                <CustomSelect
+                                  fullWidth
+                                  onChange={e => {
+                                    setRoleSelected(String(e.target.value))
+                                  }}
+                                  options={optionRoles}
+                                  value={roleSelected}
+                                  placeholder={t('Role')}
+                                />
+                              </Box>
                               {errors?.role && (
                                 <FormHelperText
                                   sx={{

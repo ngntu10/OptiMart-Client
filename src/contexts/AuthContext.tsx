@@ -49,7 +49,6 @@ const cleanUserData = (data: any): UserDataType => {
     email: data.email,
     fullName: data.fullName,
     username: data.username,
-    password: data.password,
     imageUrl: data.imageUrl || null
   }
 }

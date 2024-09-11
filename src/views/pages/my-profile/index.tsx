@@ -112,8 +112,9 @@ const MyProfilePage: NextPage<TProps> = () => {
       .then(async response => {
         setAvatar(response.imageUrl)
         const data = response
+        console.log(data)
         if (data) {
-          setIsDisabledRole(!data?.role?.permissions?.length)
+          setIsDisabledRole(!data?.role?.permissions.length)
           reset({
             email: data.email,
             address: data.address,
@@ -165,6 +166,7 @@ const MyProfilePage: NextPage<TProps> = () => {
     }
   }, [isErrorUpdateMe, isSuccessUpdateMe, messageUpdateMe])
   const onSubmit = (data: any) => {
+    console.log(data)
     const { firstName, lastName, middleName } = separationFullName(data.fullName, i18n.language)
     dispatch(
       updateAuthMeAsync({
