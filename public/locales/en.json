@@ -83,8 +83,8 @@
   "Create_user": "Create User",
   "Active": "Active",
   "Block": "Blocked",
+  "Update_user_success" : "Update user successfully",
   "Create_user_success": "User created successfully",
-  "Create_user_error": "User creation failed",
   "Update_user_error": "User update failed",
   "Delete_user_success": "User deleted successfully",
   "Delete_user_error": "User deletion failed",
@@ -330,6 +330,5 @@
   "Product_details": "Details product",
   "Invalid_file": "Invalid file. Please check the format",
   "Logout_success": "Logout success",
-  "Create_user_error": "Create user failed",
-  "Update_user_error": "User update failed"
+  "Create_user_error": "Create user failed"
 }

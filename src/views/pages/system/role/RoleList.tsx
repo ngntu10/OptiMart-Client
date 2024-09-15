@@ -281,10 +281,10 @@ const RoleListPage: NextPage<TProps> = () => {
                 }}
                 onRowClick={row => {
                   setSelectedRow({ id: String(row.id), name: row?.row?.name })
-                  setOpenCreateEdit({
-                    open: true,
-                    id: String(row.id)
-                  })
+                  // setOpenCreateEdit({
+                  //   open: true,
+                  //   id: String(row.id)
+                  // })
                 }}
                 disableColumnFilter
                 disableColumnMenu

@@ -179,18 +179,12 @@ const CreateEditUser = (props: TCreateEditUser) => {
   }
 
   const handleChangeStatus = (event: any) => {
-    console.log(event.target.value)
     setStatus(event.target.value)
   }
 
   useEffect(() => {
     fetchAllRoles()
   }, [])
-
-  const handleUploadAvatar = async (file: File) => {
-    const base64 = await convertBase64(file)
-    setAvatar(base64 as string)
-  }
 
   // fetch
   const fetchDetailsUser = async (id: string) => {
@@ -210,6 +204,8 @@ const CreateEditUser = (props: TCreateEditUser) => {
             address: data?.address,
             status: data?.status
           })
+          console.log(data?.role?.name);
+          setRoleSelected(data?.role?.name)
           setAvatar(data?.imageUrl)
           setStatus(data?.status)
         }

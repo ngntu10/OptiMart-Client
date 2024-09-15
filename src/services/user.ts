@@ -37,7 +37,7 @@ export const deleteUser = async (id: string) => {
   try {
     const res = await instanceAxios.delete(`${API_ENDPOINT.USER.INDEX}/${id}`)
 
-    return res.data
+    return res
   } catch (error: any) {
     return error
   }

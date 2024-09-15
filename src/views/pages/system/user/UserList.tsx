@@ -371,7 +371,7 @@ const UserListPage: NextPage<TProps> = () => {
       dispatch(resetInitialState())
       handleCloseConfirmDeleteUser()
     } else if (isErrorDelete && messageErrorDelete) {
-      toast.error(t('Delete_user_error'))
+      toast.error(messageErrorDelete)
       dispatch(resetInitialState())
     }
   }, [isSuccessDelete, isErrorDelete, messageErrorDelete])
@@ -395,7 +395,12 @@ const UserListPage: NextPage<TProps> = () => {
         title={t('Title_delete_multiple_user')}
         description={t('Confirm_delete_multiple_user')}
       />
-      <CreateEditUser open={openCreateEdit.open} onClose={handleCloseCreateEdit} idUser={openCreateEdit.id} status ={1} />
+      <CreateEditUser
+        open={openCreateEdit.open}
+        onClose={handleCloseCreateEdit}
+        idUser={openCreateEdit.id}
+        status={1}
+      />
       {isLoading && <Spinner />}
       <Box
         sx={{
