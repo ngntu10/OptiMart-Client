@@ -329,5 +329,7 @@
   "comments": "comments",
   "Product_details": "Details product",
   "Invalid_file": "Invalid file. Please check the format",
-  "Logout_success": "Logout success"
+  "Logout_success": "Logout success",
+  "Create_user_error": "Create user failed",
+  "Update_user_error": "User update failed"
 }

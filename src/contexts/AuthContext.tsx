@@ -98,18 +98,25 @@ const AuthProvider = ({ children }: Props) => {
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
     loginAuth({ email: params.email, password: params.password })
       .then(async response => {
-        const user = cleanUserData(response.data.user)
-        if (params.rememberMe) {
-          setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
-        } else {
-          setTemporaryToken(response.data.access_token)
-        }
+        console.log(response)
+        if (response.data) {
+          const user = cleanUserData(response.data.user)
+          if (params.rememberMe) {
+            setLocalUserData(
+              JSON.stringify(response.data.user),
+              response.data.access_token,
+              response.data.refresh_token
+            )
+          } else {
+            setTemporaryToken(response.data.access_token)
+          }
 
-        toast.success(t('Login_success'))
-        const returnUrl = router.query.returnUrl
-        setUser(user)
-        const redirectURL = returnUrl && returnUrl != '/' ? returnUrl : '/'
-        router.replace(redirectURL as string)
+          toast.success(t('Login_success'))
+          const returnUrl = router.query.returnUrl
+          setUser(user)
+          const redirectURL = returnUrl && returnUrl != '/' ? returnUrl : '/'
+          router.replace(redirectURL as string)
+        } else toast.error(response.message)
       })
 
       .catch(err => {

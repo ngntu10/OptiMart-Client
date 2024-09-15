@@ -1,5 +1,5 @@
 /* eslint-disable newline-before-return */
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 
 // ** Config
 import { API_ENDPOINT } from 'src/configs/api'
@@ -9,8 +9,14 @@ import instanceAxios from 'src/helpers/axios'
 import { TLoginAuth, TRegisterAuth, TChangePassword } from 'src/types/auth'
 
 export const loginAuth = async (data: TLoginAuth) => {
-  const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/login`, data)
-  return res.data
+  try {
+    const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/login`, data)
+    console.log(res)
+    return res.data
+  } catch (error: any) {
+    console.log(error?.response?.data)
+    return error?.response?.data
+  }
 }
 
 export const registerAuth = async (data: TRegisterAuth) => {

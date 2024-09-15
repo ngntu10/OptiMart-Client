@@ -7,6 +7,8 @@
   "Full_name": "Họ và tên",
   "Address": "Địa chỉ",
   "City": "Thành phố",
+  "Update_user_error": "Cập nhật người dùng thất bại",
+  "Create_user_error": "Tạo người dùng thất bại",
   "Phone_number": "Số điện thoại",
   "Enter_your_city": "Chọn thành phố của bạn",
   "Enter_your_full_name": "Nhập họ và tên",

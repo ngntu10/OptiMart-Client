@@ -16,20 +16,20 @@ export const createUser = async (data: TParamsCreateUser) => {
   try {
     const res = await instanceAxios.post(`${API_ENDPOINT.USER.INDEX}`, data)
 
-    return res.data
+    return res
   } catch (error: any) {
-    return error?.response?.data
+    return error
   }
 }
 
 export const updateUser = async (data: TParamsEditUser) => {
   const { id, ...rests } = data
   try {
-    const res = await instanceAxios.put(`${API_ENDPOINT.USER.INDEX}/${id}`, rests)
+    const res = await instanceAxios.patch(`${API_ENDPOINT.USER.INDEX}/${id}`, rests)
 
-    return res.data
+    return res
   } catch (error: any) {
-    return error?.response?.data
+    return error
   }
 }
 
@@ -39,7 +39,7 @@ export const deleteUser = async (id: string) => {
 
     return res.data
   } catch (error: any) {
-    return error?.response?.data
+    return error
   }
 }
 

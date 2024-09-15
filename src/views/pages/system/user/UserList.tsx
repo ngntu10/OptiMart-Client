@@ -6,7 +6,7 @@ import { useEffect, useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** Mui
-import { Box, Chip, ChipProps, Grid, Typography, styled, useTheme } from '@mui/material'
+import { Box, Chip, ChipProps, Grid, MenuItem, MenuItemProps, Typography, styled, useTheme } from '@mui/material'
 import { GridColDef, GridRowSelectionModel, GridSortModel } from '@mui/x-data-grid'
 
 // ** Redux
@@ -47,7 +47,7 @@ type TProps = {}
 
 type TSelectedRow = { id: string; role: { name: string; permissions: string[] } }
 
-const ActiveUserStyled = styled(Chip)<ChipProps>(({ theme }) => ({
+export const ActiveUserStyled = styled(Chip)<ChipProps>(({ theme }) => ({
   backgroundColor: '#28c76f29',
   color: '#3a843f',
   fontSize: '14px',
@@ -55,7 +55,7 @@ const ActiveUserStyled = styled(Chip)<ChipProps>(({ theme }) => ({
   fontWeight: 400
 }))
 
-const DeactivateUserStyled = styled(Chip)<ChipProps>(({ theme }) => ({
+export const DeactivateUserStyled = styled(Chip)<ChipProps>(({ theme }) => ({
   backgroundColor: '#da251d29',
   color: '#da251d',
   fontSize: '14px',
@@ -63,6 +63,9 @@ const DeactivateUserStyled = styled(Chip)<ChipProps>(({ theme }) => ({
   fontWeight: 400
 }))
 
+export const MenuItemStyled = styled(MenuItem)<MenuItemProps>(({ theme }) => ({
+  backgroundColor: '#fff'
+}))
 const UserListPage: NextPage<TProps> = () => {
   // State
   const [openCreateEdit, setOpenCreateEdit] = useState({
@@ -292,7 +295,6 @@ const UserListPage: NextPage<TProps> = () => {
 
   const fetchAllRoles = async () => {
     setLoading(true)
-    console.log(1)
     await getAllRoles({ params: { limit: 20, page: 1 } })
       .then(res => {
         const data = res?.data?.data?.roleList
@@ -349,7 +351,7 @@ const UserListPage: NextPage<TProps> = () => {
       dispatch(resetInitialState())
     } else if (isErrorCreateEdit && messageErrorCreateEdit) {
       if (messageErrorCreateEdit) {
-        toast.error(t('none'))
+        toast.error(messageErrorCreateEdit)
       } else {
         if (openCreateEdit.id) {
           toast.error(t('Update_user_error'))
@@ -393,7 +395,7 @@ const UserListPage: NextPage<TProps> = () => {
         title={t('Title_delete_multiple_user')}
         description={t('Confirm_delete_multiple_user')}
       />
-      <CreateEditUser open={openCreateEdit.open} onClose={handleCloseCreateEdit} idUser={openCreateEdit.id} />
+      <CreateEditUser open={openCreateEdit.open} onClose={handleCloseCreateEdit} idUser={openCreateEdit.id} status ={1} />
       {isLoading && <Spinner />}
       <Box
         sx={{

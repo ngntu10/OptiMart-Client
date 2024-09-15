@@ -75,10 +75,9 @@ export const userSlice = createSlice({
     })
     builder.addCase(createUserAsync.fulfilled, (state, action) => {
       state.isLoading = false
-      state.isSuccessCreateEdit = !!action.payload?.data?.id
-      state.isErrorCreateEdit = !action.payload?.data?.id
-      state.messageErrorCreateEdit = action.payload?.message
-      state.typeError = action.payload?.typeError
+      state.isSuccessCreateEdit = !!action.payload?.data.data?.id
+      state.isErrorCreateEdit = !action.payload?.data?.data?.id
+      state.messageErrorCreateEdit = action.payload?.data.message
     })
 
     // ** update user
@@ -86,10 +85,11 @@ export const userSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(updateUserAsync.fulfilled, (state, action) => {
+      console.log(action)
       state.isLoading = false
-      state.isSuccessCreateEdit = !!action.payload?.data?.id
-      state.isErrorCreateEdit = !action.payload?.data?.id
-      state.messageErrorCreateEdit = action.payload?.message
+      state.isSuccessCreateEdit = !!action.payload?.data?.data.id
+      state.isErrorCreateEdit = !action.payload?.data?.data.id
+      state.messageErrorCreateEdit = action.payload?.data?.message
       state.typeError = action.payload?.typeError
     })
 
