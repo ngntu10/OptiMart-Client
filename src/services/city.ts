@@ -4,7 +4,7 @@ import { TParamsCreateCity, TParamsDeleteMultipleCity, TParamsEditCity, TParamsG
 
 export const getAllCities = async (data: { params: TParamsGetCities }) => {
   try {
-    const res = await instanceAxios.get(`${API_ENDPOINT.CITY.INDEX}`, data)
+    const res = await instanceAxios.get(`${API_ENDPOINT.SETTING.CITY.INDEX}`, data)
 
     return res.data
   } catch (error) {
@@ -14,7 +14,7 @@ export const getAllCities = async (data: { params: TParamsGetCities }) => {
 
 export const createCity = async (data: TParamsCreateCity) => {
   try {
-    const res = await instanceAxios.post(`${API_ENDPOINT.CITY.INDEX}`, data)
+    const res = await instanceAxios.post(`${API_ENDPOINT.SETTING.CITY.INDEX}`, data)
 
     return res.data
   } catch (error: any) {
@@ -25,7 +25,7 @@ export const createCity = async (data: TParamsCreateCity) => {
 export const updateCity = async (data: TParamsEditCity) => {
   const { id, ...rests } = data
   try {
-    const res = await instanceAxios.put(`${API_ENDPOINT.CITY.INDEX}/${id}`, rests)
+    const res = await instanceAxios.put(`${API_ENDPOINT.SETTING.CITY.INDEX}/${id}`, rests)
 
     return res.data
   } catch (error: any) {
@@ -35,7 +35,7 @@ export const updateCity = async (data: TParamsEditCity) => {
 
 export const deleteCity = async (id: string) => {
   try {
-    const res = await instanceAxios.delete(`${API_ENDPOINT.CITY.INDEX}/${id}`)
+    const res = await instanceAxios.delete(`${API_ENDPOINT.SETTING.CITY.INDEX}/${id}`)
 
     return res.data
   } catch (error: any) {
@@ -45,7 +45,7 @@ export const deleteCity = async (id: string) => {
 
 export const getDetailsCity = async (id: string) => {
   try {
-    const res = await instanceAxios.get(`${API_ENDPOINT.CITY.INDEX}/${id}`)
+    const res = await instanceAxios.get(`${API_ENDPOINT.SETTING.CITY.INDEX}/${id}`)
 
     return res.data
   } catch (error: any) {
@@ -55,7 +55,7 @@ export const getDetailsCity = async (id: string) => {
 
 export const deleteMultipleCity = async (data: TParamsDeleteMultipleCity) => {
   try {
-    const res = await instanceAxios.delete(`${API_ENDPOINT.CITY.INDEX}/delete-many`, { data })
+    const res = await instanceAxios.delete(`${API_ENDPOINT.SETTING.CITY.INDEX}/delete-many`, { data })
     if (res?.data?.status === 'Success') {
       return {
         data: []

@@ -17,30 +17,29 @@ import Spinner from 'src/components/spinner'
 import CustomTextField from 'src/components/text-field'
 
 // ** Services
-import { getDetailsCity } from 'src/services/city'
+import { getDetailsDeliveryType } from 'src/services/delivery-type'
 
 // ** Redux
 import { AppDispatch } from 'src/stores'
 import { useDispatch } from 'react-redux'
-import { getAllRoles } from 'src/services/role'
-import { createCityAsync, updateCityAsync } from 'src/stores/city/actions'
+import { createDeliveryTypeAsync, updateDeliveryTypeAsync } from 'src/stores/delivery-type/actions'
 
-interface TCreateEditCity {
+interface TCreateEditDeliveryType {
   open: boolean
   onClose: () => void
-  idCity?: string
+  idDeliveryType?: string
 }
 
 type TDefaultValue = {
   name: string
 }
 
-const CreateEditCity = (props: TCreateEditCity) => {
+const CreateEditDeliveryType = (props: TCreateEditDeliveryType) => {
   // State
   const [loading, setLoading] = useState(false)
 
   // ** Props
-  const { open, onClose, idCity } = props
+  const { open, onClose, idDeliveryType } = props
 
   // Hooks
   const theme = useTheme()
@@ -71,17 +70,17 @@ const CreateEditCity = (props: TCreateEditCity) => {
   // handle
   const onSubmit = (data: TDefaultValue) => {
     if (!Object.keys(errors).length) {
-      if (idCity) {
+      if (idDeliveryType) {
         // update
         dispatch(
-          updateCityAsync({
+          updateDeliveryTypeAsync({
             name: data.name,
-            id: idCity
+            id: idDeliveryType
           })
         )
       } else {
         dispatch(
-          createCityAsync({
+          createDeliveryTypeAsync({
             name: data.name
           })
         )
@@ -90,9 +89,9 @@ const CreateEditCity = (props: TCreateEditCity) => {
   }
 
   // fetch
-  const fetchDetailsCity = async (id: string) => {
+  const fetchDetailsDeliveryType = async (id: string) => {
     setLoading(true)
-    await getDetailsCity(id)
+    await getDetailsDeliveryType(id)
       .then(res => {
         const data = res.data
         if (data) {
@@ -112,11 +111,11 @@ const CreateEditCity = (props: TCreateEditCity) => {
       reset({
         ...defaultValues
       })
-    } else if (idCity && open) {
-      fetchDetailsCity(idCity)
+    } else if (idDeliveryType && open) {
+      fetchDetailsDeliveryType(idDeliveryType)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, idCity])
+  }, [open, idDeliveryType])
 
   return (
     <>
@@ -128,13 +127,13 @@ const CreateEditCity = (props: TCreateEditCity) => {
             borderRadius: '15px',
             backgroundColor: theme.palette.customColors.bodyBg
           }}
-          minWidth={{ md: '400px', xs: '80vw' }}
+          minWidth={{ md: '500px', xs: '80vw' }}
           maxWidth={{ md: '50vw', xs: '80vw' }}
         >
           <Box sx={{ display: 'flex', justifyContent: 'center', position: 'relative', paddingBottom: '20px' }}>
             <Typography variant='h4' sx={{ fontWeight: 600 }}>
               {' '}
-              {idCity ? t('Edit_city') : t('Create_city')}
+              {idDeliveryType ? t('Edit_delivery_type') : t('Create_delivery_type')}
             </Typography>
             <IconButton sx={{ position: 'absolute', top: '-4px', right: '-10px' }} onClick={onClose}>
               <Icon icon='material-symbols-light:close' fontSize={'30px'} />
@@ -150,11 +149,11 @@ const CreateEditCity = (props: TCreateEditCity) => {
                       <CustomTextField
                         required
                         fullWidth
-                        label={t('Name_city')}
+                        label={t('Name_delivery_type')}
                         onChange={onChange}
                         onBlur={onBlur}
                         value={value}
-                        placeholder={t('Enter_name_city')}
+                        placeholder={t('Enter_name_delivery_type')}
                         error={Boolean(errors?.name)}
                         helperText={errors?.name?.message}
                       />
@@ -166,7 +165,7 @@ const CreateEditCity = (props: TCreateEditCity) => {
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
               <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2 }}>
-                {!idCity ? t('Create') : t('Update')}
+                {!idDeliveryType ? t('Create') : t('Update')}
               </Button>
             </Box>
           </form>
@@ -176,4 +175,4 @@ const CreateEditCity = (props: TCreateEditCity) => {
   )
 }
 
-export default CreateEditCity
+export default CreateEditDeliveryType
