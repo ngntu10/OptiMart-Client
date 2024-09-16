@@ -13,11 +13,11 @@ import { GridColDef, GridRowSelectionModel, GridSortModel } from '@mui/x-data-gr
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
 import {
-  deleteDeliveryTypeAsync,
-  deleteMultipleDeliveryTypeAsync,
-  getAllDeliveryTypesAsync
-} from 'src/stores/delivery-type/actions'
-import { resetInitialState } from 'src/stores/delivery-type'
+  deletePaymentTypeAsync,
+  deleteMultiplePaymentTypeAsync,
+  getAllPaymentTypesAsync
+} from 'src/stores/payment-type/actions'
+import { resetInitialState } from 'src/stores/payment-type'
 
 // ** Components
 import GridDelete from 'src/components/grid-delete'
@@ -43,15 +43,17 @@ import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 
 // ** Utils
 import { formatDate } from 'src/utils'
-import CreateEditDeliveryType from './Components/CreateEditDeliveryType'
+import { PAYMENT_TYPES } from 'src/configs/payment'
+import CreateEditPaymentType from './Components/CreateEditPaymentType'
 
 type TProps = {}
 
-const DeliveryTypeListPage: NextPage<TProps> = () => {
+const PaymentTypeListPage: NextPage<TProps> = () => {
   // ** Translate
   const { t } = useTranslation()
 
   // State
+  const ObjectPaymentType: any = PAYMENT_TYPES()
 
   const [openCreateEdit, setOpenCreateEdit] = useState({
     open: false,
@@ -61,7 +63,7 @@ const DeliveryTypeListPage: NextPage<TProps> = () => {
     open: false,
     id: ''
   })
-  const [openDeleteMultipleDelivery, setOpenDeleteMultipleDelivery] = useState(false)
+  const [openDeleteMultiplePayment, setOpenDeleteMultiplePayment] = useState(false)
   const [sortBy, setSortBy] = useState('createdAt desc')
   const [searchBy, setSearchBy] = useState('')
 
@@ -71,17 +73,12 @@ const DeliveryTypeListPage: NextPage<TProps> = () => {
   const [selectedRow, setSelectedRow] = useState<string[]>([])
 
   // ** Hooks
-  const { VIEW, UPDATE, DELETE, CREATE } = usePermission('SETTING.DELIVERY_TYPE', [
-    'CREATE',
-    'VIEW',
-    'UPDATE',
-    'DELETE'
-  ])
+  const { VIEW, UPDATE, DELETE, CREATE } = usePermission('SETTING.payment_TYPE', ['CREATE', 'VIEW', 'UPDATE', 'DELETE'])
 
   /// ** redux
   const dispatch: AppDispatch = useDispatch()
   const {
-    deliveryTypes,
+    paymentTypes,
     isSuccessCreateEdit,
     isErrorCreateEdit,
     isLoading,
@@ -93,15 +90,15 @@ const DeliveryTypeListPage: NextPage<TProps> = () => {
     isSuccessMultipleDelete,
     isErrorMultipleDelete,
     messageErrorMultipleDelete
-  } = useSelector((state: RootState) => state.deliveryType)
+  } = useSelector((state: RootState) => state.paymentType)
 
   // ** theme
   const theme = useTheme()
 
   // fetch api
-  const handleGetListDeliveryTypes = () => {
+  const handleGetListPaymentTypes = () => {
     const query = { params: { limit: pageSize, page: page, search: searchBy, order: sortBy } }
-    dispatch(getAllDeliveryTypesAsync(query))
+    dispatch(getAllPaymentTypesAsync(query))
   }
 
   // handle
@@ -113,7 +110,7 @@ const DeliveryTypeListPage: NextPage<TProps> = () => {
   }
 
   const handleCloseConfirmDeleteMultipleCity = () => {
-    setOpenDeleteMultipleDelivery(false)
+    setOpenDeleteMultiplePayment(false)
   }
 
   const handleSort = (sort: GridSortModel) => {
@@ -133,13 +130,13 @@ const DeliveryTypeListPage: NextPage<TProps> = () => {
   }
 
   const handleDeleteCity = () => {
-    dispatch(deleteDeliveryTypeAsync(openDeleteCity.id))
+    dispatch(deletePaymentTypeAsync(openDeleteCity.id))
   }
 
   const handleDeleteMultipleCity = () => {
     dispatch(
-      deleteMultipleDeliveryTypeAsync({
-        deliveryTypeIds: selectedRow
+      deleteMultiplePaymentTypeAsync({
+        paymentTypeIds: selectedRow
       })
     )
   }
@@ -147,7 +144,7 @@ const DeliveryTypeListPage: NextPage<TProps> = () => {
   const handleAction = (action: string) => {
     switch (action) {
       case 'delete': {
-        setOpenDeleteMultipleDelivery(true)
+        setOpenDeleteMultiplePayment(true)
         break
       }
     }
@@ -171,14 +168,14 @@ const DeliveryTypeListPage: NextPage<TProps> = () => {
       }
     },
     {
-      field: 'price',
-      headerName: t('Price'),
-      minWidth: 200,
-      maxWidth: 200,
+      field: 'type',
+      headerName: t('Type'),
+      minWidth: 220,
+      maxWidth: 220,
       renderCell: params => {
         const { row } = params
 
-        return <Typography>{row?.price}</Typography>
+        return <Typography>{ObjectPaymentType?.[row.type]?.label}</Typography>
       }
     },
     {
@@ -233,24 +230,24 @@ const DeliveryTypeListPage: NextPage<TProps> = () => {
         pageSizeOptions={PAGE_SIZE_OPTION}
         pageSize={pageSize}
         page={page}
-        rowLength={deliveryTypes.total}
+        rowLength={paymentTypes.total}
       />
     )
   }
 
   useEffect(() => {
-    handleGetListDeliveryTypes()
+    handleGetListPaymentTypes()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy, searchBy, page, pageSize])
 
   useEffect(() => {
     if (isSuccessCreateEdit) {
       if (!openCreateEdit.id) {
-        toast.success(t('Create_delivery_type_success'))
+        toast.success(t('Create_payment_type_success'))
       } else {
-        toast.success(t('Update_delivery_type_success'))
+        toast.success(t('Update_payment_type_success'))
       }
-      handleGetListDeliveryTypes()
+      handleGetListPaymentTypes()
       handleCloseCreateEdit()
       dispatch(resetInitialState())
     } else if (isErrorCreateEdit && messageErrorCreateEdit && typeError) {
@@ -259,9 +256,9 @@ const DeliveryTypeListPage: NextPage<TProps> = () => {
         toast.error(t(errorConfig))
       } else {
         if (openCreateEdit.id) {
-          toast.error(t('Update_delivery_type_error'))
+          toast.error(t('Update_payment_type_error'))
         } else {
-          toast.error(t('Create_delivery_type_error'))
+          toast.error(t('Create_payment_type_error'))
         }
       }
       dispatch(resetInitialState())
@@ -271,25 +268,25 @@ const DeliveryTypeListPage: NextPage<TProps> = () => {
 
   useEffect(() => {
     if (isSuccessMultipleDelete) {
-      toast.success(t('Delete_multiple_delivery_type_success'))
-      handleGetListDeliveryTypes()
+      toast.success(t('Delete_multiple_payment_type_success'))
+      handleGetListPaymentTypes()
       dispatch(resetInitialState())
       handleCloseConfirmDeleteMultipleCity()
       setSelectedRow([])
     } else if (isErrorMultipleDelete && messageErrorMultipleDelete) {
-      toast.error(t('Delete_multiple_delivery_type_error'))
+      toast.error(t('Delete_multiple_payment_type_error'))
       dispatch(resetInitialState())
     }
   }, [isSuccessMultipleDelete, isErrorMultipleDelete, messageErrorMultipleDelete])
 
   useEffect(() => {
     if (isSuccessDelete) {
-      toast.success(t('Delete_delivery_type_success'))
-      handleGetListDeliveryTypes()
+      toast.success(t('Delete_payment_type_success'))
+      handleGetListPaymentTypes()
       dispatch(resetInitialState())
       handleCloseConfirmDeleteCity()
     } else if (isErrorDelete && messageErrorDelete) {
-      toast.error(t('Delete_delivery_type_error'))
+      toast.error(t('Delete_payment_type_error'))
       dispatch(resetInitialState())
     }
   }, [isSuccessDelete, isErrorDelete, messageErrorDelete])
@@ -302,21 +299,21 @@ const DeliveryTypeListPage: NextPage<TProps> = () => {
         handleClose={handleCloseConfirmDeleteCity}
         handleCancel={handleCloseConfirmDeleteCity}
         handleConfirm={handleDeleteCity}
-        title={t('Title_delete_delivery_type')}
-        description={t('Confirm_delete_delivery_type')}
+        title={t('Title_delete_payment_type')}
+        description={t('Confirm_delete_payment_type')}
       />
       <ConfirmationDialog
-        open={openDeleteMultipleDelivery}
+        open={openDeleteMultiplePayment}
         handleClose={handleCloseConfirmDeleteMultipleCity}
         handleCancel={handleCloseConfirmDeleteMultipleCity}
         handleConfirm={handleDeleteMultipleCity}
-        title={t('Title_delete_multiple_delivery_type')}
-        description={t('Confirm_delete_multiple_delivery_type')}
+        title={t('Title_delete_multiple_payment_type')}
+        description={t('Confirm_delete_multiple_payment_type')}
       />
-      <CreateEditDeliveryType
+      <CreateEditPaymentType
         open={openCreateEdit.open}
         onClose={handleCloseCreateEdit}
-        idDeliveryType={openCreateEdit.id}
+        idPaymentType={openCreateEdit.id}
       />
       {isLoading && <Spinner />}
       <Box
@@ -357,7 +354,7 @@ const DeliveryTypeListPage: NextPage<TProps> = () => {
             />
           )}
           <CustomDataGrid
-            rows={deliveryTypes.data}
+            rows={paymentTypes.data}
             columns={columns}
             autoHeight
             sx={{
@@ -388,4 +385,4 @@ const DeliveryTypeListPage: NextPage<TProps> = () => {
   )
 }
 
-export default DeliveryTypeListPage
+export default PaymentTypeListPage

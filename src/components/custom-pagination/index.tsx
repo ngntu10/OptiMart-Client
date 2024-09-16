@@ -29,16 +29,20 @@ const CustomPagination = React.forwardRef((props: TProps, ref: Ref<any>) => {
     <Box
       sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', paddingLeft: '8px' }}
     >
-      <Box>
-        <span>{t('Đang hiển thị')} </span>
-        <span style={{ fontWeight: 'bold' }}>
-          {page === 1 ? page : 1 + pageSize}
-          {' - '}
-        </span>
-        <span style={{ fontWeight: 'bold' }}>{page * pageSize} </span>
-        <span>{t('trên')} </span>
-        <span style={{ fontWeight: 'bold' }}>{rowLength}</span>
-      </Box>
+      {rowLength > 0 ? (
+        <Box>
+          <span>{t('Đang hiển thị')} </span>
+          <span style={{ fontWeight: 'bold' }}>
+            {page === 1 ? page : 1 + pageSize}
+            {' - '}
+          </span>
+          <span style={{ fontWeight: 'bold' }}>{page * pageSize} </span>
+          <span>{t('trên')} </span>
+          <span style={{ fontWeight: 'bold' }}>{rowLength}</span>
+        </Box>
+      ) : (
+        <Box></Box>
+      )}
       <Box sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
         <Box sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
           <span>{t('Số dòng hiển thị')}</span>
