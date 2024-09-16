@@ -97,7 +97,6 @@ export const userSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(deleteUserAsync.fulfilled, (state, action) => {
-      console.log(action)
       state.isLoading = false
       state.isSuccessDelete = !!action.payload?.data?.data
       state.isErrorDelete = !action.payload?.data?.data
@@ -110,10 +109,11 @@ export const userSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(deleteMultipleUserAsync.fulfilled, (state, action) => {
+      console.log(action)
       state.isLoading = false
-      state.isSuccessMultipleDelete = !!action.payload?.data
-      state.isErrorMultipleDelete = !action.payload?.data
-      state.messageErrorMultipleDelete = action.payload?.message
+      state.isSuccessMultipleDelete = !!action.payload?.data.data
+      state.isErrorMultipleDelete = !action.payload?.data.data
+      state.messageErrorMultipleDelete = action.payload?.data.message
       state.typeError = action.payload?.typeError
     })
   }

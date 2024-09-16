@@ -56,15 +56,7 @@ export const getDetailsUser = async (id: string) => {
 export const deleteMultipleUser = async (data: TParamsDeleteMultipleUser) => {
   try {
     const res = await instanceAxios.delete(`${API_ENDPOINT.USER.INDEX}/delete-many`, { data })
-    if (res?.data?.status === 'Success') {
-      return {
-        data: []
-      }
-    }
-
-    return {
-      data: null
-    }
+    return res
   } catch (error: any) {
     return error?.response?.data
   }

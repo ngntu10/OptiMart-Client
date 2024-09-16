@@ -5,12 +5,14 @@ import { configureStore } from '@reduxjs/toolkit'
 import auth from 'src/stores/auth'
 import role from './role'
 import user from './user'
+import city from 'src/stores/city'
 
 export const store = configureStore({
   reducer: {
     user,
     auth,
     role,
+    city
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
