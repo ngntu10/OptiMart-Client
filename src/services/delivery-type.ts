@@ -30,9 +30,9 @@ export const createDeliveryType = async (data: TParamsCreateDeliveryType) => {
 export const updateDeliveryType = async (data: TParamsEditDeliveryType) => {
   const { id, ...rests } = data
   try {
-    const res = await instanceAxios.put(`${API_ENDPOINT.SETTING.DELIVERY_TYPE.INDEX}/${id}`, rests)
+    const res = await instanceAxios.patch(`${API_ENDPOINT.SETTING.DELIVERY_TYPE.INDEX}/${id}`, rests)
 
-    return res.data
+    return res
   } catch (error: any) {
     return error?.response?.data
   }
@@ -42,7 +42,7 @@ export const deleteDeliveryType = async (id: string) => {
   try {
     const res = await instanceAxios.delete(`${API_ENDPOINT.SETTING.DELIVERY_TYPE.INDEX}/${id}`)
 
-    return res.data
+    return res
   } catch (error: any) {
     return error?.response?.data
   }
@@ -52,7 +52,7 @@ export const getDetailsDeliveryType = async (id: string) => {
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.SETTING.DELIVERY_TYPE.INDEX}/${id}`)
 
-    return res.data
+    return res
   } catch (error: any) {
     return error?.response?.data
   }
@@ -61,15 +61,7 @@ export const getDetailsDeliveryType = async (id: string) => {
 export const deleteMultipleDeliveryType = async (data: TParamsDeleteMultipleDeliveryType) => {
   try {
     const res = await instanceAxios.delete(`${API_ENDPOINT.SETTING.DELIVERY_TYPE.INDEX}/delete-many`, { data })
-    if (res?.data?.status === 'Success') {
-      return {
-        data: []
-      }
-    }
-
-    return {
-      data: null
-    }
+    return res
   } catch (error: any) {
     return error?.response?.data
   }

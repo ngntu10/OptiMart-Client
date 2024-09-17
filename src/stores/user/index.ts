@@ -109,7 +109,6 @@ export const userSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(deleteMultipleUserAsync.fulfilled, (state, action) => {
-      console.log(action)
       state.isLoading = false
       state.isSuccessMultipleDelete = !!action.payload?.data.data
       state.isErrorMultipleDelete = !action.payload?.data.data

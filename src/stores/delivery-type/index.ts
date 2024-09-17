@@ -59,8 +59,9 @@ export const deliveryTypeSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(getAllDeliveryTypesAsync.fulfilled, (state, action) => {
+      console.log(action)
       state.isLoading = false
-      state.deliveryTypes.data = action.payload?.data?.deliveryTypes || []
+      state.deliveryTypes.data = action.payload?.data || []
       state.deliveryTypes.total = action.payload?.data?.totalCount
     })
     builder.addCase(getAllDeliveryTypesAsync.rejected, (state, action) => {
@@ -74,9 +75,10 @@ export const deliveryTypeSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(createDeliveryTypeAsync.fulfilled, (state, action) => {
+      console.log(action)
       state.isLoading = false
-      state.isSuccessCreateEdit = !!action.payload?.data?._id
-      state.isErrorCreateEdit = !action.payload?.data?._id
+      state.isSuccessCreateEdit = !!action.payload?.data?.id
+      state.isErrorCreateEdit = !action.payload?.data?.id
       state.messageErrorCreateEdit = action.payload?.message
       state.typeError = action.payload?.typeError
     })
@@ -86,10 +88,11 @@ export const deliveryTypeSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(updateDeliveryTypeAsync.fulfilled, (state, action) => {
+      console.log(action)
       state.isLoading = false
-      state.isSuccessCreateEdit = !!action.payload?.data?._id
-      state.isErrorCreateEdit = !action.payload?.data?._id
-      state.messageErrorCreateEdit = action.payload?.message
+      state.isSuccessCreateEdit = !!action.payload?.data?.data.id
+      state.isErrorCreateEdit = !action.payload?.data?.data.id
+      state.messageErrorCreateEdit = action.payload?.data.message
       state.typeError = action.payload?.typeError
     })
 
@@ -99,9 +102,9 @@ export const deliveryTypeSlice = createSlice({
     })
     builder.addCase(deleteDeliveryTypeAsync.fulfilled, (state, action) => {
       state.isLoading = false
-      state.isSuccessDelete = !!action.payload?.data?._id
-      state.isErrorDelete = !action.payload?.data?._id
-      state.messageErrorDelete = action.payload?.message
+      state.isSuccessDelete = !!action.payload?.data?.data
+      state.isErrorDelete = !action.payload?.data?.data
+      state.messageErrorDelete = action.payload?.data?.message
       state.typeError = action.payload?.typeError
     })
 
@@ -111,9 +114,9 @@ export const deliveryTypeSlice = createSlice({
     })
     builder.addCase(deleteMultipleDeliveryTypeAsync.fulfilled, (state, action) => {
       state.isLoading = false
-      state.isSuccessMultipleDelete = !!action.payload?.data
-      state.isErrorMultipleDelete = !action.payload?.data
-      state.messageErrorMultipleDelete = action.payload?.message
+      state.isSuccessMultipleDelete = !!action.payload?.data.data
+      state.isErrorMultipleDelete = !action.payload?.data.data
+      state.messageErrorMultipleDelete = action.payload?.data.message
       state.typeError = action.payload?.typeError
     })
   }

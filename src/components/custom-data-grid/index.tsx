@@ -17,7 +17,7 @@ const StyleCustomGrid = styled(DataGrid)<DataGridProps>(({ theme }) => ({
 
 const CustomDataGrid = React.forwardRef((props: DataGridProps, ref: Ref<any>) => {
   return (
-    <Box sx={{ height: '100%', width: '100%', overflow: 'auto' }}>
+    <Box sx={{ height: '100%', width: '99%', overflow: 'auto' }}>
       <StyleCustomGrid {...props} />
     </Box>
   )

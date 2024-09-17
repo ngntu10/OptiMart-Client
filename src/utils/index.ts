@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next'
+
 export const toFullName = (lastName: string, middleName: string, firstName: string, language: string) => {
   if (language === 'vi') {
     return `${lastName ? lastName : ''} ${middleName ? middleName : ''} ${firstName ? firstName : ''}`.trim()
@@ -70,10 +72,14 @@ export const getAllValueOfObject = (obj: any, arrExlude?: string[]) => {
 }
 
 export const formatDate = (
-  value: Date | string,
+  value: number[],
   formatting: Intl.DateTimeFormatOptions = { month: 'numeric', day: 'numeric', year: 'numeric' }
 ) => {
+  const { i18n } = useTranslation()
+  const currentLanguage = i18n.language
   if (!value) return value
 
-  return Intl.DateTimeFormat('vi-VN', formatting).format(new Date(value))
+  const date = new Date(value[0], value[1] - 1, value[2])
+
+  return Intl.DateTimeFormat(currentLanguage, formatting).format(date)
 }

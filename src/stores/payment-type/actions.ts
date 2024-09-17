@@ -11,11 +11,11 @@ import {
 
 // ** Types
 import {
-    TParamsCreatePaymentType,
-    TParamsDeleteMultiplePaymentType,
-    TParamsEditPaymentType,
-    TParamsGetPaymentTypes
-  } from 'src/types/payment-type'
+  TParamsCreatePaymentType,
+  TParamsDeleteMultiplePaymentType,
+  TParamsEditPaymentType,
+  TParamsGetPaymentTypes
+} from 'src/types/payment-type'
 
 export const serviceName = 'payment-type'
 
@@ -31,6 +31,7 @@ export const getAllPaymentTypesAsync = createAsyncThunk(
 export const createPaymentTypeAsync = createAsyncThunk(
   `${serviceName}/create`,
   async (data: TParamsCreatePaymentType) => {
+    console.log(data)
     const response = await createPaymentType(data)
 
     return response

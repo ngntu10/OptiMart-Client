@@ -30,9 +30,10 @@ export const createPaymentType = async (data: TParamsCreatePaymentType) => {
 export const updatePaymentType = async (data: TParamsEditPaymentType) => {
   const { id, ...rests } = data
   try {
+    console.log(data);
     const res = await instanceAxios.put(`${API_ENDPOINT.SETTING.PAYMENT_TYPE.INDEX}/${id}`, rests)
 
-    return res.data
+    return res
   } catch (error: any) {
     return error?.response?.data
   }
@@ -42,7 +43,7 @@ export const deletePaymentType = async (id: string) => {
   try {
     const res = await instanceAxios.delete(`${API_ENDPOINT.SETTING.PAYMENT_TYPE.INDEX}/${id}`)
 
-    return res.data
+    return res
   } catch (error: any) {
     return error?.response?.data
   }
@@ -52,7 +53,7 @@ export const getDetailsPaymentType = async (id: string) => {
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.SETTING.PAYMENT_TYPE.INDEX}/${id}`)
 
-    return res.data
+    return res
   } catch (error: any) {
     return error?.response?.data
   }
@@ -61,15 +62,7 @@ export const getDetailsPaymentType = async (id: string) => {
 export const deleteMultiplePaymentType = async (data: TParamsDeleteMultiplePaymentType) => {
   try {
     const res = await instanceAxios.delete(`${API_ENDPOINT.SETTING.PAYMENT_TYPE.INDEX}/delete-many`, { data })
-    if (res?.data?.status === 'Success') {
-      return {
-        data: []
-      }
-    }
-
-    return {
-      data: null
-    }
+    return res
   } catch (error: any) {
     return error?.response?.data
   }
