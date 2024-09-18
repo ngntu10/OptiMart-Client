@@ -37,6 +37,7 @@ import CustomSelect from 'src/components/custom-select'
 
 // ** Services
 import { getDetailsUser } from 'src/services/user'
+import { getAllCities } from 'src/services/city'
 
 // ** Redux
 import { AppDispatch } from 'src/stores'
@@ -76,6 +77,9 @@ const CreateEditUser = (props: TCreateEditUser) => {
   const [showPassword, setShowPassword] = useState(false)
   const [roleSelected, setRoleSelected] = useState('')
   const [status, setStatus] = useState()
+  const [citySelected, setCitySelected] = useState('')
+  const [optionCities, setOptionCities] = useState<{ label: string; value: string }[]>([])
+
   // ** Props
   const { open, onClose, idUser } = props
 
@@ -127,6 +131,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
 
   // handle
   const onSubmit = (data: TDefaultValue) => {
+    console.log(data)
     if (!Object.keys(errors).length) {
       const { firstName, lastName, middleName } = separationFullName(data.fullName, i18n.language)
       if (idUser) {
@@ -169,7 +174,22 @@ const CreateEditUser = (props: TCreateEditUser) => {
       .then(res => {
         const data = res?.data?.data?.roleList
         if (data) {
-          setOptionRoles(data?.map((item: { name: string; id: string }) => ({ label: item.name, value: item.id })))
+          setOptionRoles(data?.map((item: { name: string; id: string }) => ({ label: item.name, value: item.name })))
+        }
+        setLoading(false)
+      })
+      .catch(e => {
+        setLoading(false)
+      })
+  }
+
+  const fetchAllCities = async () => {
+    setLoading(true)
+    await getAllCities({ params: { limit: -1, page: -1 } })
+      .then(res => {
+        const data = res?.data
+        if (data) {
+          setOptionCities(data?.map((item: { name: string; id: string }) => ({ label: item.name, value: item.name })))
         }
         setLoading(false)
       })
@@ -183,6 +203,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
   }
 
   useEffect(() => {
+    fetchAllCities()
     fetchAllRoles()
   }, [])
 
@@ -204,7 +225,8 @@ const CreateEditUser = (props: TCreateEditUser) => {
             address: data?.address,
             status: data?.status
           })
-          console.log(data?.role?.name);
+          console.log(data.city)
+          setCitySelected(data.city.name)
           setRoleSelected(data?.role?.name)
           setAvatar(data?.imageUrl)
           setStatus(data?.status)
@@ -490,12 +512,21 @@ const CreateEditUser = (props: TCreateEditUser) => {
                               </InputLabel>
                               <CustomSelect
                                 fullWidth
-                                onChange={onChange}
-                                options={[]}
+                                onChange={e => {
+                                  setCitySelected(String(e.target.value))
+                                  setValue('city', String(e.target.value))
+                                }}
+                                options={optionCities}
                                 error={Boolean(errors?.city)}
-                                onBlur={onBlur}
-                                value={value}
+                                value={citySelected}
                                 placeholder={t('Enter_your_city')}
+                                MenuProps={{
+                                  PaperProps: {
+                                    style: {
+                                      maxHeight: 180
+                                    }
+                                  }
+                                }}
                               />
                               {errors?.city?.message && (
                                 <FormHelperText
@@ -505,7 +536,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
                                       : `rgba(${theme.palette.customColors.main}, 0.42)`
                                   }}
                                 >
-                                  {errors?.city?.message}
+                                  {/* {errors?.city?.message} */}
                                 </FormHelperText>
                               )}
                             </Box>

@@ -32,7 +32,7 @@ const initialState = {
   }
 }
 
-export const paymentType = createSlice({
+export const paymentTypeSlice = createSlice({
   name: serviceName,
   initialState,
   reducers: {
@@ -122,5 +122,5 @@ export const paymentType = createSlice({
   }
 })
 
-export const { resetInitialState } = paymentType.actions
-export default paymentType.reducer
+export const { resetInitialState } = paymentTypeSlice.actions
+export default paymentTypeSlice.reducer

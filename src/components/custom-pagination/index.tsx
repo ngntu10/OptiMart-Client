@@ -36,7 +36,7 @@ const CustomPagination = React.forwardRef((props: TProps, ref: Ref<any>) => {
             {page === 1 ? page : 1 + pageSize}
             {' - '}
           </span>
-          <span style={{ fontWeight: 'bold' }}>{page * pageSize} </span>
+          <span style={{ fontWeight: 'bold' }}>{page * pageSize < rowLength ? page * pageSize : rowLength} </span>
           <span>{t('trên')} </span>
           <span style={{ fontWeight: 'bold' }}>{rowLength}</span>
         </Box>
