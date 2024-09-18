@@ -60,7 +60,7 @@ export const citySlice = createSlice({
     })
     builder.addCase(getAllCitiesAsync.fulfilled, (state, action) => {
       state.isLoading = false
-      state.cities.data = action.payload?.data?.cities || []
+      state.cities.data = action.payload?.data || []
       state.cities.total = action.payload?.data?.totalCount
     })
     builder.addCase(getAllCitiesAsync.rejected, (state, action) => {
@@ -75,8 +75,8 @@ export const citySlice = createSlice({
     })
     builder.addCase(createCityAsync.fulfilled, (state, action) => {
       state.isLoading = false
-      state.isSuccessCreateEdit = !!action.payload?.data?._id
-      state.isErrorCreateEdit = !action.payload?.data?._id
+      state.isSuccessCreateEdit = !!action.payload?.data?.id
+      state.isErrorCreateEdit = !action.payload?.data?.id
       state.messageErrorCreateEdit = action.payload?.message
       state.typeError = action.payload?.typeError
     })
@@ -87,9 +87,9 @@ export const citySlice = createSlice({
     })
     builder.addCase(updateCityAsync.fulfilled, (state, action) => {
       state.isLoading = false
-      state.isSuccessCreateEdit = !!action.payload?.data?._id
-      state.isErrorCreateEdit = !action.payload?.data?._id
-      state.messageErrorCreateEdit = action.payload?.message
+      state.isSuccessCreateEdit = !!action.payload?.data?.data.id
+      state.isErrorCreateEdit = !action.payload?.data?.data.id
+      state.messageErrorCreateEdit = action.payload?.data?.message
       state.typeError = action.payload?.typeError
     })
 
@@ -99,9 +99,9 @@ export const citySlice = createSlice({
     })
     builder.addCase(deleteCityAsync.fulfilled, (state, action) => {
       state.isLoading = false
-      state.isSuccessDelete = !!action.payload?.data?._id
-      state.isErrorDelete = !action.payload?.data?._id
-      state.messageErrorDelete = action.payload?.message
+      state.isSuccessDelete = !!action.payload?.data?.data
+      state.isErrorDelete = !action.payload?.data?.data
+      state.messageErrorDelete = action.payload?.data?.message
       state.typeError = action.payload?.typeError
     })
 
@@ -111,9 +111,9 @@ export const citySlice = createSlice({
     })
     builder.addCase(deleteMultipleCityAsync.fulfilled, (state, action) => {
       state.isLoading = false
-      state.isSuccessMultipleDelete = !!action.payload?.data
-      state.isErrorMultipleDelete = !action.payload?.data
-      state.messageErrorMultipleDelete = action.payload?.message
+      state.isSuccessMultipleDelete = !!action.payload?.data?.data
+      state.isErrorMultipleDelete = !action.payload?.data?.data
+      state.messageErrorMultipleDelete = action.payload?.data?.message
       state.typeError = action.payload?.typeError
     })
   }

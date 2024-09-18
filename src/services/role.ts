@@ -14,7 +14,7 @@ export const createRole = async (data: TParamsCreateRole) => {
 
 export const updateRole = async (data: TParamsEditRole) => {
   const { id, ...rests } = data
-  const res = await instanceAxios.patch(`${API_ENDPOINT.SYSTEM.ROLE.INDEX}/${id}`, rests)
+  const res = await instanceAxios.put(`${API_ENDPOINT.SYSTEM.ROLE.INDEX}/${id}`, rests)
   return res
 }
 

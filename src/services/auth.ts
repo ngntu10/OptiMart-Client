@@ -31,7 +31,7 @@ export const registerAuth = async (data: TRegisterAuth) => {
 export const updateAuthMe = async (data: any) => {
   console.log(data)
   try {
-    const res = await instanceAxios.patch(`${API_ENDPOINT.AUTH.INDEX}/update-info`, data)
+    const res = await instanceAxios.put(`${API_ENDPOINT.AUTH.INDEX}/update-info`, data)
     return res
   } catch (error) {
     return error
@@ -61,7 +61,7 @@ export const changeAvatar = async (file: File) => {
     const formData = new FormData()
     console.log(file)
     formData.append('file', file)
-    const res = await instanceAxios.post(`${API_ENDPOINT.AUTH.CHANGE_AVATAR}`, formData, {
+    const res = await instanceAxios.post(`${API_ENDPOINT.AUTH.INDEX}/avatar`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }

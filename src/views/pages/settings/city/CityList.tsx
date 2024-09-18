@@ -169,7 +169,7 @@ const CityListPage: NextPage<TProps> = () => {
       renderCell: params => {
         const { row } = params
 
-        return <Typography>{formatDate(row?.createdAt, { dateStyle: 'short' })}</Typography>
+        return <Typography>{formatDate(row?.createdAt, { dateStyle: 'medium' })}</Typography>
       }
     },
     {
@@ -346,7 +346,7 @@ const CityListPage: NextPage<TProps> = () => {
             sortingOrder={['desc', 'asc']}
             sortingMode='server'
             onSortModelChange={handleSort}
-            getRowId={row => row._id}
+            getRowId={row => row.id}
             disableRowSelectionOnClick
             slots={{
               pagination: PaginationComponent

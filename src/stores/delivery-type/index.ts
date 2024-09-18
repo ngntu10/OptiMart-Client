@@ -59,7 +59,6 @@ export const deliveryTypeSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(getAllDeliveryTypesAsync.fulfilled, (state, action) => {
-      console.log(action)
       state.isLoading = false
       state.deliveryTypes.data = action.payload?.data || []
       state.deliveryTypes.total = action.payload?.data?.totalCount
@@ -75,7 +74,6 @@ export const deliveryTypeSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(createDeliveryTypeAsync.fulfilled, (state, action) => {
-      console.log(action)
       state.isLoading = false
       state.isSuccessCreateEdit = !!action.payload?.data?.id
       state.isErrorCreateEdit = !action.payload?.data?.id
@@ -88,11 +86,10 @@ export const deliveryTypeSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(updateDeliveryTypeAsync.fulfilled, (state, action) => {
-      console.log(action)
       state.isLoading = false
       state.isSuccessCreateEdit = !!action.payload?.data?.data.id
       state.isErrorCreateEdit = !action.payload?.data?.data.id
-      state.messageErrorCreateEdit = action.payload?.data.message
+      state.messageErrorCreateEdit = action.payload?.data?.message
       state.typeError = action.payload?.typeError
     })
 

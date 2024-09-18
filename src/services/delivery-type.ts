@@ -30,7 +30,7 @@ export const createDeliveryType = async (data: TParamsCreateDeliveryType) => {
 export const updateDeliveryType = async (data: TParamsEditDeliveryType) => {
   const { id, ...rests } = data
   try {
-    const res = await instanceAxios.patch(`${API_ENDPOINT.SETTING.DELIVERY_TYPE.INDEX}/${id}`, rests)
+    const res = await instanceAxios.put(`${API_ENDPOINT.SETTING.DELIVERY_TYPE.INDEX}/${id}`, rests)
 
     return res
   } catch (error: any) {

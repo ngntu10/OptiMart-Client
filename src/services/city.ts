@@ -27,7 +27,7 @@ export const updateCity = async (data: TParamsEditCity) => {
   try {
     const res = await instanceAxios.put(`${API_ENDPOINT.SETTING.CITY.INDEX}/${id}`, rests)
 
-    return res.data
+    return res
   } catch (error: any) {
     return error?.response?.data
   }
@@ -37,7 +37,7 @@ export const deleteCity = async (id: string) => {
   try {
     const res = await instanceAxios.delete(`${API_ENDPOINT.SETTING.CITY.INDEX}/${id}`)
 
-    return res.data
+    return res
   } catch (error: any) {
     return error?.response?.data
   }
@@ -47,7 +47,7 @@ export const getDetailsCity = async (id: string) => {
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.SETTING.CITY.INDEX}/${id}`)
 
-    return res.data
+    return res
   } catch (error: any) {
     return error?.response?.data
   }
@@ -56,15 +56,7 @@ export const getDetailsCity = async (id: string) => {
 export const deleteMultipleCity = async (data: TParamsDeleteMultipleCity) => {
   try {
     const res = await instanceAxios.delete(`${API_ENDPOINT.SETTING.CITY.INDEX}/delete-many`, { data })
-    if (res?.data?.status === 'Success') {
-      return {
-        data: []
-      }
-    }
-
-    return {
-      data: null
-    }
+    return res
   } catch (error: any) {
     return error?.response?.data
   }
