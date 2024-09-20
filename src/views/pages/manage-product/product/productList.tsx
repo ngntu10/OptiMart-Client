@@ -1,24 +1,16 @@
 // ** Next
 import { NextPage } from 'next'
-
 // ** React
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-
 // ** Mui
 import { Box, Grid, Typography, useTheme } from '@mui/material'
 import { GridColDef, GridRowSelectionModel, GridSortModel } from '@mui/x-data-grid'
-
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
-import { resetInitialState } from 'src/stores/product-type'
-import {
-  deleteMultipleProductTypeAsync,
-  deleteProductTypeAsync,
-  getAllProductTypesAsync
-} from 'src/stores/product-type/actions'
-
+import { resetInitialState } from 'src/stores/product'
+import { deleteMultipleProductAsync, deleteProductAsync, getAllProductsAsync } from 'src/stores/product/actions'
 // ** Components
 import GridDelete from 'src/components/grid-delete'
 import GridEdit from 'src/components/grid-edit'
@@ -29,58 +21,47 @@ import Spinner from 'src/components/spinner'
 import ConfirmationDialog from 'src/components/confirmation-dialog'
 import CustomPagination from 'src/components/custom-pagination'
 import TableHeader from 'src/components/table-header'
-
 // ** Others
 import toast from 'react-hot-toast'
+import { OBJECT_TYPE_ERROR_PRODUCT } from 'src/configs/error'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
-
 // ** Hooks
 import { usePermission } from 'src/hooks/usePermission'
-
 // ** Config
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
-
 // ** Utils
 import { formatDate } from 'src/utils'
-import CreateEditProductType from '../Components/CreateEditProductType'
-
+import CreateEditProduct from './Components/CreateEditProduct'
 type TProps = {}
-
-const ProductTypeListPage: NextPage<TProps> = () => {
+const ProductListPage: NextPage<TProps> = () => {
   // ** Translate
   const { t } = useTranslation()
-
   // State
-
   const [openCreateEdit, setOpenCreateEdit] = useState({
     open: false,
     id: ''
   })
-  const [openDeleteProductType, setOpenDeleteProductType] = useState({
+  const [openDeleteProduct, setOpenDeleteProduct] = useState({
     open: false,
     id: ''
   })
   const [openDeleteMultipleProduct, setOpenDeleteMultipleProduct] = useState(false)
   const [sortBy, setSortBy] = useState('createdAt desc')
   const [searchBy, setSearchBy] = useState('')
-
-  const [loading, setLoading] = useState(false)
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
   const [page, setPage] = useState(1)
   const [selectedRow, setSelectedRow] = useState<string[]>([])
-
   // ** Hooks
-  const { VIEW, UPDATE, DELETE, CREATE } = usePermission('MANAGE_PRODUCT.PRODUCT_TYPE', [
+  const { VIEW, UPDATE, DELETE, CREATE } = usePermission('MANAGE_PRODUCT.PRODUCT', [
     'CREATE',
     'VIEW',
     'UPDATE',
     'DELETE'
   ])
-
   /// ** redux
   const dispatch: AppDispatch = useDispatch()
   const {
-    productTypes,
+    products,
     isSuccessCreateEdit,
     isErrorCreateEdit,
     isLoading,
@@ -92,29 +73,24 @@ const ProductTypeListPage: NextPage<TProps> = () => {
     isSuccessMultipleDelete,
     isErrorMultipleDelete,
     messageErrorMultipleDelete
-  } = useSelector((state: RootState) => state.productType)
-
+  } = useSelector((state: RootState) => state.product)
   // ** theme
   const theme = useTheme()
-
   // fetch api
-  const handleGetListProductTypes = () => {
+  const handleGetListProducts = () => {
     const query = { params: { limit: pageSize, page: page, search: searchBy, order: sortBy } }
-    dispatch(getAllProductTypesAsync(query))
+    dispatch(getAllProductsAsync(query))
   }
-
   // handle
-  const handleCloseConfirmDeleteProductType = () => {
-    setOpenDeleteProductType({
+  const handleCloseConfirmDeleteProduct = () => {
+    setOpenDeleteProduct({
       open: false,
       id: ''
     })
   }
-
   const handleCloseConfirmDeleteMultipleProductType = () => {
     setOpenDeleteMultipleProduct(false)
   }
-
   const handleSort = (sort: GridSortModel) => {
     const sortOption = sort[0]
     if (sortOption) {
@@ -123,26 +99,22 @@ const ProductTypeListPage: NextPage<TProps> = () => {
       setSortBy('createdAt desc')
     }
   }
-
   const handleCloseCreateEdit = () => {
     setOpenCreateEdit({
       open: false,
       id: ''
     })
   }
-
-  const handleDeleteProductType = () => {
-    dispatch(deleteProductTypeAsync(openDeleteProductType.id))
+  const handleDeleteProduct = () => {
+    dispatch(deleteProductAsync(openDeleteProduct.id))
   }
-
-  const handleDeleteMultipleProductType = () => {
+  const handleDeleteMultipleProduct = () => {
     dispatch(
-      deleteMultipleProductTypeAsync({
-        productTypeIds: selectedRow
+      deleteMultipleProductAsync({
+        productIds: selectedRow
       })
     )
   }
-
   const handleAction = (action: string) => {
     switch (action) {
       case 'delete': {
@@ -151,12 +123,10 @@ const ProductTypeListPage: NextPage<TProps> = () => {
       }
     }
   }
-
   const handleOnchangePagination = (page: number, pageSize: number) => {
     setPage(page)
     setPageSize(pageSize)
   }
-
   const columns: GridColDef[] = [
     {
       field: 'name',
@@ -165,7 +135,6 @@ const ProductTypeListPage: NextPage<TProps> = () => {
       minWidth: 200,
       renderCell: params => {
         const { row } = params
-
         return <Typography>{row?.name}</Typography>
       }
     },
@@ -176,7 +145,6 @@ const ProductTypeListPage: NextPage<TProps> = () => {
       maxWidth: 200,
       renderCell: params => {
         const { row } = params
-
         return <Typography>{row?.slug}</Typography>
       }
     },
@@ -187,7 +155,6 @@ const ProductTypeListPage: NextPage<TProps> = () => {
       maxWidth: 180,
       renderCell: params => {
         const { row } = params
-
         return <Typography>{formatDate(row?.createdAt, { dateStyle: 'short' })}</Typography>
       }
     },
@@ -199,7 +166,6 @@ const ProductTypeListPage: NextPage<TProps> = () => {
       align: 'left',
       renderCell: params => {
         const { row } = params
-
         return (
           <>
             <GridEdit
@@ -214,7 +180,7 @@ const ProductTypeListPage: NextPage<TProps> = () => {
             <GridDelete
               disabled={!DELETE}
               onClick={() =>
-                setOpenDeleteProductType({
+                setOpenDeleteProduct({
                   open: true,
                   id: String(params.id)
                 })
@@ -232,88 +198,81 @@ const ProductTypeListPage: NextPage<TProps> = () => {
         pageSizeOptions={PAGE_SIZE_OPTION}
         pageSize={pageSize}
         page={page}
-        rowLength={productTypes.total}
+        rowLength={products.total}
       />
     )
   }
-
   useEffect(() => {
-    handleGetListProductTypes()
+    handleGetListProducts()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy, searchBy, page, pageSize])
-
   useEffect(() => {
     if (isSuccessCreateEdit) {
       if (!openCreateEdit.id) {
-        toast.success(t('Create_product_type_success'))
+        toast.success(t('Create_product_success'))
       } else {
-        toast.success(t('Update_product_type_success'))
+        toast.success(t('Update_product_success'))
       }
-      handleGetListProductTypes()
+      handleGetListProducts()
       handleCloseCreateEdit()
       dispatch(resetInitialState())
     } else if (isErrorCreateEdit && messageErrorCreateEdit && typeError) {
-      {
+      const errorConfig = OBJECT_TYPE_ERROR_PRODUCT[typeError]
+      if (errorConfig) {
+        toast.error(t(errorConfig))
+      } else {
         if (openCreateEdit.id) {
-          toast.error(t('Update_product_type_error'))
+          toast.error(t('Update_product_error'))
         } else {
-          toast.error(t('Create_product_type_error'))
+          toast.error(t('Create_product_error'))
         }
       }
       dispatch(resetInitialState())
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccessCreateEdit, isErrorCreateEdit, messageErrorCreateEdit, typeError])
-
   useEffect(() => {
     if (isSuccessMultipleDelete) {
-      toast.success(t('Delete_multiple_product_type_success'))
-      handleGetListProductTypes()
+      toast.success(t('Delete_multiple_product_success'))
+      handleGetListProducts()
       dispatch(resetInitialState())
       handleCloseConfirmDeleteMultipleProductType()
       setSelectedRow([])
     } else if (isErrorMultipleDelete && messageErrorMultipleDelete) {
-      toast.error(t('Delete_multiple_product_type_error'))
+      toast.error(t('Delete_multiple_product_error'))
       dispatch(resetInitialState())
     }
   }, [isSuccessMultipleDelete, isErrorMultipleDelete, messageErrorMultipleDelete])
-
   useEffect(() => {
     if (isSuccessDelete) {
-      toast.success(t('Delete_product_type_success'))
-      handleGetListProductTypes()
+      toast.success(t('Delete_product_success'))
+      handleGetListProducts()
       dispatch(resetInitialState())
-      handleCloseConfirmDeleteProductType()
+      handleCloseConfirmDeleteProduct()
     } else if (isErrorDelete && messageErrorDelete) {
-      toast.error(t('Delete_product_type_error'))
+      toast.error(t('Delete_product_error'))
       dispatch(resetInitialState())
     }
   }, [isSuccessDelete, isErrorDelete, messageErrorDelete])
-
   return (
     <>
-      {loading && <Spinner />}
       <ConfirmationDialog
-        open={openDeleteProductType.open}
-        handleClose={handleCloseConfirmDeleteProductType}
-        handleCancel={handleCloseConfirmDeleteProductType}
-        handleConfirm={handleDeleteProductType}
-        title={t('Title_delete_product_type')}
-        description={t('Confirm_delete_product_type')}
+        open={openDeleteProduct.open}
+        handleClose={handleCloseConfirmDeleteProduct}
+        handleCancel={handleCloseConfirmDeleteProduct}
+        handleConfirm={handleDeleteProduct}
+        title={t('Title_delete_product')}
+        description={t('Confirm_delete_product')}
       />
       <ConfirmationDialog
         open={openDeleteMultipleProduct}
         handleClose={handleCloseConfirmDeleteMultipleProductType}
         handleCancel={handleCloseConfirmDeleteMultipleProductType}
-        handleConfirm={handleDeleteMultipleProductType}
-        title={t('Title_delete_multiple_product_type')}
-        description={t('Confirm_delete_multiple_product_type')}
+        handleConfirm={handleDeleteMultipleProduct}
+        title={t('Title_delete_multiple_product')}
+        description={t('Confirm_delete_multiple_product')}
       />
-      <CreateEditProductType
-        open={openCreateEdit.open}
-        onClose={handleCloseCreateEdit}
-        idProductType={openCreateEdit.id}
-      />
+      <CreateEditProduct open={openCreateEdit.open} onClose={handleCloseCreateEdit} idProduct={openCreateEdit.id} />
       {isLoading && <Spinner />}
       <Box
         sx={{
@@ -353,7 +312,7 @@ const ProductTypeListPage: NextPage<TProps> = () => {
             />
           )}
           <CustomDataGrid
-            rows={productTypes.data}
+            rows={products.data}
             columns={columns}
             autoHeight
             sx={{
@@ -383,5 +342,4 @@ const ProductTypeListPage: NextPage<TProps> = () => {
     </>
   )
 }
-
-export default ProductTypeListPage
+export default ProductListPage

@@ -32,7 +32,7 @@ import TableHeader from 'src/components/table-header'
 
 // ** Others
 import toast from 'react-hot-toast'
-import { OBJECT_TYPE_ERROR_ROLE } from 'src/configs/role'
+import { OBJECT_TYPE_ERROR_DELIVERY } from 'src/configs/error'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 // ** Hooks
@@ -57,7 +57,7 @@ const DeliveryTypeListPage: NextPage<TProps> = () => {
     open: false,
     id: ''
   })
-  const [openDeleteCity, setOpenDeleteCity] = useState({
+  const [openDeleteDeliveryType, setOpenDeleteDeliveryType] = useState({
     open: false,
     id: ''
   })
@@ -105,14 +105,14 @@ const DeliveryTypeListPage: NextPage<TProps> = () => {
   }
 
   // handle
-  const handleCloseConfirmDeleteCity = () => {
-    setOpenDeleteCity({
+  const handleCloseConfirmDeleteDelivery = () => {
+    setOpenDeleteDeliveryType({
       open: false,
       id: ''
     })
   }
 
-  const handleCloseConfirmDeleteMultipleCity = () => {
+  const handleCloseConfirmDeleteMultipleDelivery = () => {
     setOpenDeleteMultipleDelivery(false)
   }
 
@@ -132,11 +132,11 @@ const DeliveryTypeListPage: NextPage<TProps> = () => {
     })
   }
 
-  const handleDeleteCity = () => {
-    dispatch(deleteDeliveryTypeAsync(openDeleteCity.id))
+  const handleDeleteDeliveryType = () => {
+    dispatch(deleteDeliveryTypeAsync(openDeleteDeliveryType.id))
   }
 
-  const handleDeleteMultipleCity = () => {
+  const handleDeleteMultipleDelivery = () => {
     dispatch(
       deleteMultipleDeliveryTypeAsync({
         deliveryTypeIds: selectedRow
@@ -215,7 +215,7 @@ const DeliveryTypeListPage: NextPage<TProps> = () => {
             <GridDelete
               disabled={!DELETE}
               onClick={() =>
-                setOpenDeleteCity({
+                setOpenDeleteDeliveryType({
                   open: true,
                   id: String(params.id)
                 })
@@ -254,7 +254,7 @@ const DeliveryTypeListPage: NextPage<TProps> = () => {
       handleCloseCreateEdit()
       dispatch(resetInitialState())
     } else if (isErrorCreateEdit && messageErrorCreateEdit && typeError) {
-      const errorConfig = OBJECT_TYPE_ERROR_ROLE[typeError]
+      const errorConfig = OBJECT_TYPE_ERROR_DELIVERY[typeError]
       if (errorConfig) {
         toast.error(t(errorConfig))
       } else {
@@ -274,7 +274,7 @@ const DeliveryTypeListPage: NextPage<TProps> = () => {
       toast.success(t('Delete_multiple_delivery_type_success'))
       handleGetListDeliveryTypes()
       dispatch(resetInitialState())
-      handleCloseConfirmDeleteMultipleCity()
+      handleCloseConfirmDeleteMultipleDelivery()
       setSelectedRow([])
     } else if (isErrorMultipleDelete && messageErrorMultipleDelete) {
       toast.error(t('Delete_multiple_delivery_type_error'))
@@ -287,7 +287,7 @@ const DeliveryTypeListPage: NextPage<TProps> = () => {
       toast.success(t('Delete_delivery_type_success'))
       handleGetListDeliveryTypes()
       dispatch(resetInitialState())
-      handleCloseConfirmDeleteCity()
+      handleCloseConfirmDeleteDelivery()
     } else if (isErrorDelete && messageErrorDelete) {
       toast.error(t('Delete_delivery_type_error'))
       dispatch(resetInitialState())
@@ -298,18 +298,18 @@ const DeliveryTypeListPage: NextPage<TProps> = () => {
     <>
       {loading && <Spinner />}
       <ConfirmationDialog
-        open={openDeleteCity.open}
-        handleClose={handleCloseConfirmDeleteCity}
-        handleCancel={handleCloseConfirmDeleteCity}
-        handleConfirm={handleDeleteCity}
+        open={openDeleteDeliveryType.open}
+        handleClose={handleCloseConfirmDeleteDelivery}
+        handleCancel={handleCloseConfirmDeleteDelivery}
+        handleConfirm={handleDeleteDeliveryType}
         title={t('Title_delete_delivery_type')}
         description={t('Confirm_delete_delivery_type')}
       />
       <ConfirmationDialog
         open={openDeleteMultipleDelivery}
-        handleClose={handleCloseConfirmDeleteMultipleCity}
-        handleCancel={handleCloseConfirmDeleteMultipleCity}
-        handleConfirm={handleDeleteMultipleCity}
+        handleClose={handleCloseConfirmDeleteMultipleDelivery}
+        handleCancel={handleCloseConfirmDeleteMultipleDelivery}
+        handleConfirm={handleDeleteMultipleDelivery}
         title={t('Title_delete_multiple_delivery_type')}
         description={t('Confirm_delete_multiple_delivery_type')}
       />

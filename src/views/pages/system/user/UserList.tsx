@@ -29,7 +29,7 @@ import CustomSelect from 'src/components/custom-select'
 
 // ** Others
 import toast from 'react-hot-toast'
-import { OBJECT_TYPE_ERROR_ROLE } from 'src/configs/role'
+import { OBJECT_TYPE_ERROR_ROLE } from 'src/configs/error'
 import { toFullName, formatFilter } from 'src/utils'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
