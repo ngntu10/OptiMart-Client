@@ -1,10 +1,10 @@
 // ** Types
 import {
-    TParamsGetProductTypes,
-    TParamsCreateProductType,
-    TParamsEditProductType,
-    TParamsDeleteMultipleProductType
-  } from 'src/types/product-type'
+  TParamsGetProductTypes,
+  TParamsCreateProductType,
+  TParamsEditProductType,
+  TParamsDeleteMultipleProductType
+} from 'src/types/product-type'
 
 // api endPoint
 import { API_ENDPOINT } from 'src/configs/api'
@@ -37,7 +37,7 @@ export const updateProductType = async (data: TParamsEditProductType) => {
   try {
     const res = await instanceAxios.put(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT_TYPE.INDEX}/${id}`, rests)
 
-    return res.data
+    return res
   } catch (error: any) {
     return error?.response?.data
   }
@@ -47,7 +47,7 @@ export const deleteProductType = async (id: string) => {
   try {
     const res = await instanceAxios.delete(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT_TYPE.INDEX}/${id}`)
 
-    return res.data
+    return res
   } catch (error: any) {
     return error?.response?.data
   }
@@ -57,7 +57,7 @@ export const getDetailsProductType = async (id: string) => {
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT_TYPE.INDEX}/${id}`)
 
-    return res.data
+    return res
   } catch (error: any) {
     return error?.response?.data
   }
@@ -66,15 +66,7 @@ export const getDetailsProductType = async (id: string) => {
 export const deleteMultipleProductType = async (data: TParamsDeleteMultipleProductType) => {
   try {
     const res = await instanceAxios.delete(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT_TYPE.INDEX}/delete-many`, { data })
-    if (res?.data?.status === 'Success') {
-      return {
-        data: []
-      }
-    }
-
-    return {
-      data: null
-    }
+    return res
   } catch (error: any) {
     return error?.response?.data
   }

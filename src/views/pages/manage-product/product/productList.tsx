@@ -1,16 +1,20 @@
 // ** Next
 import { NextPage } from 'next'
+
 // ** React
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
 // ** Mui
-import { Box, Grid, Typography, useTheme } from '@mui/material'
+import { Box, Chip, ChipProps, Grid, Typography, styled, useTheme } from '@mui/material'
 import { GridColDef, GridRowSelectionModel, GridSortModel } from '@mui/x-data-grid'
+
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
 import { resetInitialState } from 'src/stores/product'
 import { deleteMultipleProductAsync, deleteProductAsync, getAllProductsAsync } from 'src/stores/product/actions'
+
 // ** Components
 import GridDelete from 'src/components/grid-delete'
 import GridEdit from 'src/components/grid-edit'
@@ -21,17 +25,43 @@ import Spinner from 'src/components/spinner'
 import ConfirmationDialog from 'src/components/confirmation-dialog'
 import CustomPagination from 'src/components/custom-pagination'
 import TableHeader from 'src/components/table-header'
+
 // ** Others
 import toast from 'react-hot-toast'
 import { OBJECT_TYPE_ERROR_PRODUCT } from 'src/configs/error'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
+import CustomSelect from 'src/components/custom-select'
+
 // ** Hooks
 import { usePermission } from 'src/hooks/usePermission'
+
 // ** Config
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
+import { OBJECT_STATUS_PRODUCT } from 'src/configs/product'
+
+// ** Services
+import { getAllProductTypes } from 'src/services/product-type'
+
 // ** Utils
 import { formatDate } from 'src/utils'
 import CreateEditProduct from './Components/CreateEditProduct'
+import { formatFilter } from 'src/utils'
+
+const ActiveUserStyled = styled(Chip)<ChipProps>(({ theme }) => ({
+  backgroundColor: '#28c76f29',
+  color: '#3a843f',
+  fontSize: '14px',
+  padding: '8px 4px',
+  fontWeight: 400
+}))
+const DeactivateUserStyled = styled(Chip)<ChipProps>(({ theme }) => ({
+  backgroundColor: '#da251d29',
+  color: '#da251d',
+  fontSize: '14px',
+  padding: '8px 4px',
+  fontWeight: 400
+}))
+
 type TProps = {}
 const ProductListPage: NextPage<TProps> = () => {
   // ** Translate
@@ -51,6 +81,13 @@ const ProductListPage: NextPage<TProps> = () => {
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
   const [page, setPage] = useState(1)
   const [selectedRow, setSelectedRow] = useState<string[]>([])
+  const [optionTypes, setOptionTypes] = useState<{ label: string; value: string }[]>([])
+  const [typeSelected, setTypeSelected] = useState<string[]>([])
+  const [statusSelected, setStatusSelected] = useState<string[]>([])
+  const [filterBy, setFilterBy] = useState<Record<string, string | string[]>>({})
+  const [loading, setLoading] = useState(false)
+  const CONSTANT_STATUS_PRODUCT = OBJECT_STATUS_PRODUCT()
+
   // ** Hooks
   const { VIEW, UPDATE, DELETE, CREATE } = usePermission('MANAGE_PRODUCT.PRODUCT', [
     'CREATE',
@@ -58,6 +95,7 @@ const ProductListPage: NextPage<TProps> = () => {
     'UPDATE',
     'DELETE'
   ])
+
   /// ** redux
   const dispatch: AppDispatch = useDispatch()
   const {
@@ -74,13 +112,18 @@ const ProductListPage: NextPage<TProps> = () => {
     isErrorMultipleDelete,
     messageErrorMultipleDelete
   } = useSelector((state: RootState) => state.product)
+
   // ** theme
   const theme = useTheme()
+
   // fetch api
   const handleGetListProducts = () => {
-    const query = { params: { limit: pageSize, page: page, search: searchBy, order: sortBy } }
+    const query = {
+      params: { limit: pageSize, page: page, search: searchBy, order: sortBy, ...formatFilter(filterBy) }
+    }
     dispatch(getAllProductsAsync(query))
   }
+
   // handle
   const handleCloseConfirmDeleteProduct = () => {
     setOpenDeleteProduct({
@@ -127,6 +170,24 @@ const ProductListPage: NextPage<TProps> = () => {
     setPage(page)
     setPageSize(pageSize)
   }
+
+  // ** fetch api
+  const fetchAllTypes = async () => {
+    setLoading(true)
+    await getAllProductTypes({ params: { limit: -1, page: -1 } })
+      .then(res => {
+        console.log(res)
+        const data = res?.data
+        if (data) {
+          setOptionTypes(data?.map((item: { name: string; id: string }) => ({ label: item.name, value: item.id })))
+        }
+        setLoading(false)
+      })
+      .catch(e => {
+        setLoading(false)
+      })
+  }
+
   const columns: GridColDef[] = [
     {
       field: 'name',
@@ -139,13 +200,33 @@ const ProductListPage: NextPage<TProps> = () => {
       }
     },
     {
-      field: 'slug',
-      headerName: t('Slug'),
+      field: 'type',
+      headerName: t('type'),
       minWidth: 200,
       maxWidth: 200,
       renderCell: params => {
         const { row } = params
-        return <Typography>{row?.slug}</Typography>
+        return <Typography>{row?.type.name}</Typography>
+      }
+    },
+    {
+      field: 'price',
+      headerName: t('Price'),
+      minWidth: 200,
+      maxWidth: 200,
+      renderCell: params => {
+        const { row } = params
+        return <Typography>{row?.price}</Typography>
+      }
+    },
+    {
+      field: 'countInStock',
+      headerName: t('type'),
+      minWidth: 200,
+      maxWidth: 200,
+      renderCell: params => {
+        const { row } = params
+        return <Typography>{row?.countInStock}</Typography>
       }
     },
     {
@@ -156,6 +237,18 @@ const ProductListPage: NextPage<TProps> = () => {
       renderCell: params => {
         const { row } = params
         return <Typography>{formatDate(row?.createdAt, { dateStyle: 'short' })}</Typography>
+      }
+    },
+    {
+      field: 'status',
+      headerName: t('Status'),
+      minWidth: 180,
+      maxWidth: 180,
+      renderCell: params => {
+        const { row } = params
+        return (
+          <>{row.status ? <ActiveUserStyled label={t('Public')} /> : <DeactivateUserStyled label={t('Private')} />}</>
+        )
       }
     },
     {
@@ -205,7 +298,7 @@ const ProductListPage: NextPage<TProps> = () => {
   useEffect(() => {
     handleGetListProducts()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sortBy, searchBy, page, pageSize])
+  }, [sortBy, searchBy, page, pageSize, filterBy])
   useEffect(() => {
     if (isSuccessCreateEdit) {
       if (!openCreateEdit.id) {
@@ -254,8 +347,17 @@ const ProductListPage: NextPage<TProps> = () => {
       dispatch(resetInitialState())
     }
   }, [isSuccessDelete, isErrorDelete, messageErrorDelete])
+
+  useEffect(() => {
+    setFilterBy({ productType: typeSelected, status: statusSelected })
+  }, [typeSelected, statusSelected])
+  useEffect(() => {
+    fetchAllTypes()
+  }, [])
+
   return (
     <>
+      {loading && <Spinner />}
       <ConfirmationDialog
         open={openDeleteProduct.open}
         handleClose={handleCloseConfirmDeleteProduct}
@@ -289,6 +391,30 @@ const ProductListPage: NextPage<TProps> = () => {
             <Box
               sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 4, mb: 4, width: '100%' }}
             >
+              <Box sx={{ width: '200px' }}>
+                <CustomSelect
+                  fullWidth
+                  onChange={e => {
+                    setTypeSelected(e.target.value as string[])
+                  }}
+                  multiple
+                  options={optionTypes}
+                  value={typeSelected}
+                  placeholder={t('Type_product')}
+                />
+              </Box>
+              <Box sx={{ width: '200px' }}>
+                <CustomSelect
+                  fullWidth
+                  onChange={e => {
+                    setStatusSelected(e.target.value as string[])
+                  }}
+                  multiple
+                  options={Object.values(CONSTANT_STATUS_PRODUCT)}
+                  value={statusSelected}
+                  placeholder={t('Status')}
+                />
+              </Box>
               <Box sx={{ width: '200px' }}>
                 <InputSearch value={searchBy} onChange={(value: string) => setSearchBy(value)} />
               </Box>

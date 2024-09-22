@@ -11,7 +11,7 @@ export const getAllPaymentTypes = async (data: { params: TParamsGetPaymentTypes 
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.SETTING.PAYMENT_TYPE.INDEX}`, data)
 
-    return res.data
+    return res
   } catch (error) {
     return error
   }
@@ -21,7 +21,7 @@ export const createPaymentType = async (data: TParamsCreatePaymentType) => {
   try {
     const res = await instanceAxios.post(`${API_ENDPOINT.SETTING.PAYMENT_TYPE.INDEX}`, data)
 
-    return res.data
+    return res
   } catch (error: any) {
     return error?.response?.data
   }

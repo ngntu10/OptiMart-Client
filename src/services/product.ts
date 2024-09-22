@@ -12,7 +12,7 @@ import instanceAxios from 'src/helpers/axios'
 export const getAllProducts = async (data: { params: TParamsGetProducts }) => {
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}`, data)
-    return res.data
+    return res
   } catch (error) {
     return error
   }
@@ -20,7 +20,7 @@ export const getAllProducts = async (data: { params: TParamsGetProducts }) => {
 export const createProduct = async (data: TParamsCreateProduct) => {
   try {
     const res = await instanceAxios.post(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}`, data)
-    return res.data
+    return res
   } catch (error: any) {
     return error?.response?.data
   }
