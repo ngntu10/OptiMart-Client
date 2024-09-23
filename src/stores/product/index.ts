@@ -56,8 +56,9 @@ export const productSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(getAllProductsAsync.fulfilled, (state, action) => {
+      console.log(action)
       state.isLoading = false
-      state.products.data = action.payload?.data?.productTypes || []
+      state.products.data = action.payload?.data || []
       state.products.total = action.payload?.data?.totalCount
     })
     builder.addCase(getAllProductsAsync.rejected, (state, action) => {
@@ -71,9 +72,9 @@ export const productSlice = createSlice({
     })
     builder.addCase(createProductAsync.fulfilled, (state, action) => {
       state.isLoading = false
-      state.isSuccessCreateEdit = !!action.payload?.data?._id
-      state.isErrorCreateEdit = !action.payload?.data?._id
-      state.messageErrorCreateEdit = action.payload?.message
+      state.isSuccessCreateEdit = !!action.payload?.data?.data.id
+      state.isErrorCreateEdit = !action.payload?.data?.data.id
+      state.messageErrorCreateEdit = action.payload?.data?.message
       state.typeError = action.payload?.typeError
     })
     // ** update product
@@ -82,9 +83,9 @@ export const productSlice = createSlice({
     })
     builder.addCase(updateProductAsync.fulfilled, (state, action) => {
       state.isLoading = false
-      state.isSuccessCreateEdit = !!action.payload?.data?._id
-      state.isErrorCreateEdit = !action.payload?.data?._id
-      state.messageErrorCreateEdit = action.payload?.message
+      state.isSuccessCreateEdit = !!action.payload?.data?.data.id
+      state.isErrorCreateEdit = !action.payload?.data?.data.id
+      state.messageErrorCreateEdit = action.payload?.data?.message
       state.typeError = action.payload?.typeError
     })
     // ** delete product
@@ -93,9 +94,9 @@ export const productSlice = createSlice({
     })
     builder.addCase(deleteProductAsync.fulfilled, (state, action) => {
       state.isLoading = false
-      state.isSuccessDelete = !!action.payload?.data?._id
-      state.isErrorDelete = !action.payload?.data?._id
-      state.messageErrorDelete = action.payload?.message
+      state.isSuccessDelete = !!action.payload?.data?.data
+      state.isErrorDelete = !action.payload?.data?.data
+      state.messageErrorDelete = action.payload?.data?.message
       state.typeError = action.payload?.typeError
     })
     // ** delete multiple product
@@ -103,10 +104,11 @@ export const productSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(deleteMultipleProductAsync.fulfilled, (state, action) => {
+      console.log(action)
       state.isLoading = false
-      state.isSuccessMultipleDelete = !!action.payload?.data
-      state.isErrorMultipleDelete = !action.payload?.data
-      state.messageErrorMultipleDelete = action.payload?.message
+      state.isSuccessMultipleDelete = !!action.payload?.data?.data
+      state.isErrorMultipleDelete = !action.payload?.data?.data
+      state.messageErrorMultipleDelete = action.payload?.data?.message
       state.typeError = action.payload?.typeError
     })
   }

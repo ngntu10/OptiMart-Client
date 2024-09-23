@@ -12,7 +12,7 @@ import instanceAxios from 'src/helpers/axios'
 export const getAllProducts = async (data: { params: TParamsGetProducts }) => {
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}`, data)
-    return res
+    return res.data
   } catch (error) {
     return error
   }
@@ -29,7 +29,7 @@ export const updateProduct = async (data: TParamsEditProduct) => {
   const { id, ...rests } = data
   try {
     const res = await instanceAxios.put(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/${id}`, rests)
-    return res.data
+    return res
   } catch (error: any) {
     return error?.response?.data
   }
@@ -37,7 +37,7 @@ export const updateProduct = async (data: TParamsEditProduct) => {
 export const deleteProduct = async (id: string) => {
   try {
     const res = await instanceAxios.delete(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/${id}`)
-    return res.data
+    return res
   } catch (error: any) {
     return error?.response?.data
   }
@@ -45,7 +45,7 @@ export const deleteProduct = async (id: string) => {
 export const getDetailsProduct = async (id: string) => {
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/${id}`)
-    return res.data
+    return res
   } catch (error: any) {
     return error?.response?.data
   }
@@ -53,14 +53,7 @@ export const getDetailsProduct = async (id: string) => {
 export const deleteMultipleProduct = async (data: TParamsDeleteMultipleProduct) => {
   try {
     const res = await instanceAxios.delete(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/delete-many`, { data })
-    if (res?.data?.status === 'Success') {
-      return {
-        data: []
-      }
-    }
-    return {
-      data: null
-    }
+    return res
   } catch (error: any) {
     return error?.response?.data
   }

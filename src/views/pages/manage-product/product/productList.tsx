@@ -206,7 +206,7 @@ const ProductListPage: NextPage<TProps> = () => {
       maxWidth: 200,
       renderCell: params => {
         const { row } = params
-        return <Typography>{row?.type.name}</Typography>
+        return <Typography>{row?.productType?.name}</Typography>
       }
     },
     {
@@ -221,7 +221,7 @@ const ProductListPage: NextPage<TProps> = () => {
     },
     {
       field: 'countInStock',
-      headerName: t('type'),
+      headerName: t('CountInStock'),
       minWidth: 200,
       maxWidth: 200,
       renderCell: params => {
@@ -236,7 +236,7 @@ const ProductListPage: NextPage<TProps> = () => {
       maxWidth: 180,
       renderCell: params => {
         const { row } = params
-        return <Typography>{formatDate(row?.createdAt, { dateStyle: 'short' })}</Typography>
+        return <Typography>{formatDate(row?.createdAt, { dateStyle: 'medium' })}</Typography>
       }
     },
     {
@@ -451,7 +451,7 @@ const ProductListPage: NextPage<TProps> = () => {
             sortingOrder={['desc', 'asc']}
             sortingMode='server'
             onSortModelChange={handleSort}
-            getRowId={row => row._id}
+            getRowId={row => row.id}
             disableRowSelectionOnClick
             slots={{
               pagination: PaginationComponent

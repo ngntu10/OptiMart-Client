@@ -60,8 +60,8 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
   // State
   const [loading, setLoading] = useState(false)
   const [imageProduct, setImageProduct] = useState('')
-  const [optionCities, setOptionTypes] = useState<{ label: string; value: string }[]>([])
-  const [status, setStatus] = useState()
+  const [optionTypes, setOptionTypes] = useState<{ label: string; value: string }[]>([])
+  const [status, setStatus] = useState<number>(1)
 
   // ** Props
   const { open, onClose, idProduct } = props
@@ -180,13 +180,13 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
   })
   // handle
   const onSubmit = (data: any) => {
-    console.log('data', { data })
+    console.log(data);
     if (!Object.keys(errors).length) {
       if (idProduct) {
         // update
         dispatch(
           updateProductAsync({
-            name: data.name,
+            name: data.name,  
             slug: data.slug,
             price: Number(data.price),
             discountEndDate: data?.discountEndDate || null,
@@ -196,7 +196,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
             type: data.type,
             discount: Number(data.discount) || 0,
             description: data.description ? draftToHtml(convertToRaw(data.description.getCurrentContent())) : '',
-            status: data.status ? 1 : 0,
+            status: status,
             id: idProduct,
             countInStock: Number(data.countInStock)
           })
@@ -214,7 +214,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
             city: data.city,
             discount: Number(data.discount) || 0,
             description: data.description ? draftToHtml(convertToRaw(data.description.getCurrentContent())) : '',
-            status: data.status ? 1 : 0,
+            status: status,
             countInStock: Number(data.countInStock)
           })
         )
@@ -237,20 +237,20 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
     await getDetailsProduct(id)
       .then(res => {
         const data = res.data
-        console.log('data', { data })
         if (data) {
           reset({
             name: data.name,
-            type: data.type,
+            type: data.productType?.name,
             discount: data.discount || '',
             description: data.description ? convertHTMLToDraft(data.description) : '',
             slug: data.slug,
             countInStock: data.countInStock,
             price: data.price,
             status: data.status,
-            discountEndDate: data.discountEndDate || null,
-            discountStartDate: data.discountStartDate || null
+            discountEndDate: data.discountEndDate ? new Date(parseInt(data.discountEndDate)) : null,
+            discountStartDate: data.discountStartDate ? new Date(parseInt(data.discountStartDate)) : null
           })
+          setStatus(data?.status)
           setImageProduct(data?.image)
         }
         setLoading(false)
@@ -263,7 +263,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
     setLoading(true)
     await getAllProductTypes({ params: { limit: -1, page: -1 } })
       .then(res => {
-        console.log(res);
+        console.log(res)
         const data = res?.data
         if (data) {
           setOptionTypes(data?.map((item: { name: string; id: string }) => ({ label: item.name, value: item.id })))
@@ -527,42 +527,44 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
                         <Controller
                           name='type'
                           control={control}
-                          render={({ field: { onChange, onBlur, value } }) => (
-                            <Box>
-                              <InputLabel
-                                sx={{
-                                  fontSize: '13px',
-                                  marginBottom: '4px',
-                                  display: 'block',
-                                  color: errors?.type
-                                    ? theme.palette.error.main
-                                    : `rgba(${theme.palette.customColors.main}, 0.68)`
-                                }}
-                              >
-                                {t('Type_product')}
-                              </InputLabel>
-                              <CustomSelect
-                                fullWidth
-                                onChange={onChange}
-                                options={optionCities}
-                                error={Boolean(errors?.type)}
-                                onBlur={onBlur}
-                                value={value}
-                                placeholder={t('Select')}
-                              />
-                              {errors?.type?.message && (
-                                <FormHelperText
+                          render={({ field: { onChange, onBlur, value } }) => {
+                            return (
+                              <Box>
+                                <InputLabel
                                   sx={{
+                                    fontSize: '13px',
+                                    marginBottom: '4px',
+                                    display: 'block',
                                     color: errors?.type
                                       ? theme.palette.error.main
-                                      : `rgba(${theme.palette.customColors.main}, 0.42)`
+                                      : `rgba(${theme.palette.customColors.main}, 0.68)`
                                   }}
                                 >
-                                  {errors?.type?.message}
-                                </FormHelperText>
-                              )}
-                            </Box>
-                          )}
+                                  {t('Type_product')}
+                                </InputLabel>
+                                <CustomSelect
+                                  fullWidth
+                                  onChange={onChange}
+                                  options={optionTypes}
+                                  error={Boolean(errors?.type)}
+                                  onBlur={onBlur}
+                                  value={value}
+                                  placeholder={t('Select')}
+                                />
+                                {errors?.type?.message && (
+                                  <FormHelperText
+                                    sx={{
+                                      color: errors?.type
+                                        ? theme.palette.error.main
+                                        : `rgba(${theme.palette.customColors.main}, 0.42)`
+                                    }}
+                                  >
+                                    {errors?.type?.message}
+                                  </FormHelperText>
+                                )}
+                              </Box>
+                            )
+                          }}
                         />
                       </Grid>
                       <Grid item md={6} xs={12}>
@@ -594,22 +596,24 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
                       <Grid item md={6} xs={12}>
                         <Controller
                           control={control}
-                          render={({ field: { onChange, onBlur, value } }) => (
-                            <CustomDatePicker
-                              required
-                              minDate={new Date()}
-                              onChange={(date: Date | null) => {
-                                console.log(date);
-                                onChange(date)
-                              }}
-                              label={`${t('Start_date_discount')}`}
-                              onBlur={onBlur}
-                              selectedDate={value}
-                              placeholder={t('Select')}
-                              error={Boolean(errors?.discountStartDate)}
-                              helperText={errors?.discountStartDate?.message}
-                            />
-                          )}
+                          render={({ field: { onChange, onBlur, value } }) => {
+                            return (
+                              <CustomDatePicker
+                                required
+                                minDate={new Date()}
+                                onChange={(date: Date | null) => {
+                                  console.log(date)
+                                  onChange(date)
+                                }}
+                                label={`${t('Start_date_discount')}`}
+                                onBlur={onBlur}
+                                selectedDate={value}
+                                placeholder={t('Select')}
+                                error={Boolean(errors?.discountStartDate)}
+                                helperText={errors?.discountStartDate?.message}
+                              />
+                            )
+                          }}
                           name='discountStartDate'
                         />
                       </Grid>
