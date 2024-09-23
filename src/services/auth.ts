@@ -61,7 +61,7 @@ export const changeAvatar = async (file: File) => {
     const formData = new FormData()
     console.log(file)
     formData.append('file', file)
-    const res = await instanceAxios.post(`${API_ENDPOINT.AUTH.INDEX}/avatar`, formData, {
+    const res = await instanceAxios.post(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/image`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }

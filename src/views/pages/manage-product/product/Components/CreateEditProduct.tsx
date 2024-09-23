@@ -42,7 +42,7 @@ import { useDispatch } from 'react-redux'
 
 // ** Others
 import { convertBase64, convertHTMLToDraft, stringToSlug } from 'src/utils'
-import { createProductAsync, updateProductAsync } from 'src/stores/product/actions'
+import { changeProductImageAsync, createProductAsync, updateProductAsync } from 'src/stores/product/actions'
 import { getAllProductTypes } from 'src/services/product-type'
 import CustomDatePicker from 'src/components/custom-date-picker'
 import CustomEditor from 'src/components/custom-editor'
@@ -50,6 +50,7 @@ import { EditorState, convertToRaw } from 'draft-js'
 import draftToHtml from 'draftjs-to-html'
 import { getDetailsProduct } from 'src/services/product'
 import { ActiveUserStyled, DeactivateUserStyled, MenuItemStyled } from 'src/views/pages/system/user/UserList'
+import { changeAvatarAsync } from 'src/stores/auth/action'
 
 interface TCreateEditProduct {
   open: boolean
@@ -62,6 +63,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
   const [imageProduct, setImageProduct] = useState('')
   const [optionTypes, setOptionTypes] = useState<{ label: string; value: string }[]>([])
   const [status, setStatus] = useState<number>(1)
+  const [fileAvatar, setFileAvatar] = useState<File>()
 
   // ** Props
   const { open, onClose, idProduct } = props
@@ -180,19 +182,18 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
   })
   // handle
   const onSubmit = (data: any) => {
-    console.log(data);
     if (!Object.keys(errors).length) {
+      console.log(status);
       if (idProduct) {
         // update
         dispatch(
           updateProductAsync({
-            name: data.name,  
+            name: data.name,
             slug: data.slug,
             price: Number(data.price),
             discountEndDate: data?.discountEndDate || null,
             discountStartDate: data?.discountStartDate || null,
             city: data.city,
-            image: imageProduct,
             type: data.type,
             discount: Number(data.discount) || 0,
             description: data.description ? draftToHtml(convertToRaw(data.description.getCurrentContent())) : '',
@@ -201,6 +202,9 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
             countInStock: Number(data.countInStock)
           })
         )
+        if (fileAvatar) {
+          handleChangeProductImage(fileAvatar, idProduct)
+        }
       } else {
         dispatch(
           createProductAsync({
@@ -209,7 +213,6 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
             price: Number(data.price),
             discountEndDate: data.discountEndDate || null,
             discountStartDate: data.discountStartDate || null,
-            image: imageProduct,
             type: data.type,
             city: data.city,
             discount: Number(data.discount) || 0,
@@ -218,6 +221,9 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
             countInStock: Number(data.countInStock)
           })
         )
+        if (fileAvatar) {
+          handleChangeProductImage(fileAvatar, '')
+        }
       }
     }
   }
@@ -226,9 +232,21 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
     setStatus(event.target.value)
   }
 
+  // ###### Base-64
   const handleUploadImage = async (file: File) => {
-    const base64 = await convertBase64(file)
-    setImageProduct(base64 as string)
+    setFileAvatar(file)
+    const reader = new FileReader()
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        setImageProduct(reader.result)
+      }
+    }
+    reader.readAsDataURL(file)
+  }
+
+  // ###### Cloudinary
+  const handleChangeProductImage = async (file: File, idProduct: string) => {
+    dispatch(changeProductImageAsync({ file, idProduct }))
   }
 
   // fetch
@@ -240,7 +258,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
         if (data) {
           reset({
             name: data.name,
-            type: data.productType?.name,
+            type: data.productType?.id,
             discount: data.discount || '',
             description: data.description ? convertHTMLToDraft(data.description) : '',
             slug: data.slug,
@@ -263,7 +281,6 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
     setLoading(true)
     await getAllProductTypes({ params: { limit: -1, page: -1 } })
       .then(res => {
-        console.log(res)
         const data = res?.data
         if (data) {
           setOptionTypes(data?.map((item: { name: string; id: string }) => ({ label: item.name, value: item.id })))
@@ -422,38 +439,6 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
                         />
                       </Grid>
                       <Grid item md={6} xs={12}>
-                        {/* <Controller
-                          control={control}
-                          render={({ field: { onChange, onBlur, value } }) => {
-                            return (
-                              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                                <InputLabel
-                                  sx={{
-                                    fontSize: '13px',
-                                    marginBottom: '4px',
-                                    display: 'block',
-                                    color: `rgba(${theme.palette.customColors.main}, 0.68)`
-                                  }}
-                                >
-                                  {t('Status_product')}
-                                </InputLabel>
-                                <FormControlLabel
-                                  control={
-                                    <Switch
-                                      value={value}
-                                      checked={Boolean(value)}
-                                      onChange={e => {
-                                        onChange(e.target.checked ? 1 : 0)
-                                      }}
-                                    />
-                                  }
-                                  label={Boolean(value) ? t('Public') : t('Private')}
-                                />
-                              </Box>
-                            )
-                          }}
-                          name='status'
-                        /> */}
                         <Controller
                           control={control}
                           render={({ field: { onChange, onBlur, value } }) => {

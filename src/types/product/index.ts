@@ -16,7 +16,6 @@ export type TParamsCreateProduct = {
   status: number
   discountEndDate: Date | null
   discountStartDate: Date | null
-  image: string
 }
 export type TParamsEditProduct = {
   id: string
@@ -30,7 +29,6 @@ export type TParamsEditProduct = {
   status: number
   discountEndDate: Date | null
   discountStartDate: Date | null
-  image: string
   city: string
 }
 export type TParamsDeleteProduct = {

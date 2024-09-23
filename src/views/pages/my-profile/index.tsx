@@ -184,7 +184,6 @@ const MyProfilePage: NextPage<TProps> = () => {
     }
   }, [isErrorUpdateMe, isSuccessUpdateMe, messageUpdateMe])
   const onSubmit = (data: any) => {
-    console.log(data)
     const { firstName, lastName, middleName } = separationFullName(data.fullName, i18n.language)
     dispatch(
       updateAuthMeAsync({
@@ -205,6 +204,7 @@ const MyProfilePage: NextPage<TProps> = () => {
 
   // ###### Base-64
   const handleUploadAvatar = async (file: File) => {
+    console.log(123);
     setFileAvatar(file)
     const reader = new FileReader()
     reader.onload = () => {

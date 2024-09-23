@@ -13,7 +13,7 @@ import { GridColDef, GridRowSelectionModel, GridSortModel } from '@mui/x-data-gr
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
 import { resetInitialState } from 'src/stores/product'
-import { deleteMultipleProductAsync, deleteProductAsync, getAllProductsAsync } from 'src/stores/product/actions'
+import { changeProductImageAsync, deleteMultipleProductAsync, deleteProductAsync, getAllProductsAsync } from 'src/stores/product/actions'
 
 // ** Components
 import GridDelete from 'src/components/grid-delete'
@@ -88,6 +88,7 @@ const ProductListPage: NextPage<TProps> = () => {
   const [loading, setLoading] = useState(false)
   const CONSTANT_STATUS_PRODUCT = OBJECT_STATUS_PRODUCT()
 
+
   // ** Hooks
   const { VIEW, UPDATE, DELETE, CREATE } = usePermission('MANAGE_PRODUCT.PRODUCT', [
     'CREATE',
@@ -139,7 +140,7 @@ const ProductListPage: NextPage<TProps> = () => {
     if (sortOption) {
       setSortBy(`${sortOption.field} ${sortOption.sort}`)
     } else {
-      setSortBy('createdAt desc')
+      setSortBy('createdAt-desc')
     }
   }
   const handleCloseCreateEdit = () => {

@@ -221,11 +221,10 @@ const CreateEditUser = (props: TCreateEditUser) => {
             phoneNumber: data.phoneNumber,
             role: data?.role?.name,
             email: data.email,
-            city: data.city,
+            city: data.city.id,
             address: data?.address,
             status: data?.status
           })
-          console.log(data.city)
           setCitySelected(data.city.name)
           setRoleSelected(data?.role?.name)
           setAvatar(data?.imageUrl)

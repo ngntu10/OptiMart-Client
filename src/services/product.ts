@@ -58,3 +58,20 @@ export const deleteMultipleProduct = async (data: TParamsDeleteMultipleProduct) 
     return error?.response?.data
   }
 }
+
+export const changeProductImage = async (data: { file: File; idProduct: string }) => {
+  try {
+    const formData = new FormData()
+    formData.append('file', data.file)
+    formData.append('productId', data.idProduct)
+    const res = await instanceAxios.post(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/image`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+
+    return res
+  } catch (error) {
+    return error
+  }
+}

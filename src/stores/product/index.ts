@@ -104,7 +104,6 @@ export const productSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(deleteMultipleProductAsync.fulfilled, (state, action) => {
-      console.log(action)
       state.isLoading = false
       state.isSuccessMultipleDelete = !!action.payload?.data?.data
       state.isErrorMultipleDelete = !action.payload?.data?.data
