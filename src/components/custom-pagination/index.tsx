@@ -18,10 +18,11 @@ type TProps = {
   rowLength: number
   pageSizeOptions: number[]
   onChangePagination: (page: number, pageSize: number) => void
+  isHideShowed?: boolean
 }
 
 const CustomPagination = React.forwardRef((props: TProps, ref: Ref<any>) => {
-  const { pageSize, page, rowLength, pageSizeOptions, onChangePagination, ...rests } = props
+  const { pageSize, page, rowLength, pageSizeOptions, onChangePagination, isHideShowed, ...rests } = props
 
   const { t } = useTranslation()
 
@@ -29,17 +30,23 @@ const CustomPagination = React.forwardRef((props: TProps, ref: Ref<any>) => {
     <Box
       sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', paddingLeft: '8px' }}
     >
-      {rowLength > 0 ? (
-        <Box>
-          <span>{t('Đang hiển thị')} </span>
-          <span style={{ fontWeight: 'bold' }}>
-            {page === 1 ? page : 1 + pageSize}
-            {' - '}
-          </span>
-          <span style={{ fontWeight: 'bold' }}>{page * pageSize < rowLength ? page * pageSize : rowLength} </span>
-          <span>{t('trên')} </span>
-          <span style={{ fontWeight: 'bold' }}>{rowLength}</span>
-        </Box>
+      {!isHideShowed ? (
+        <>
+          {rowLength > 0 ? (
+            <Box>
+              <span>{t('Đang hiển thị')} </span>
+              <span style={{ fontWeight: 'bold' }}>
+                {page === 1 ? page : 1 + pageSize}
+                {' - '}
+              </span>
+              <span style={{ fontWeight: 'bold' }}>{page * pageSize < rowLength ? page * pageSize : rowLength} </span>
+              <span>{t('trên')} </span>
+              <span style={{ fontWeight: 'bold' }}>{rowLength}</span>
+            </Box>
+          ) : (
+            <Box></Box>
+          )}
+        </>
       ) : (
         <Box></Box>
       )}

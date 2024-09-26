@@ -224,7 +224,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
             city: data.city.id,
             address: data?.address,
             status: data?.status
-          })
+          })  
           setCitySelected(data.city.name)
           setRoleSelected(data?.role?.name)
           setAvatar(data?.imageUrl)

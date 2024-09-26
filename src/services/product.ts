@@ -75,3 +75,24 @@ export const changeProductImage = async (data: { file: File; idProduct: string }
     return error
   }
 }
+
+export const getAllProductsPublic = async (data: { params: TParamsGetProducts }) => {
+  try {
+    const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public`, data)
+    return res
+  } catch (error) {
+    return error
+  }
+}
+
+export const getDetailsProductPublic = async (id: string) => {
+  try {
+    const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public/${id}`)
+    return res
+  } catch (error: any) {
+    return error?.response?.data
+  }
+}
+
+
+

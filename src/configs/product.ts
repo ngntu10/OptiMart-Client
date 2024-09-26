@@ -12,3 +12,25 @@ export const OBJECT_STATUS_PRODUCT = () => {
     }
   }
 }
+
+export const FILTER_REVIEW_PRODUCT = () => {
+  const { t } = useTranslation()
+  return [
+    {
+      label: t('Từ 4.5 trở lên'),
+      value: '4.5'
+    },
+    {
+      label: t('Từ 4 trở lên'),
+      value: '4'
+    },
+    {
+      label: t('Từ 3,5 trở lên'),
+      value: '3.5'
+    },
+    {
+      label: t('Từ 3 trở lên'),
+      value: '3'
+    }
+  ]
+}
