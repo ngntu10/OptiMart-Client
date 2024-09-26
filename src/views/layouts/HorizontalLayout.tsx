@@ -18,6 +18,7 @@ import UserDropDown from './components/user-dropdown'
 import ModeToggle from './components/modeToggle'
 import Icon from 'src/components/Icon'
 import LanguageDropdown from 'src/views/layouts/components/language-dropdown'
+import CartProduct from 'src/views/layouts/components/cart-product'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
@@ -94,6 +95,7 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHideMenu }) 
         </Typography>
         <LanguageDropdown />
         <ModeToggle />
+        <CartProduct />
         {user ? (
           <UserDropDown />
         ) : (

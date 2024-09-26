@@ -1,44 +1,24 @@
 // ** Next
 import { NextPage } from 'next'
+
 // ** React
 import { useEffect, useState } from 'react'
+
 // ** Mui
-import {
-  Avatar,
-  Box,
-  Button,
-  FormHelperText,
-  Grid,
-  IconButton,
-  InputLabel,
-  Rating,
-  Typography,
-  useTheme
-} from '@mui/material'
+import { Box, Button, Grid, Rating, Typography, useTheme } from '@mui/material'
+
 // ** Components
-import CustomTextField from 'src/components/text-field'
 import Icon from 'src/components/Icon'
-import WrapperFileUpload from 'src/components/wrapper-file-upload'
-// ** form
-import { Controller, useForm } from 'react-hook-form'
-import * as yup from 'yup'
-import { yupResolver } from '@hookform/resolvers/yup'
-// ** Config
-import { EMAIL_REG } from 'src/configs/regex'
+
 // ** Translate
 import { t } from 'i18next'
 import { useTranslation } from 'react-i18next'
-// ** services
-import { getAuthMe } from 'src/services/auth'
-import { getAllRoles } from 'src/services/role'
-import { getAllCities } from 'src/services/city'
+
 // ** Utils
 import { convertBase64, formatNumberToLocal, separationFullName, toFullName } from 'src/utils'
 
 // ** Other
-import toast from 'react-hot-toast'
 import Spinner from 'src/components/spinner'
-import CustomSelect from 'src/components/custom-select'
 import { getDetailsProductPublicBySlug } from 'src/services/product'
 import { useRouter } from 'next/router'
 import { TProduct } from 'src/types/product'
@@ -51,11 +31,13 @@ const DetailsProductPage: NextPage<TProps> = () => {
   const [dataProduct, setDataProduct] = useState<TProduct | any>({})
   const router = useRouter()
   const productId = router.query?.productId as string
+
   // ** Hooks
   const { i18n } = useTranslation()
+
   // ** theme
   const theme = useTheme()
-  // ** redux
+
   // fetch api
   const fetchGetDetailsProduct = async (slug: string) => {
     setLoading(true)

@@ -25,6 +25,9 @@ import { clearLocalUserData, setLocalUserData, setTemporaryToken } from 'src/hel
 import instanceAxios from 'src/helpers/axios'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from 'src/stores'
+import { addProductToCart } from 'src/stores/order-product'
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
@@ -63,6 +66,9 @@ const AuthProvider = ({ children }: Props) => {
 
   const { t } = useTranslation()
 
+  // ** Redux
+  const dispatch: AppDispatch = useDispatch()
+
   useEffect(() => {
     const initAuth = async (): Promise<void> => {
       const storedToken = window.localStorage.getItem(ACCESS_TOKEN)
@@ -98,7 +104,6 @@ const AuthProvider = ({ children }: Props) => {
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
     loginAuth({ email: params.email, password: params.password })
       .then(async response => {
-        console.log(response)
         if (response.data) {
           const user = cleanUserData(response.data.user)
           if (params.rememberMe) {
@@ -127,7 +132,11 @@ const AuthProvider = ({ children }: Props) => {
   const handleLogout = () => {
     setUser(null)
     clearLocalUserData()
-    router.push('/login')
+    dispatch(
+      addProductToCart({
+        orderItems: []
+      })
+    )
     toast.success(t('Logout_success'))
   }
 

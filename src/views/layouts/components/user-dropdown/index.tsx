@@ -70,7 +70,6 @@ const UserDropDown = (props: TProps) => {
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const { user, logout, setUser } = useAuth()
-  console.log(user)
 
   // ** Redux
   const { userData } = useSelector((state: RootState) => state.auth)

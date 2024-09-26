@@ -2,7 +2,7 @@
 import { NextPage } from 'next'
 
 // ** React
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** Mui
@@ -53,6 +53,10 @@ const HomePage: NextPage<TProps> = () => {
     data: [],
     total: 0
   })
+
+  const firstRender = useRef<boolean>(false)
+  console.log('firstRender', { firstRender })
+
   // ** theme
   const theme = useTheme()
   // fetch api
@@ -61,7 +65,7 @@ const HomePage: NextPage<TProps> = () => {
     const query = {
       params: { limit: pageSize, page: page, search: searchBy, order: sortBy, ...formatFilter(filterBy) }
     }
-    await getAllProductsPublic(query).then((res:any) => {
+    await getAllProductsPublic(query).then((res: any) => {
       if (res?.data) {
         setLoading(false)
         setProductsPublic({
@@ -87,6 +91,7 @@ const HomePage: NextPage<TProps> = () => {
         if (data) {
           setOptionTypes(data?.map((item: { name: string; id: string }) => ({ label: item.name, value: item.id })))
           setProductTypeSelected(data?.[0]?.id)
+          firstRender.current = true
         }
         setLoading(false)
       })
@@ -94,16 +99,24 @@ const HomePage: NextPage<TProps> = () => {
         setLoading(false)
       })
   }
-  useEffect(() => {
-    handleGetListProducts()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sortBy, searchBy, page, pageSize, filterBy])
-  useEffect(() => {
-    setFilterBy({ productType: productTypeSelected, minStar: reviewSelected })
-  }, [productTypeSelected, reviewSelected])
+
   useEffect(() => {
     fetchAllTypes()
   }, [])
+  useEffect(() => {
+    if (firstRender.current) {
+      handleGetListProducts()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortBy, searchBy, page, pageSize, filterBy])
+
+  useEffect(() => {
+    if (firstRender.current) {
+      setFilterBy({ productType: productTypeSelected, minStar: reviewSelected })
+    }
+  }, [productTypeSelected, reviewSelected])
+
+
   return (
     <>
       {loading && <Spinner />}

@@ -1,24 +1,30 @@
+// ** React
 import * as React from 'react'
+import { useTranslation } from 'react-i18next'
+import { useRouter } from 'next/router'
+// ** Mui
 import { styled, useTheme } from '@mui/material/styles'
 import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
 import CardMedia from '@mui/material/CardMedia'
 import CardContent from '@mui/material/CardContent'
-import CardActions from '@mui/material/CardActions'
-import Collapse from '@mui/material/Collapse'
-import Avatar from '@mui/material/Avatar'
-import IconButton, { IconButtonProps } from '@mui/material/IconButton'
+import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
-import { red } from '@mui/material/colors'
-import Icon from 'src/components/Icon'
 import { Box, Button, Rating } from '@mui/material'
-import { useTranslation } from 'react-i18next'
 import { TProduct } from 'src/types/product'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
-import { useRouter } from 'next/router'
+/// ** Components
+import Icon from 'src/components/Icon'
+// ** Redux
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from 'src/stores'
+import { addProductToCart } from 'src/stores/order-product'
+// ** Others
 import { ROUTE_CONFIG } from 'src/configs/route'
-import { formatNumberToLocal } from 'src/utils'
-import { format } from 'path'
+import { convertAddProductToCart, formatNumberToLocal } from 'src/utils'
+// ** Storage
+import { getLocalProductCart, setLocalProductToCart } from 'src/helpers/storage'
+import { useAuth } from 'src/hooks/useAuth'
+
 interface TCardProduct {
   item: TProduct
 }
@@ -35,11 +41,38 @@ const CardProduct = (props: TCardProduct) => {
   const { t } = useTranslation()
   const theme = useTheme()
   const router = useRouter()
+  const { user } = useAuth()
+
+  // ** Redux
+  const dispatch: AppDispatch = useDispatch()
+  const { orderItems } = useSelector((state: RootState) => state.orderProduct)
 
   // ** handle
   const handleNavigateDetails = (slug: string) => {
     router.push(`${ROUTE_CONFIG.PRODUCT}/${slug}`)
   }
+
+  const handleAddProductToCart = (item: TProduct) => {
+    const productCart = getLocalProductCart()
+    const parseData = productCart ? JSON.parse(productCart) : {}
+    const listOrderItems = convertAddProductToCart(orderItems, {
+      name: item.name,
+      amount: 1,
+      image: item.image,
+      price: item.price,
+      discount: item.discount,
+      product: item.id
+    })
+    dispatch(
+      addProductToCart({
+        orderItems: listOrderItems
+      })
+    )
+    if (user?.id) {
+      setLocalProductToCart({ ...parseData, [user?.id]: listOrderItems })
+    }
+  }
+
   return (
     <StyleCard sx={{ width: '100%' }}>
       <CardMedia component='img' height='194' image={item.image} alt='image' />
@@ -55,7 +88,8 @@ const CardProduct = (props: TCardProduct) => {
             textOverflow: 'ellipsis',
             display: '-webkit-box',
             '-webkitLineClamp': '2',
-            '-webkitBoxOrient': 'vertical'
+            '-webkitBoxOrient': 'vertical',
+            minHeight: '48px'
           }}
         >
           {item.name}
@@ -160,6 +194,7 @@ const CardProduct = (props: TCardProduct) => {
             gap: '2px',
             fontWeight: 'bold'
           }}
+          onClick={() => handleAddProductToCart(item)}
         >
           <Icon icon='bx:cart' fontSize={24} style={{ position: 'relative', top: '-2px' }} />
           {t('Add_to_cart')}

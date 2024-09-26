@@ -1,3 +1,7 @@
+// ** Types
+import { TItemOrderProduct } from 'src/types/order-product'
+
+// ** Libraries
 import { useTranslation } from 'react-i18next'
 import { ContentState, EditorState } from 'draft-js'
 import htmlToDraft from 'html-to-draftjs'
@@ -127,10 +131,32 @@ export const convertHTMLToDraft = (html: string) => {
 
 export const formatNumberToLocal = (value: string | number) => {
   try {
-    return Number(value).toLocaleString("vi-VN", {
-      minimumFractionDigits: 0,
+    return Number(value).toLocaleString('vi-VN', {
+      minimumFractionDigits: 0
     })
   } catch (error) {
     return value
+  }
+}
+
+export const cloneDeep = (data: any) => {
+  try {
+    return JSON.parse(JSON.stringify(data))
+  } catch (error) {
+    return data
+  }
+}
+export const convertAddProductToCart = (orderItems: TItemOrderProduct[], addItem: TItemOrderProduct) => {
+  try {
+    const cloneOrderItems = cloneDeep(orderItems)
+    const findItems = cloneOrderItems.find((item: TItemOrderProduct) => item.product === addItem.product)
+    if (findItems) {
+      findItems.amount += addItem.amount
+    } else {
+      cloneOrderItems.push(addItem)
+    }
+    return cloneOrderItems
+  } catch (error) {
+    return orderItems
   }
 }
