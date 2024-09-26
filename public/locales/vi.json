@@ -7,7 +7,7 @@
   "Full_name": "Họ và tên",
   "Address": "Địa chỉ",
   "City": "Thành phố",
-  "Update_user_success" : "Cập nhật người dùng thành công",
+  "Update_user_success": "Cập nhật người dùng thành công",
   "Update_user_error": "Cập nhật người dùng thất bại",
   "Create_user_error": "Tạo người dùng thất bại",
   "Phone_number": "Số điện thoại",
@@ -356,5 +356,7 @@
   "comments": "bình luận",
   "Product_details": "Chi tiết sản phẩm",
   "Invalid_file": "File không hợp lệ. Vui lòng kiểm tra lại định dạng",
-  "Logout_success": "Đăng xuất thành công"
+  "Logout_success": "Đăng xuất thành công",
+  "Count_in_stock_product": "Còn {{count}} sản phẩm trong kho",
+  "Description_product": "Mô tả sản phẩm"
 }

@@ -1,27 +1,32 @@
 // ** Next
 import { NextPage } from 'next'
+
 // ** React
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
 // ** Mui
 import { Box, Grid, Typography, useTheme, Tab, Tabs, TabsProps } from '@mui/material'
-// ** Redux
+
 // ** Components
 import Spinner from 'src/components/spinner'
 import CustomPagination from 'src/components/custom-pagination'
-// ** Others
+
 // ** Config
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
+
 // ** Services
 import { getAllProductTypes } from 'src/services/product-type'
+
 // ** Utils
 import { formatFilter } from 'src/utils'
 import { getAllProductsPublic } from 'src/services/product'
 import { TProduct } from 'src/types/product'
 import InputSearch from 'src/components/input-search'
 import { styled } from '@mui/material'
-import FilterProduct from 'src/views/pages/home/Components/FilterProduct'
-import CardProduct from './Components/CartProduct'
+import FilterProduct from '../product/Components/FilterProduct'
+import CardProduct from '../product/Components/CartProduct'
+
 type TProps = {}
 const StyledTabs = styled(Tabs)<TabsProps>(({ theme }) => ({
   '&.MuiTabs-root': {
@@ -60,8 +65,8 @@ const HomePage: NextPage<TProps> = () => {
       if (res?.data) {
         setLoading(false)
         setProductsPublic({
-          data: res?.data?.products,
-          total: res?.data?.totalCount
+          data: res?.data,
+          total: res?.totalCount
         })
       }
     })

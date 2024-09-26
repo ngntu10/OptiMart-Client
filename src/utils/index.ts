@@ -123,3 +123,14 @@ export const convertHTMLToDraft = (html: string) => {
   const editorState = EditorState.createWithContent(contentState)
   return editorState
 }
+
+
+export const formatNumberToLocal = (value: string | number) => {
+  try {
+    return Number(value).toLocaleString("vi-VN", {
+      minimumFractionDigits: 0,
+    })
+  } catch (error) {
+    return value
+  }
+}

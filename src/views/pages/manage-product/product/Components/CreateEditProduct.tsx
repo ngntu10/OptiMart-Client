@@ -41,7 +41,7 @@ import { AppDispatch } from 'src/stores'
 import { useDispatch } from 'react-redux'
 
 // ** Others
-import { convertBase64, convertHTMLToDraft, stringToSlug } from 'src/utils'
+import { convertHTMLToDraft, formatNumberToLocal, stringToSlug } from 'src/utils'
 import { changeProductImageAsync, createProductAsync, updateProductAsync } from 'src/stores/product/actions'
 import { getAllProductTypes } from 'src/services/product-type'
 import CustomDatePicker from 'src/components/custom-date-picker'
@@ -183,7 +183,6 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
   // handle
   const onSubmit = (data: any) => {
     if (!Object.keys(errors).length) {
-      console.log(status);
       if (idProduct) {
         // update
         dispatch(
@@ -193,7 +192,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
             price: Number(data.price),
             discountEndDate: data?.discountEndDate || null,
             discountStartDate: data?.discountStartDate || null,
-            city: data.city,
+            // city: data.city,
             type: data.type,
             discount: Number(data.discount) || 0,
             description: data.description ? draftToHtml(convertToRaw(data.description.getCurrentContent())) : '',
@@ -214,7 +213,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
             discountEndDate: data.discountEndDate || null,
             discountStartDate: data.discountStartDate || null,
             type: data.type,
-            city: data.city,
+            // city: data.city,
             discount: Number(data.discount) || 0,
             description: data.description ? draftToHtml(convertToRaw(data.description.getCurrentContent())) : '',
             status: status,
@@ -365,12 +364,10 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
                               </IconButton>
                             )}
                             {imageProduct ? (
-                              <Avatar src={imageProduct} sx={{ width: 100, height: 100 }}>
-                                <Icon icon='ph:user-thin' fontSize={70} />
-                              </Avatar>
+                              <Avatar src={imageProduct} sx={{ width: 100, height: 100 }} />
                             ) : (
                               <Avatar sx={{ width: 100, height: 100 }}>
-                                <Icon icon='ph:user-thin' fontSize={70} />
+                                <Icon icon='fluent-mdl2:product-variant' fontSize={70} />
                               </Avatar>
                             )}
                           </Box>

@@ -13,7 +13,12 @@ import { GridColDef, GridRowSelectionModel, GridSortModel } from '@mui/x-data-gr
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
 import { resetInitialState } from 'src/stores/product'
-import { changeProductImageAsync, deleteMultipleProductAsync, deleteProductAsync, getAllProductsAsync } from 'src/stores/product/actions'
+import {
+  changeProductImageAsync,
+  deleteMultipleProductAsync,
+  deleteProductAsync,
+  getAllProductsAsync
+} from 'src/stores/product/actions'
 
 // ** Components
 import GridDelete from 'src/components/grid-delete'
@@ -43,7 +48,7 @@ import { OBJECT_STATUS_PRODUCT } from 'src/configs/product'
 import { getAllProductTypes } from 'src/services/product-type'
 
 // ** Utils
-import { formatDate } from 'src/utils'
+import { formatDate, formatNumberToLocal } from 'src/utils'
 import CreateEditProduct from './Components/CreateEditProduct'
 import { formatFilter } from 'src/utils'
 
@@ -87,7 +92,6 @@ const ProductListPage: NextPage<TProps> = () => {
   const [filterBy, setFilterBy] = useState<Record<string, string | string[]>>({})
   const [loading, setLoading] = useState(false)
   const CONSTANT_STATUS_PRODUCT = OBJECT_STATUS_PRODUCT()
-
 
   // ** Hooks
   const { VIEW, UPDATE, DELETE, CREATE } = usePermission('MANAGE_PRODUCT.PRODUCT', [
@@ -217,12 +221,12 @@ const ProductListPage: NextPage<TProps> = () => {
       maxWidth: 200,
       renderCell: params => {
         const { row } = params
-        return <Typography>{row?.price}</Typography>
+        return <Typography>{`${formatNumberToLocal(row?.price)} VND`}</Typography>
       }
     },
     {
       field: 'countInStock',
-      headerName: t('CountInStock'),
+      headerName: t('Count_in_stock'),
       minWidth: 200,
       maxWidth: 200,
       renderCell: params => {

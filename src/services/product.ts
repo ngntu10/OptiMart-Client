@@ -5,10 +5,14 @@ import {
   TParamsEditProduct,
   TParamsDeleteMultipleProduct
 } from 'src/types/product'
+
 // api endPoint
 import { API_ENDPOINT } from 'src/configs/api'
+
 // Axios
 import instanceAxios from 'src/helpers/axios'
+import axios from 'axios'
+
 export const getAllProducts = async (data: { params: TParamsGetProducts }) => {
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}`, data)
@@ -78,8 +82,8 @@ export const changeProductImage = async (data: { file: File; idProduct: string }
 
 export const getAllProductsPublic = async (data: { params: TParamsGetProducts }) => {
   try {
-    const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public`, data)
-    return res
+    const res = await axios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public`, data)
+    return res.data
   } catch (error) {
     return error
   }
@@ -87,12 +91,18 @@ export const getAllProductsPublic = async (data: { params: TParamsGetProducts })
 
 export const getDetailsProductPublic = async (id: string) => {
   try {
-    const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public/${id}`)
+    const res = await axios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public/${id}`)
+    return res.data
+  } catch (error: any) {
+    return error?.response?.data
+  }
+}
+export const getDetailsProductPublicBySlug = async (slug: string) => {
+  try {
+    const res = await axios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public/slug/${slug}`)
+
     return res
   } catch (error: any) {
     return error?.response?.data
   }
 }
-
-
-
