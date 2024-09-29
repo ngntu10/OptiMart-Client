@@ -86,12 +86,14 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHideMenu }) 
         </IconButton>
         <Typography
           component='h1'
-          variant='h6'
+          variant='h6'  
           color='primary'
           noWrap
           sx={{ flexGrow: 1, fontWeight: '600', cursor: 'pointer' }}
         >
-          <Link href={ROUTE_CONFIG.HOME}>OptiMart</Link>
+          <Link style={{ color: 'inherit' }} href={ROUTE_CONFIG.HOME}>
+            OPTIMART
+          </Link>
         </Typography>
         <LanguageDropdown />
         <ModeToggle />

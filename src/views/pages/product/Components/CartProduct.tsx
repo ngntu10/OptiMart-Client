@@ -61,15 +61,21 @@ const CardProduct = (props: TCardProduct) => {
       image: item.image,
       price: item.price,
       discount: item.discount,
-      product: item.id
+      product: item.id,
+      slug: item.slug
     })
-    dispatch(
-      addProductToCart({
-        orderItems: listOrderItems
-      })
-    )
     if (user?.id) {
+      dispatch(
+        addProductToCart({
+          orderItems: listOrderItems
+        })
+      )
       setLocalProductToCart({ ...parseData, [user?.id]: listOrderItems })
+    } else {
+      router.replace({
+        pathname: '/login',
+        query: { returnUrl: router.asPath }
+      })
     }
   }
 

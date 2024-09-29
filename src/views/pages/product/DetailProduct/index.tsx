@@ -10,6 +10,9 @@ import { Box, Button, Grid, Rating, Typography, useTheme } from '@mui/material'
 // ** Components
 import Icon from 'src/components/Icon'
 
+// ** Images
+import defaultProduct from '/public/images/default-product.png'
+
 // ** Translate
 import { t } from 'i18next'
 import { useTranslation } from 'react-i18next'
@@ -58,7 +61,6 @@ const DetailsProductPage: NextPage<TProps> = () => {
       fetchGetDetailsProduct(productId)
     }
   }, [productId])
-  console.log('dataProduct', { dataProduct })
   return (
     <>
       {loading && <Spinner />}
@@ -74,12 +76,12 @@ const DetailsProductPage: NextPage<TProps> = () => {
             <Grid container spacing={8}>
               <Grid item md={5} xs={12}>
                 <Image
-                  src={dataProduct?.image}
+                  src={dataProduct?.image || defaultProduct}
                   alt='banner'
-                  width={0}
-                  height={0}
+                  width={50000}
+                  height={50000}
                   style={{
-                    height: '100%',
+                    height: '80%',
                     width: '100%',
                     objectFit: 'contain',
                     borderRadius: '15px'
