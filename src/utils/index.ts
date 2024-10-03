@@ -128,7 +128,6 @@ export const convertHTMLToDraft = (html: string) => {
   return editorState
 }
 
-
 export const formatNumberToLocal = (value: string | number) => {
   try {
     return Number(value).toLocaleString('vi-VN', {
@@ -146,8 +145,9 @@ export const cloneDeep = (data: any) => {
     return data
   }
 }
-export const convertAddProductToCart = (orderItems: TItemOrderProduct[], addItem: TItemOrderProduct) => {
+export const convertUpdateProductToCart = (orderItems: TItemOrderProduct[], addItem: TItemOrderProduct) => {
   try {
+    let result = []
     const cloneOrderItems = cloneDeep(orderItems)
     const findItems = cloneOrderItems.find((item: TItemOrderProduct) => item.product === addItem.product)
     if (findItems) {
@@ -155,7 +155,9 @@ export const convertAddProductToCart = (orderItems: TItemOrderProduct[], addItem
     } else {
       cloneOrderItems.push(addItem)
     }
-    return cloneOrderItems
+    result = cloneOrderItems.filter((item: TItemOrderProduct) => item.amount)
+
+    return result
   } catch (error) {
     return orderItems
   }

@@ -9,11 +9,11 @@ export const orderProductSlice = createSlice({
   name: serviceName,
   initialState,
   reducers: {
-    addProductToCart: (state, action) => {
+    updateProductToCart: (state, action) => {
       state.orderItems = action.payload.orderItems
     }
   },
   extraReducers: builder => {}
 })
-export const { addProductToCart } = orderProductSlice.actions
+export const { updateProductToCart } = orderProductSlice.actions
 export default orderProductSlice.reducer
