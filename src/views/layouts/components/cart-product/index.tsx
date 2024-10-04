@@ -34,8 +34,10 @@ import { updateProductToCart } from 'src/stores/order-product'
 
 // ** Types
 import { TItemOrderProduct } from 'src/types/order-product'
+
 // ** Utils
-import { formatNumberToLocal } from 'src/utils'
+import { formatNumberToLocal, isExpiry } from 'src/utils'
+import NoData from 'src/components/no-data'
 
 type TProps = {}
 
@@ -140,53 +142,64 @@ const CartProduct = (props: TProps) => {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        {orderItems?.map((item: TItemOrderProduct) => {
-          return (
-            <StyleMenuItem key={item.product} onClick={() => handleNavigateDetailsProduct(item.slug)}>
-              <Avatar src={item.image} />
-              <Box>
-                <Typography>{item.name}</Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  {item.discount > 0 && (
-                    <Typography
-                      variant='h6'
-                      sx={{
-                        color: theme.palette.error.main,
-                        fontWeight: 'bold',
-                        textDecoration: 'line-through',
-                        fontSize: '10px'
-                      }}
-                    >
-                      {formatNumberToLocal(item.price)} VND
-                    </Typography>
-                  )}
-                  <Typography
-                    variant='h4'
-                    sx={{
-                      color: theme.palette.primary.main,
-                      fontWeight: 'bold',
-                      fontSize: '12px'
-                    }}
-                  >
-                    {item.discount > 0 ? (
-                      <>{formatNumberToLocal((item.price * (100 - item.discount)) / 100)}</>
-                    ) : (
-                      <>{formatNumberToLocal(item.price)}</>
-                    )}{' '}
-                    VND
-                  </Typography>
-                </Box>
-              </Box>
-            </StyleMenuItem>
-          )
-        })}
-        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
-          <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2, mr: 2 }} onClick={handleNavigateMyCart}>
-            {t('View_cart')}
-          </Button>
-        </Box>
+        {orderItems.length > 0 ? (
+          <>
+            <Box sx={{ maxHeight: '400px', overflow: 'auto' }}>
+              {orderItems?.map((item: TItemOrderProduct) => {
+                return (
+                  <StyleMenuItem key={item.product} onClick={() => handleNavigateDetailsProduct(item.slug)}>
+                    <Avatar src={item.image} sx={{ height: '60px !important', width: '60px !important' }} />
+                    <Box>
+                      <Typography>{item.name}</Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        {item.discount > 0 && (
+                          <Typography
+                            variant='h6'
+                            sx={{
+                              color: theme.palette.error.main,
+                              fontWeight: 'bold',
+                              textDecoration: 'line-through',
+                              fontSize: '10px'
+                            }}
+                          >
+                            {formatNumberToLocal(item.price)} VND
+                          </Typography>
+                        )}
+                        <Typography
+                          variant='h4'
+                          sx={{
+                            color: theme.palette.primary.main,
+                            fontWeight: 'bold',
+                            fontSize: '10px'
+                          }}
+                        >
+                          {item.discount > 0 ? (
+                            <>{formatNumberToLocal((item.price * (100 - item.discount)) / 100)}</>
+                          ) : (
+                            <>{formatNumberToLocal(item.price)}</>
+                          )}{' '}
+                          VND
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </StyleMenuItem>
+                )
+              })}
+            </Box>
+            <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+              <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2, mr: 2 }} onClick={handleNavigateMyCart}>
+                {t('View_cart')}
+              </Button>
+            </Box>
+          </>
+        ) : (
+          <Box sx={{ padding: '20px', width: '200px' }}>
+            <NoData widthImage='60px' heightImage='60px' textNodata={t('No_product')} />
+          </Box>
+        )}
       </Menu>
     </React.Fragment>
   )
 }
+
 export default CartProduct

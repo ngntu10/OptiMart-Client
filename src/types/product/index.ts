@@ -12,7 +12,7 @@ export type TParamsCreateProduct = {
   price: number
   description?: string
   slug: string
-  // city: string
+  location: string
   countInStock: number
   status: number
   discountEndDate: Date | null
@@ -31,7 +31,7 @@ export type TParamsEditProduct = {
   status: number
   discountEndDate: Date | null
   discountStartDate: Date | null
-  // city: string
+  location: string
 }
 
 export type TParamsDeleteProduct = {
@@ -57,4 +57,16 @@ export type TProduct = {
   totalReviews: number
   discount: number
   sold: number
+  location: {
+    name: string
+    id: string
+  }
+  likedBy: string[]
+}
+export type  TParamsGetRelatedProduct = {
+  limit?: number
+  page?: number
+  search?: string
+  slug: string
+  order?: string
 }

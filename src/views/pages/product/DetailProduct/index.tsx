@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import Image from 'next/image'
 
 // ** React
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 // ** Mui
 import { Box, Button, Grid, IconButton, Rating, Typography, useTheme } from '@mui/material'
@@ -19,7 +19,7 @@ import { t } from 'i18next'
 import { useTranslation } from 'react-i18next'
 
 // ** Utils
-import { convertUpdateProductToCart, formatNumberToLocal } from 'src/utils'
+import { convertUpdateProductToCart, formatNumberToLocal, isExpiry } from 'src/utils'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 // ** Redux
@@ -31,11 +31,14 @@ import { updateProductToCart } from 'src/stores/order-product'
 import { useAuth } from 'src/hooks/useAuth'
 
 // ** Services
-import { getDetailsProductPublicBySlug } from 'src/services/product'
+import { getDetailsProductPublicBySlug, getListRelatedProductBySlug } from 'src/services/product'
 
 // ** Other
 import { getLocalProductCart, setLocalProductToCart } from 'src/helpers/storage'
 import { TProduct } from 'src/types/product'
+import NoData from 'src/components/no-data'
+import CardRelatedProduct from '../Components/CardRelatedProduct'
+
 
 type TProps = {}
 const DetailsProductPage: NextPage<TProps> = () => {
@@ -43,6 +46,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
   const [loading, setLoading] = useState(false)
   const [dataProduct, setDataProduct] = useState<TProduct | any>({})
   const [amountProduct, setAmountProduct] = useState(1)
+  const [listRelatedProduct, setRelatedProduct] = useState<TProduct[]>([])
 
   // ** Hooks
   const { i18n } = useTranslation()
@@ -73,16 +77,32 @@ const DetailsProductPage: NextPage<TProps> = () => {
       })
   }
 
+  const fetchListRelatedProduct = async (slug: string) => {
+    setLoading(true)
+    await getListRelatedProductBySlug({ params: { slug: slug } })
+      .then(async response => {
+        setLoading(false)
+        const data = response?.data
+        if (data) {
+          setRelatedProduct(data.products)
+        }
+      })
+      .catch(() => {
+        setLoading(false)
+      })
+  }
+
   // ** Handle
   const handleUpdateProductToCart = (item: TProduct) => {
     const productCart = getLocalProductCart()
     const parseData = productCart ? JSON.parse(productCart) : {}
+    const discountItem = isExpiry(item.discountStartDate, item.discountEndDate) ? item.discount : 0
     const listOrderItems = convertUpdateProductToCart(orderItems, {
       name: item.name,
       amount: amountProduct,
       image: item.image,
       price: item.price,
-      discount: item.discount,
+      discount: discountItem,
       product: item.id,
       slug: item.slug
     })
@@ -104,8 +124,13 @@ const DetailsProductPage: NextPage<TProps> = () => {
   useEffect(() => {
     if (productId) {
       fetchGetDetailsProduct(productId)
+      fetchListRelatedProduct(productId)
     }
   }, [productId])
+
+  const memoIsExpiry = useMemo(() => {
+    return isExpiry(dataProduct.discountStartDate, dataProduct.discountEndDate)
+  }, [dataProduct])
 
   return (
     <>
@@ -128,6 +153,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
                   height={50000}
                   style={{
                     height: '80%',
+                    maxHeight: '400px',
                     width: '100%',
                     objectFit: 'contain',
                     borderRadius: '15px'
@@ -151,7 +177,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
                   </Typography>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 2 }}>
-                  {dataProduct?.averageRating && (
+                  {!!dataProduct?.averageRating && (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       <Typography
                         variant='h5'
@@ -178,7 +204,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
                     </Box>
                   )}
                   <Typography sx={{ display: 'flex', alignItems: 'center' }}>
-                    {!!dataProduct.totalReviews ? (
+                    {dataProduct.totalReviews > 0 ? (
                       <span>
                         <b>{dataProduct.totalReviews}</b>
                         {t('Review')}
@@ -193,6 +219,18 @@ const DetailsProductPage: NextPage<TProps> = () => {
                     </Typography>
                   )}
                 </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px', mt: 2 }}>
+                  <Icon icon='carbon:location' />
+                  <Typography
+                    variant='h6'
+                    sx={{
+                      fontWeight: 'bold',
+                      fontSize: '14px'
+                    }}
+                  >
+                    {dataProduct?.location?.name}
+                  </Typography>
+                </Box>
                 <Box
                   sx={{
                     display: 'flex',
@@ -204,7 +242,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
                     borderRadius: '8px'
                   }}
                 >
-                  {dataProduct.discount > 0 && (
+                  {dataProduct.discount > 0 && memoIsExpiry && (
                     <Typography
                       variant='h6'
                       sx={{
@@ -225,14 +263,14 @@ const DetailsProductPage: NextPage<TProps> = () => {
                       fontSize: '24px'
                     }}
                   >
-                    {dataProduct.discount > 0 ? (
+                    {dataProduct.discount > 0 && memoIsExpiry ? (
                       <>{formatNumberToLocal((dataProduct.price * (100 - dataProduct.discount)) / 100)}</>
                     ) : (
                       <>{formatNumberToLocal(dataProduct.price)}</>
                     )}{' '}
                     VND
                   </Typography>
-                  {dataProduct.discount > 0 && (
+                  {dataProduct.discount > 0 && memoIsExpiry && (
                     <Box
                       sx={{
                         backgroundColor: hexToRGBA(theme.palette.error.main, 0.42),
@@ -361,38 +399,122 @@ const DetailsProductPage: NextPage<TProps> = () => {
             </Grid>
           </Box>
         </Grid>
-        <Grid
-          container
-          item
-          md={12}
-          xs={12}
-          sx={{ backgroundColor: theme.palette.background.paper, borderRadius: '15px', py: 5, px: 4, mt: 6 }}
-        >
-          <Box sx={{ height: '100%', width: '100%' }}>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 2,
-                mt: 2,
-                backgroundColor: theme.palette.customColors.bodyBg,
-                padding: '8px',
-                borderRadius: '8px'
-              }}
+        <Grid container md={12} xs={12} mt={6}>
+          <Grid container>
+            <Grid
+              container
+              item
+              md={9}
+              xs={12}
+              sx={{ backgroundColor: theme.palette.background.paper, borderRadius: '15px', py: 5, px: 4 }}
             >
-              <Typography
-                variant='h6'
+              <Box sx={{ height: '100%', width: '100%' }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 2,
+                    mt: 2,
+                    backgroundColor: theme.palette.customColors.bodyBg,
+                    padding: '8px',
+                    borderRadius: '8px'
+                  }}
+                >
+                  <Typography
+                    variant='h6'
+                    sx={{
+                      color: `rgba(${theme.palette.customColors.main}, 0.68)`,
+                      fontWeight: 'bold',
+                      fontSize: '18px'
+                    }}
+                  >
+                    {t('Description_product')}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    mt: 4,
+                    color: `rgba(${theme.palette.customColors.main}, 0.42)`,
+                    fontSize: '14px',
+                    backgroundColor: theme.palette.customColors.bodyBg,
+                    padding: 4,
+                    borderRadius: '10px'
+                  }}
+                  dangerouslySetInnerHTML={{ __html: dataProduct.description }}
+                />
+              </Box>
+            </Grid>
+            <Grid container item md={3} xs={12} mt={{ md: 0, xs: 5 }}>
+              <Box
                 sx={{
-                  color: `rgba(${theme.palette.customColors.main}, 0.68)`,
-                  fontWeight: 'bold',
-                  fontSize: '18px'
+                  height: '100%',
+                  width: '100%',
+                  backgroundColor: theme.palette.background.paper,
+                  borderRadius: '15px',
+                  py: 5,
+                  px: 4
                 }}
+                marginLeft={{ md: 5, xs: 0 }}
               >
-                {t('Description_product')}
-              </Typography>
-            </Box>
-            <Box sx={{ mt: 4 }} dangerouslySetInnerHTML={{ __html: dataProduct.description }} />
-          </Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 2,
+                    mt: 2,
+                    backgroundColor: theme.palette.customColors.bodyBg,
+                    padding: '8px',
+                    borderRadius: '8px'
+                  }}
+                >
+                  <Typography
+                    variant='h6'
+                    sx={{
+                      color: `rgba(${theme.palette.customColors.main}, 0.68)`,
+                      fontWeight: 'bold',
+                      fontSize: '18px'
+                    }}
+                  >
+                    {t('Product_same')}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    mt: 4,
+                  }}
+                >
+                  {listRelatedProduct.length > 0 ? (
+                    <Box sx={{display: "flex", flexDirection: "column", gap: 4}}>
+                      {listRelatedProduct.map((item) => {
+                        return (
+                          <CardRelatedProduct key={item.id} item={item} />
+                        )
+                      })}
+                    </Box>
+                  ): (
+                    <Box sx={{ width: '100%', mt: 10 }}>
+                    <NoData widthImage='60px' heightImage='60px' textNodata={t('No_product')} />
+                  </Box>
+                  )}
+                </Box>
+              </Box>
+            </Grid>
+            <Grid container item md={8} xs={12}>
+              <Box
+                sx={{
+                  height: '100%',
+                  width: '100%',
+                  backgroundColor: theme.palette.background.paper,
+                  borderRadius: '15px',
+                  py: 5,
+                  px: 4
+                }}
+                marginTop={{ md: 5, xs: 0 }}
+              >
+                Revieew
+              </Box>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </>

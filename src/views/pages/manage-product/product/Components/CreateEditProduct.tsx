@@ -35,6 +35,7 @@ import CustomSelect from 'src/components/custom-select'
 
 // ** Services
 import { getDetailsUser } from 'src/services/user'
+import { getAllCities } from 'src/services/city'
 
 // ** Redux
 import { AppDispatch } from 'src/stores'
@@ -64,6 +65,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
   const [optionTypes, setOptionTypes] = useState<{ label: string; value: string }[]>([])
   const [status, setStatus] = useState<number>(1)
   const [fileAvatar, setFileAvatar] = useState<File>()
+  const [optionCities, setOptionCities] = useState<{ label: string; value: string }[]>([])
 
   // ** Props
   const { open, onClose, idProduct } = props
@@ -78,6 +80,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
     name: yup.string().required(t('Required_field')),
     slug: yup.string().required(t('Required_field')),
     type: yup.string().required(t('Required_field')),
+    location: yup.string().required(t('Required_field')),
     countInStock: yup
       .string()
       .required(t('Required_field'))
@@ -152,6 +155,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
     status: number
     discountEndDate: Date | null
     discountStartDate: Date | null
+    location: string
   }
 
   const defaultValues: TDefaultValue = {
@@ -164,7 +168,8 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
     price: '',
     status: 0,
     discountEndDate: null,
-    discountStartDate: null
+    discountStartDate: null,
+    location: ''
   }
 
   const {
@@ -192,13 +197,13 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
             price: Number(data.price),
             discountEndDate: data?.discountEndDate || null,
             discountStartDate: data?.discountStartDate || null,
-            // city: data.city,
             type: data.type,
             discount: Number(data.discount) || 0,
             description: data.description ? draftToHtml(convertToRaw(data.description.getCurrentContent())) : '',
             status: status,
             id: idProduct,
-            countInStock: Number(data.countInStock)
+            countInStock: Number(data.countInStock),
+            location: data.location
           })
         )
         if (fileAvatar) {
@@ -213,7 +218,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
             discountEndDate: data.discountEndDate || null,
             discountStartDate: data.discountStartDate || null,
             type: data.type,
-            // city: data.city,
+            location: data.location,
             discount: Number(data.discount) || 0,
             description: data.description ? draftToHtml(convertToRaw(data.description.getCurrentContent())) : '',
             status: status,
@@ -276,6 +281,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
         setLoading(false)
       })
   }
+
   const fetchAllProductTypes = async () => {
     setLoading(true)
     await getAllProductTypes({ params: { limit: -1, page: -1 } })
@@ -290,6 +296,22 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
         setLoading(false)
       })
   }
+
+  const fetchAllCities = async () => {
+    setLoading(true)
+    await getAllCities({ params: { limit: -1, page: -1 } })
+      .then(res => {
+        const data = res?.data.cities
+        if (data) {
+          setOptionCities(data?.map((item: { name: string; _id: string }) => ({ label: item.name, value: item._id })))
+        }
+        setLoading(false)
+      })
+      .catch(e => {
+        setLoading(false)
+      })
+  }
+
   useEffect(() => {
     if (!open) {
       reset({
@@ -304,6 +326,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
 
   useEffect(() => {
     fetchAllProductTypes()
+    fetchAllCities()
   }, [])
 
   return (
@@ -617,6 +640,48 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
                             />
                           )}
                           name='discountEndDate'
+                        />
+                      </Grid>
+                      <Grid item md={6} xs={12}>
+                        <Controller
+                          name='location'
+                          control={control}
+                          render={({ field: { onChange, onBlur, value } }) => (
+                            <Box>
+                              <InputLabel
+                                sx={{
+                                  fontSize: '13px',
+                                  marginBottom: '4px',
+                                  display: 'block',
+                                  color: errors?.type
+                                    ? theme.palette.error.main
+                                    : `rgba(${theme.palette.customColors.main}, 0.68)`
+                                }}
+                              >
+                                {t('Location')}
+                              </InputLabel>
+                              <CustomSelect
+                                fullWidth
+                                onChange={onChange}
+                                options={optionCities}
+                                error={Boolean(errors?.location)}
+                                onBlur={onBlur}
+                                value={value}
+                                placeholder={t('Select')}
+                              />
+                              {errors?.location?.message && (
+                                <FormHelperText
+                                  sx={{
+                                    color: errors?.type
+                                      ? theme.palette.error.main
+                                      : `rgba(${theme.palette.customColors.main}, 0.42)`
+                                  }}
+                                >
+                                  {errors?.location?.message}
+                                </FormHelperText>
+                              )}
+                            </Box>
+                          )}
                         />
                       </Grid>
                       <Grid item md={12} xs={12}>

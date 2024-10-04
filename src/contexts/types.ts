@@ -16,6 +16,7 @@ export type UserDataType = {
   fullName: string
   username: string
   imageUrl?: string | null
+  likedProducts: string[]
 }
 
 export type AuthValuesType = {

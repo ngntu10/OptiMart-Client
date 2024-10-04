@@ -1,39 +1,27 @@
 // ** React
-import React, { useEffect, useMemo } from 'react'
+import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
-
 // ** Mui
 import { styled, useTheme } from '@mui/material/styles'
 import Card from '@mui/material/Card'
 import CardMedia from '@mui/material/CardMedia'
 import CardContent from '@mui/material/CardContent'
-import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
-import { Box, Button, Rating } from '@mui/material'
+import { Box, Rating } from '@mui/material'
 import { TProduct } from 'src/types/product'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
-
 /// ** Components
 import Icon from 'src/components/Icon'
-
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
-import { updateProductToCart } from 'src/stores/order-product'
-
 // ** Others
 import { ROUTE_CONFIG } from 'src/configs/route'
-import { convertUpdateProductToCart, formatNumberToLocal, isExpiry } from 'src/utils'
-
+import { formatNumberToLocal, isExpiry } from 'src/utils'
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
-
-// ** Storage
-import { getLocalProductCart, setLocalProductToCart } from 'src/helpers/storage'
-import { likeProductAsync, unLikeProductAsync } from 'src/stores/product/actions'
-
-interface TCardProduct {
+interface TCardRelatedProduct {
   item: TProduct
 }
 const StyleCard = styled(Card)(({ theme }) => ({
@@ -43,73 +31,28 @@ const StyleCard = styled(Card)(({ theme }) => ({
     objectFit: 'contain'
   }
 }))
-const CardProduct = (props: TCardProduct) => {
+const CardRelatedProduct = (props: TCardRelatedProduct) => {
   // ** Props
   const { item } = props
+  // ** Hooks
   const { t } = useTranslation()
   const theme = useTheme()
   const router = useRouter()
   const { user } = useAuth()
-
   // ** Redux
   const dispatch: AppDispatch = useDispatch()
   const { orderItems } = useSelector((state: RootState) => state.orderProduct)
-
   // ** handle
   const handleNavigateDetails = (slug: string) => {
     router.push(`${ROUTE_CONFIG.PRODUCT}/${slug}`)
   }
-
-  const handleUpdateProductToCart = (item: TProduct) => {
-    const productCart = getLocalProductCart()
-    const parseData = productCart ? JSON.parse(productCart) : {}
-    const discountItem = isExpiry(item.discountStartDate, item.discountEndDate) ? item.discount : 0
-    const listOrderItems = convertUpdateProductToCart(orderItems, {
-      name: item.name,
-      amount: 1,
-      image: item.image,
-      price: item.price,
-      discount: discountItem,
-      product: item.id,
-      slug: item.slug
-    })
-    if (user?.id) {
-      dispatch(
-        updateProductToCart({
-          orderItems: listOrderItems
-        })
-      )
-      setLocalProductToCart({ ...parseData, [user?.id]: listOrderItems })
-    } else {
-      router.replace({
-        pathname: '/login',
-        query: { returnUrl: router.asPath }
-      })
-    }
-  }
-
-  const handleToggleLikeProduct = (id: string, isLiked: boolean) => {
-    if (user?.id) {
-      if (isLiked) {
-        dispatch(unLikeProductAsync({ productId: id }))
-      } else {
-        dispatch(likeProductAsync({ productId: id }))
-      }
-    } else {
-      router.replace({
-        pathname: '/login',
-        query: { returnUrl: router.asPath }
-      })
-    }
-  }
-  const memoIsExpiry = useMemo(() => {
+  const memoIsExpiry = React.useMemo(() => {
     return isExpiry(item.discountStartDate, item.discountEndDate)
   }, [item])
-
   return (
     <StyleCard sx={{ width: '100%' }}>
-      <CardMedia component='img' height='194' image={item.image} alt='image' />
-      <CardContent sx={{ padding: '8px 12px' }}>
+      <CardMedia component='img' height='160' image={item.image} alt='image' />
+      <CardContent sx={{ padding: '8px 12px 12px !important' }}>
         <Typography
           onClick={() => handleNavigateDetails(item.slug)}
           variant='h5'
@@ -122,7 +65,6 @@ const CardProduct = (props: TCardProduct) => {
             display: '-webkit-box',
             '-webkitLineClamp': '2',
             '-webkitBoxOrient': 'vertical',
-            minHeight: '48px',
             mb: 2
           }}
         >
@@ -226,49 +168,9 @@ const CardProduct = (props: TCardProduct) => {
               {!!item.totalReviews ? <b>{item.totalReviews}</b> : <span>{t('not_review')}</span>}
             </Typography>
           </Box>
-          <IconButton
-            onClick={() => handleToggleLikeProduct(item.id, Boolean(user && item?.likedBy?.includes(user.id)))}
-          >
-            {user && item?.likedBy?.includes(user.id) ? (
-              <Icon icon='mdi:heart' style={{ color: theme.palette.primary.main }} />
-            ) : (
-              <Icon icon='tabler:heart' style={{ color: theme.palette.primary.main }} />
-            )}
-          </IconButton>
         </Box>
       </CardContent>
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '0 12px 10px', gap: 2 }}>
-        <Button
-          variant='outlined'
-          fullWidth
-          sx={{
-            height: 40,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '2px',
-            fontWeight: 'bold'
-          }}
-          onClick={() => handleUpdateProductToCart(item)}
-        >
-          <Icon icon='bx:cart' fontSize={24} style={{ position: 'relative', top: '-2px' }} />
-          {t('Add_to_cart')}
-        </Button>
-        <Button
-          fullWidth
-          variant='contained'
-          sx={{
-            height: 40,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '2px',
-            fontWeight: 'bold'
-          }}
-        >
-          <Icon icon='icon-park-outline:buy' fontSize={20} style={{ position: 'relative', top: '-2px' }} />
-          {t('Buy_now')}
-        </Button>
-      </Box>
     </StyleCard>
   )
 }
-export default CardProduct
+export default CardRelatedProduct
