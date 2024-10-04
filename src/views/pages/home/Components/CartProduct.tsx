@@ -1,15 +1,10 @@
 import * as React from 'react'
 import { styled, useTheme } from '@mui/material/styles'
 import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
 import CardMedia from '@mui/material/CardMedia'
 import CardContent from '@mui/material/CardContent'
-import CardActions from '@mui/material/CardActions'
-import Collapse from '@mui/material/Collapse'
-import Avatar from '@mui/material/Avatar'
 import IconButton, { IconButtonProps } from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
-import { red } from '@mui/material/colors'
 import Icon from 'src/components/Icon'
 import { Box, Button, Rating } from '@mui/material'
 import { useTranslation } from 'react-i18next'
@@ -30,7 +25,8 @@ const CardProduct = (props: TCardProduct) => {
   console.log('item', { item })
   return (
     <StyleCard sx={{ width: '100%' }}>
-      <CardMedia component='img' height='194' image={item.image} alt='image' />
+      <CardMedia component='img' height='194' image={item.image} alt='image'
+        sx={{ objectFit: 'contain' }} />
       <CardContent sx={{ padding: '8px 12px' }}>
         <Typography
           variant='h5'

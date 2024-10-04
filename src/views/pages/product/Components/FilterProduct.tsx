@@ -95,11 +95,13 @@ const FilterProduct = (props: TFilterProduct) => {
             name='radio-locations-group'
           >
             {optionCities.map(city => {
+              
+            
               return (
                 <FormControlLabel
                   key={city.value}
                   value={city.value}
-                  control={<Radio checked={locationSelected === city.value} />}
+                  control={<Radio checked={locationSelected == city.value} />}
                   label={city.label}
                 />
               )

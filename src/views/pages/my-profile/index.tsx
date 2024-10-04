@@ -152,7 +152,7 @@ const MyProfilePage: NextPage<TProps> = () => {
     setLoading(true)
     await getAllCities({ params: { limit: -1, page: -1 } })
       .then(res => {
-        const data = res?.data.cities
+        const data = res?.data
         if (data) {
           setOptionCities(data?.map((item: { name: string; id: string }) => ({ label: item.name, value: item.id })))
         }

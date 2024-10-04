@@ -297,13 +297,14 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
       })
   }
 
+
   const fetchAllCities = async () => {
     setLoading(true)
     await getAllCities({ params: { limit: -1, page: -1 } })
       .then(res => {
-        const data = res?.data.cities
+        const data = res?.data
         if (data) {
-          setOptionCities(data?.map((item: { name: string; _id: string }) => ({ label: item.name, value: item._id })))
+          setOptionCities(data?.map((item: { name: string; id: string }) => ({ label: item.name, value: item.id })))
         }
         setLoading(false)
       })

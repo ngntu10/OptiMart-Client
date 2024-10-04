@@ -27,13 +27,13 @@ import { getAllProductsPublic } from 'src/services/product'
 import { formatFilter } from 'src/utils'
 import { TProduct } from 'src/types/product'
 import { styled } from '@mui/material'
-import FilterProduct from '../product/Components/FilterProduct'
-import CardProduct from './Components/CartProduct'
+import FilterProduct from 'src/views/pages/product/Components/FilterProduct'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
 import toast from 'react-hot-toast'
 import { resetInitialState } from 'src/stores/product'
 import { OBJECT_TYPE_ERROR_PRODUCT } from 'src/configs/error'
+import CardProduct from 'src/views/pages/product/Components/CartProduct'
 
 type TProps = {}
 const StyledTabs = styled(Tabs)<TabsProps>(({ theme }) => ({
@@ -142,9 +142,9 @@ const HomePage: NextPage<TProps> = () => {
     setLoading(true)
     await getAllCities({ params: { limit: -1, page: -1 } })
       .then(res => {
-        const data = res?.data.cities
+        const data = res?.data
         if (data) {
-          setOptionCities(data?.map((item: { name: string; _id: string }) => ({ label: item.name, value: item._id })))
+          setOptionCities(data?.map((item: { name: string; id: string }) => ({ label: item.name, value: item.id })))
         }
         setLoading(false)
       })
@@ -221,7 +221,7 @@ const HomePage: NextPage<TProps> = () => {
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
           <Box sx={{ width: '300px' }}>
             <InputSearch
-              placeholder={t('Search_name_product')}
+              placeholder={t('Search_name_product')}  
               value={searchBy}
               onChange={(value: string) => setSearchBy(value)}
             />
