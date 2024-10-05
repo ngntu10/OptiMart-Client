@@ -16,6 +16,7 @@ import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 /// ** Components
 import Icon from 'src/components/Icon'
+import DefaultProduct from '/public/images/default-product.png'
 
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
@@ -46,6 +47,7 @@ const StyleCard = styled(Card)(({ theme }) => ({
 const CardProduct = (props: TCardProduct) => {
   // ** Props
   const { item } = props
+  console.log(item);
   const { t } = useTranslation()
   const theme = useTheme()
   const router = useRouter()
@@ -108,7 +110,7 @@ const CardProduct = (props: TCardProduct) => {
 
   return (
     <StyleCard sx={{ width: '100%' }}>
-      <CardMedia component='img' height='194' image={item.image} alt='image' />
+      <CardMedia component='img' height='194' image={item.image || '/images/default-product.png'} alt='image' />
       <CardContent sx={{ padding: '8px 12px' }}>
         <Typography
           onClick={() => handleNavigateDetails(item.slug)}
@@ -160,9 +162,9 @@ const CardProduct = (props: TCardProduct) => {
           {item.discount > 0 && memoIsExpiry && (
             <Box
               sx={{
-                backgroundColor: hexToRGBA(theme.palette.error.main, 0.42),
-                width: '36px',
-                height: '14px',
+                backgroundColor: hexToRGBA(theme.palette.error.main, 0.38),
+                width: '40px',
+                height: '18px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -173,7 +175,8 @@ const CardProduct = (props: TCardProduct) => {
                 variant='h6'
                 sx={{
                   color: theme.palette.error.main,
-                  fontSize: '10px',
+                  fontSize: '12px',
+                  fontWeight: '600',
                   whiteSpace: 'nowrap'
                 }}
               >
@@ -189,12 +192,12 @@ const CardProduct = (props: TCardProduct) => {
             <span>Hết hàng</span>
           )}
         </Typography>
-        {item.sold && (
+        {/* {item.sold && (
           <Typography variant='body2' color='text.secondary'>
             <>{t('Sold_product', { count: item.countInStock })}</>
           </Typography>
-        )}
-        {item?.location?.name && (
+        )} */}
+        {item?.city?.name && (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px', mt: 2 }}>
             <Icon icon='carbon:location' />
             <Typography
@@ -204,7 +207,7 @@ const CardProduct = (props: TCardProduct) => {
                 fontSize: '14px'
               }}
             >
-              {item?.location?.name}
+              {item?.city?.name}
             </Typography>
           </Box>
         )}
@@ -227,9 +230,9 @@ const CardProduct = (props: TCardProduct) => {
             </Typography>
           </Box>
           <IconButton
-            onClick={() => handleToggleLikeProduct(item.id, Boolean(user && item?.likedBy?.includes(user.id)))}
+            onClick={() => handleToggleLikeProduct(item.id, Boolean(user && item?.userLikedList?.includes(user.id)))}
           >
-            {user && item?.likedBy?.includes(user.id) ? (
+            {user && item?.userLikedList?.includes(user.id) ? (
               <Icon icon='mdi:heart' style={{ color: theme.palette.primary.main }} />
             ) : (
               <Icon icon='tabler:heart' style={{ color: theme.palette.primary.main }} />

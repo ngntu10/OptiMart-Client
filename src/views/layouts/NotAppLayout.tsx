@@ -28,7 +28,6 @@ const NotAppLayout: NextPage<TProps> = ({ children }) => {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      {/* <VerticalLayout toggleDrawer={() => {}} open={open} /> */}
       <HorizontalLayout toggleDrawer={() => {}} open={false} isHideMenu={true} />
       <Box
         component='main'
@@ -37,6 +36,7 @@ const NotAppLayout: NextPage<TProps> = ({ children }) => {
             theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[900],
           flexGrow: 1,
           height: '100vh',
+          // width: '100vw',
           overflow: 'auto'
         }}
       >
@@ -44,7 +44,7 @@ const NotAppLayout: NextPage<TProps> = ({ children }) => {
         <Container
           sx={{
             m: 4,
-            width: 'calc(100vw - 32px)',
+            width: 'calc(100vw - 50px)',
             maxWidth: 'unset !important',
             overflow: 'auto',
             maxHeight: `calc(100vh - ${theme.mixins.toolbar.minHeight} - 32px)`,

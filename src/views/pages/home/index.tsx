@@ -89,6 +89,7 @@ const HomePage: NextPage<TProps> = () => {
       params: { limit: pageSize, page: page, search: searchBy, order: sortBy, ...formatFilter(filterBy) }
     }
     await getAllProductsPublic(query).then((res: any) => {
+      console.log(res);
       if (res?.data) {
         setLoading(false)
         setProductsPublic({
@@ -125,7 +126,6 @@ const HomePage: NextPage<TProps> = () => {
     await getAllProductTypes({ params: { limit: -1, page: -1 } })
       .then(res => {
         const data = res?.data
-        console.log(data)
         if (data) {
           setOptionTypes(data?.map((item: { name: string; id: string }) => ({ label: item.name, value: item.id })))
           setProductTypeSelected(data?.[0]?.id)

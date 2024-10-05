@@ -13,6 +13,7 @@ import { Box, Button, Grid, IconButton, Rating, Typography, useTheme } from '@mu
 import CustomTextField from 'src/components/text-field'
 import Icon from 'src/components/Icon'
 import Spinner from 'src/components/spinner'
+import DefaultProduct from '/public/images/default-product.png'
 
 // ** Translate
 import { t } from 'i18next'
@@ -38,7 +39,6 @@ import { getLocalProductCart, setLocalProductToCart } from 'src/helpers/storage'
 import { TProduct } from 'src/types/product'
 import NoData from 'src/components/no-data'
 import CardRelatedProduct from '../Components/CardRelatedProduct'
-
 
 type TProps = {}
 const DetailsProductPage: NextPage<TProps> = () => {
@@ -83,8 +83,9 @@ const DetailsProductPage: NextPage<TProps> = () => {
       .then(async response => {
         setLoading(false)
         const data = response?.data
+        console.log(data)
         if (data) {
-          setRelatedProduct(data.products)
+          setRelatedProduct(data)
         }
       })
       .catch(() => {
@@ -135,7 +136,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
   return (
     <>
       {loading && <Spinner />}
-      <Grid container>
+      <Grid container sx={{ overflow: 'hidden' }}>
         <Grid
           container
           item
@@ -147,12 +148,12 @@ const DetailsProductPage: NextPage<TProps> = () => {
             <Grid container spacing={8}>
               <Grid item md={5} xs={12}>
                 <Image
-                  src={dataProduct?.image}
+                  src={dataProduct?.image || DefaultProduct}
                   alt='banner'
-                  width={50000}
-                  height={50000}
+                  width={500}
+                  height={500}
                   style={{
-                    height: '80%',
+                    height: '90%',
                     maxHeight: '400px',
                     width: '100%',
                     objectFit: 'contain',
@@ -228,7 +229,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
                       fontSize: '14px'
                     }}
                   >
-                    {dataProduct?.location?.name}
+                    {dataProduct?.city?.name}
                   </Typography>
                 </Box>
                 <Box
@@ -480,21 +481,19 @@ const DetailsProductPage: NextPage<TProps> = () => {
                 </Box>
                 <Box
                   sx={{
-                    mt: 4,
+                    mt: 4
                   }}
                 >
                   {listRelatedProduct.length > 0 ? (
-                    <Box sx={{display: "flex", flexDirection: "column", gap: 4}}>
-                      {listRelatedProduct.map((item) => {
-                        return (
-                          <CardRelatedProduct key={item.id} item={item} />
-                        )
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                      {listRelatedProduct.map(item => {
+                        return <CardRelatedProduct key={item.id} item={item} />
                       })}
                     </Box>
-                  ): (
+                  ) : (
                     <Box sx={{ width: '100%', mt: 10 }}>
-                    <NoData widthImage='60px' heightImage='60px' textNodata={t('No_product')} />
-                  </Box>
+                      <NoData widthImage='60px' heightImage='60px' textNodata={t('No_product')} />
+                    </Box>
                   )}
                 </Box>
               </Box>

@@ -144,7 +144,7 @@ const ProductListPage: NextPage<TProps> = () => {
     if (sortOption) {
       setSortBy(`${sortOption.field} ${sortOption.sort}`)
     } else {
-      setSortBy('createdAt-desc')
+      setSortBy('createdAt desc')
     }
   }
   const handleCloseCreateEdit = () => {
@@ -181,7 +181,6 @@ const ProductListPage: NextPage<TProps> = () => {
     setLoading(true)
     await getAllProductTypes({ params: { limit: -1, page: -1 } })
       .then(res => {
-        console.log(res)
         const data = res?.data
         if (data) {
           setOptionTypes(data?.map((item: { name: string; id: string }) => ({ label: item.name, value: item.id })))

@@ -3,6 +3,7 @@ export type TParamsGetProducts = {
   page?: number
   search?: string
   order?: string
+  status?: string
 }
 
 export type TParamsCreateProduct = {
@@ -57,13 +58,13 @@ export type TProduct = {
   totalReviews: number
   discount: number
   sold: number
-  location: {
+  city: {
     name: string
     id: string
   }
-  likedBy: string[]
+  userLikedList: string[]
 }
-export type  TParamsGetRelatedProduct = {
+export type TParamsGetRelatedProduct = {
   limit?: number
   page?: number
   search?: string

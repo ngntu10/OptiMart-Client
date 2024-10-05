@@ -140,8 +140,8 @@ export const productSlice = createSlice({
     })
     builder.addCase(likeProductAsync.fulfilled, (state, action) => {
       state.isLoading = false
-      state.isSuccessLike = !!action.payload?.data?._id
-      state.isErrorLike = !action.payload?.data?._id
+      state.isSuccessLike = !!action.payload?.data
+      state.isErrorLike = !action.payload?.data
       state.messageErrorLike = action.payload?.message
       state.typeError = action.payload?.typeError
     })
@@ -151,8 +151,8 @@ export const productSlice = createSlice({
     })
     builder.addCase(unLikeProductAsync.fulfilled, (state, action) => {
       state.isLoading = false
-      state.isSuccessUnLike = !!action.payload?.data?._id
-      state.isErrorUnLike = !action.payload?.data?._id
+      state.isSuccessUnLike = !!action.payload?.data
+      state.isErrorUnLike = !action.payload?.data
       state.messageErrorUnLike = action.payload?.message
       state.typeError = action.payload?.typeError
     })

@@ -122,14 +122,7 @@ export const getDetailsProductPublicBySlug = async (slug: string) => {
 export const likeProduct = async (data: { productId: string }) => {
   try {
     const res = await instanceAxios.post(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/like`, data)
-    if (res?.data?.status === 'Success') {
-      return {
-        data: { _id: 1 }
-      }
-    }
-    return {
-      data: null
-    }
+    return res?.data
   } catch (error: any) {
     return error?.response?.data
   }
@@ -137,14 +130,7 @@ export const likeProduct = async (data: { productId: string }) => {
 export const unLikeProduct = async (data: { productId: string }) => {
   try {
     const res = await instanceAxios.post(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/unlike`, data)
-    if (res?.data?.status === 'Success') {
-      return {
-        data: { _id: 1 }
-      }
-    }
-    return {
-      data: null
-    }
+    return res?.data
   } catch (error: any) {
     return error?.response?.data
   }
