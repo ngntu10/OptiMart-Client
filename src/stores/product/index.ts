@@ -176,8 +176,8 @@ export const productSlice = createSlice({
     })
     builder.addCase(getAllProductsLikedAsync.fulfilled, (state, action) => {
       state.isLoading = false
-      state.likedProducts.data = action.payload?.data?.products || []
-      state.likedProducts.total = action.payload?.data?.totalCount
+      state.likedProducts.data = action.payload?.data || []
+      state.likedProducts.total = action.payload?.totalCount
     })
     builder.addCase(getAllProductsLikedAsync.rejected, (state, action) => {
       state.isLoading = false

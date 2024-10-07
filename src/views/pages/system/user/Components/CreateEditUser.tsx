@@ -214,6 +214,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
     await getDetailsUser(id)
       .then(res => {
         const data = res.data
+        console.log(res);
         if (data) {
           reset({
             fullName: toFullName(data?.lastName, data?.middleName, data?.firstName, i18n.language),

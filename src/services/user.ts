@@ -46,7 +46,6 @@ export const deleteUser = async (id: string) => {
 export const getDetailsUser = async (id: string) => {
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.SYSTEM.USER.INDEX}/${id}`)
-
     return res
   } catch (error: any) {
     return error?.response?.data

@@ -84,7 +84,7 @@ export const changeProductImage = async (data: { file: File; idProduct: string }
 
 export const getAllProductsPublic = async (data: { params: TParamsGetProducts }) => {
   try {
-    const res = await axios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public`, data)
+    const res = await axios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public`, data)  
     return res.data
   } catch (error) {
     return error
@@ -111,7 +111,8 @@ export const getDetailsProductPublic = async (id: string) => {
 
 export const getDetailsProductPublicBySlug = async (slug: string) => {
   try {
-    const res = await axios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public/slug/${slug}`)
+    const data = { params: { isPublic: true } }
+    const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public/slug/${slug}`, data)
 
     return res
   } catch (error: any) {

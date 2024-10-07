@@ -10,6 +10,7 @@ import { useRouter } from 'next/router'
 
 // ** Config
 import { ACCESS_TOKEN } from 'src/configs/auth'
+import authConfig, { LIST_PAGE_PUBLIC } from 'src/configs/auth'
 
 // ** Config
 import { API_ENDPOINT } from 'src/configs/api'
@@ -52,7 +53,8 @@ const cleanUserData = (data: any): UserDataType => {
     email: data.email,
     fullName: data.fullName,
     username: data.username,
-    imageUrl: data.imageUrl || null
+    imageUrl: data.imageUrl || null,
+    likedProducts: []
   }
 }
 
@@ -132,6 +134,16 @@ const AuthProvider = ({ children }: Props) => {
   const handleLogout = () => {
     setUser(null)
     clearLocalUserData()
+    if (!LIST_PAGE_PUBLIC?.some(item => router.asPath?.startsWith(item))) {
+      if (router.asPath !== '/') {
+        router.replace({
+          pathname: '/login',
+          query: { returnUrl: router.asPath }
+        })
+      } else {
+        router.replace('/login')
+      }
+    }
     dispatch(
       updateProductToCart({
         orderItems: []

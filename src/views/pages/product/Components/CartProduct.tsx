@@ -47,7 +47,6 @@ const StyleCard = styled(Card)(({ theme }) => ({
 const CardProduct = (props: TCardProduct) => {
   // ** Props
   const { item } = props
-  console.log(item);
   const { t } = useTranslation()
   const theme = useTheme()
   const router = useRouter()
