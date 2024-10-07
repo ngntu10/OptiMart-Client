@@ -52,9 +52,14 @@ const cleanUserData = (data: any): UserDataType => {
     role: data.role,
     email: data.email,
     fullName: data.fullName,
+    firstName: data.firstName,
+    lastName: data.lastName,
+    middleName: data.middleName,
     username: data.username,
     imageUrl: data.imageUrl || null,
-    likedProducts: []
+    likedProducts: [],
+    city: data.city.name,
+    phoneNumber: data.phoneNumber
   }
 }
 
@@ -106,8 +111,9 @@ const AuthProvider = ({ children }: Props) => {
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
     loginAuth({ email: params.email, password: params.password })
       .then(async response => {
+        console.log(response);
         if (response.data) {
-          const user = cleanUserData(response.data.user)
+          const user = response.data.user
           if (params.rememberMe) {
             setLocalUserData(
               JSON.stringify(response.data.user),

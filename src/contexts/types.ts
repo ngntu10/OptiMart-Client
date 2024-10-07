@@ -13,10 +13,16 @@ export type UserDataType = {
     permissions: string[]
   }
   email: string
+  firstName: string
+  lastName: string
+  middleName: string
   fullName: string
   username: string
   imageUrl?: string | null
   likedProducts: string[]
+  city: string
+  phoneNumber: string
+  address?: string
 }
 
 export type AuthValuesType = {

@@ -2,9 +2,10 @@ export const ROUTE_CONFIG = {
   MY_PROFILE: '/my-profile',
   HOME: '/',
   LOGIN: '/login',
-  PRODUCT: "/product",
+  PRODUCT: '/product',
   MY_CART: '/my-cart',
-  MY_PRODUCT: "/my-product",
+  MY_PRODUCT: '/my-product',
+  CHECKOUT_PRODUCT: '/checkout-product',
   CHANGE_PASSWORD: '/change-password',
   SYSTEM: {
     ROLE: '/system/role',

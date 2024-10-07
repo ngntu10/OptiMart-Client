@@ -32,6 +32,9 @@ import { useAuth } from 'src/hooks/useAuth'
 import { TItemOrderProduct } from 'src/types/order-product'
 import { getLocalProductCart, setLocalProductToCart } from 'src/helpers/storage'
 import NoData from 'src/components/no-data'
+import { useRouter } from 'next/router'
+import { ROUTE_CONFIG } from 'src/configs/route'
+
 type TProps = {}
 type TDefaultValue = {
   email: string
@@ -44,17 +47,41 @@ type TDefaultValue = {
 const MyCartPage: NextPage<TProps> = () => {
   // State
   const [selectedRows, setSelectedRows] = useState<string[]>([])
+
   // ** Hooks
   const { i18n } = useTranslation()
   const { user } = useAuth()
+  const router = useRouter()
+
   // ** theme
   const theme = useTheme()
+
   // ** redux
   const dispatch: AppDispatch = useDispatch()
   const { orderItems } = useSelector((state: RootState) => state.orderProduct)
+
   const memoListAllProductIds = useMemo(() => {
     return orderItems.map((item: TItemOrderProduct) => item.product)
   }, [orderItems])
+
+  const memoItemsSelectedProduct = useMemo(() => {
+    return selectedRows.map(idSelected => {
+      const findItem: any = orderItems.find((item: TItemOrderProduct) => item.product === idSelected)
+      if (findItem) {
+        return {
+          ...findItem
+        }
+      }
+    })
+  }, [selectedRows, orderItems])
+  const memoTotalSelectedProduct = useMemo(() => {
+    const total = memoItemsSelectedProduct.reduce((result, current: TItemOrderProduct) => {
+      const currentPrice = current.discount > 0 ? (current.price * (100 - current.discount)) / 100 : current.price
+      return result + currentPrice * current.amount
+    }, 0)
+    return total
+  }, [memoItemsSelectedProduct])
+
   // ** Handle
   const handleChangeAmountCart = (item: TItemOrderProduct, amount: number) => {
     const productCart = getLocalProductCart()
@@ -122,6 +149,22 @@ const MyCartPage: NextPage<TProps> = () => {
       setLocalProductToCart({ ...parseData, [user?.id]: filteredItems })
     }
   }
+
+  const handleNavigateCheckoutProduct = () => {
+    console.log('check')
+    const formatData = JSON.stringify(memoItemsSelectedProduct)
+    router.push(
+      {
+        pathname: ROUTE_CONFIG.CHECKOUT_PRODUCT,
+        query: {
+          totalPrice: memoTotalSelectedProduct,
+          productsSelected: formatData
+        }
+      },
+      'checkout-product'
+    )
+  }
+
   return (
     <>
       {/* {loading || (isLoading && <Spinner />)} */}
@@ -308,9 +351,16 @@ const MyCartPage: NextPage<TProps> = () => {
             <NoData widthImage='80px' heightImage='80px' textNodata={t('No_product')} />
           </Box>
         )}
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '2px' }}>
+          <Typography sx={{ fontSize: '24px', fontWeight: 600 }}>{t('Sum_money')}:</Typography>
+          <Typography sx={{ fontSize: '24px', fontWeight: 600, color: theme.palette.primary.main }}>
+            {formatNumberToLocal(memoTotalSelectedProduct)} VND
+          </Typography>
+        </Box>
       </Box>
       <Box sx={{ width: '100%', display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
         <Button
+          onClick={handleNavigateCheckoutProduct}
           disabled={!selectedRows.length}
           variant='contained'
           sx={{
