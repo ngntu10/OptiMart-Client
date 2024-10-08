@@ -122,13 +122,14 @@ const CheckoutProductPage: NextPage<TProps> = () => {
         )
         setPaymentSelected(res?.data?.paymentTypes?.[0]?.id)
       }
-    })
+    })  
   }
   const handleGetListDeliveryMethod = async () => {
     await getAllDeliveryTypes({ params: { limit: 20, page: 1 } }).then(res => {
       if (res.data) {
+        console.log(res?.data);
         setOptionDeliveries(
-          res?.data?.data.map((item: { name: string; id: string; price: string }) => ({
+          res?.data?.map((item: { name: string; id: string; price: string }) => ({
             label: item.name,
             value: item.id,
             price: item.price

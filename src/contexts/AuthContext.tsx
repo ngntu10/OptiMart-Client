@@ -55,11 +55,12 @@ const cleanUserData = (data: any): UserDataType => {
     firstName: data.firstName,
     lastName: data.lastName,
     middleName: data.middleName,
-    username: data.username,
-    imageUrl: data.imageUrl || null,
+    username: data.userName,
+    imageUrl: data.imageUrl,
     likedProducts: [],
     city: data.city.name,
-    phoneNumber: data.phoneNumber
+    phoneNumber: data.phoneNumber,
+    address: data.address
   }
 }
 
@@ -89,7 +90,7 @@ const AuthProvider = ({ children }: Props) => {
           })
           .then(async response => {
             setLoading(false)
-            const user = cleanUserData(response.data)
+            const user = response.data
             setUser(user)
           })
           .catch(e => {
@@ -111,9 +112,10 @@ const AuthProvider = ({ children }: Props) => {
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
     loginAuth({ email: params.email, password: params.password })
       .then(async response => {
-        console.log(response);
+        console.log(response)
         if (response.data) {
           const user = response.data.user
+          console.log(user);
           if (params.rememberMe) {
             setLocalUserData(
               JSON.stringify(response.data.user),

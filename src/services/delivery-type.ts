@@ -50,7 +50,6 @@ export const deleteDeliveryType = async (id: string) => {
 
 export const getDetailsDeliveryType = async (id: string) => {
   try {
-    console.log(`${API_ENDPOINT.SETTING.DELIVERY_TYPE.INDEX}/${id}`);
     const res = await instanceAxios.get(`${API_ENDPOINT.SETTING.DELIVERY_TYPE.INDEX}/${id}`)
     return res
   } catch (error: any) {
