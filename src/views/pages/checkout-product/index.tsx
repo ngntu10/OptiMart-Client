@@ -112,10 +112,10 @@ const CheckoutProductPage: NextPage<TProps> = () => {
   }
   // ** Fetch API
   const handleGetListPaymentMethod = async () => {
-    await getAllPaymentTypes({ params: { limit: -1, page: -1 } }).then((res:any) => {
+    await getAllPaymentTypes({ params: { limit: 20, page: 1 } }).then((res: any) => {
       if (res.data) {
         setOptionPayments(
-          res?.data?.paymentTypes?.map((item: { name: string; id: string }) => ({
+          res?.data?.data.map((item: { name: string; id: string }) => ({
             label: item.name,
             value: item.id
           }))
@@ -125,10 +125,10 @@ const CheckoutProductPage: NextPage<TProps> = () => {
     })
   }
   const handleGetListDeliveryMethod = async () => {
-    await getAllDeliveryTypes({ params: { limit: -1, page: -1 } }).then(res => {
+    await getAllDeliveryTypes({ params: { limit: 20, page: 1 } }).then(res => {
       if (res.data) {
         setOptionDeliveries(
-          res?.data?.deliveryTypes?.map((item: { name: string; id: string; price: string }) => ({
+          res?.data?.data.map((item: { name: string; id: string; price: string }) => ({
             label: item.name,
             value: item.id,
             price: item.price
@@ -292,16 +292,17 @@ const CheckoutProductPage: NextPage<TProps> = () => {
               aria-labelledby='delivery-group'
               name='radio-delivery-group'
             >
-              {optionDeliveries.map(delivery => {
-                return (
-                  <FormControlLabel
-                    key={delivery.value}
-                    value={delivery.value}
-                    control={<Radio checked={deliverySelected === delivery.value} />}
-                    label={delivery.label}
-                  />
-                )
-              })}
+              {optionDeliveries &&
+                optionDeliveries.map(delivery => {
+                  return (
+                    <FormControlLabel
+                      key={delivery.value}
+                      value={delivery.value}
+                      control={<Radio checked={deliverySelected === delivery.value} />}
+                      label={delivery.label}
+                    />
+                  )
+                })}
             </RadioGroup>
           </FormControl>
         </Box>
@@ -316,16 +317,17 @@ const CheckoutProductPage: NextPage<TProps> = () => {
               aria-labelledby='payment-group'
               name='radio-payment-group'
             >
-              {optionPayments.map(payment => {
-                return (
-                  <FormControlLabel
-                    key={payment.value}
-                    value={payment.value}
-                    control={<Radio checked={paymentSelected === payment.value} />}
-                    label={payment.label}
-                  />
-                )
-              })}
+              {optionPayments &&
+                optionPayments.map(payment => {
+                  return (
+                    <FormControlLabel
+                      key={payment.value}
+                      value={payment.value}
+                      control={<Radio checked={paymentSelected === payment.value} />}
+                      label={payment.label}
+                    />
+                  )
+                })}
             </RadioGroup>
           </FormControl>
         </Box>

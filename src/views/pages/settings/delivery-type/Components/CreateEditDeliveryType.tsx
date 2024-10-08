@@ -103,6 +103,7 @@ const CreateEditDeliveryType = (props: TCreateEditDeliveryType) => {
     setLoading(true)
     await getDetailsDeliveryType(id)
       .then(res => {
+        // console.log(res);
         const data = res.data
         if (data) {
           reset({

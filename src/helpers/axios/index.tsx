@@ -51,7 +51,6 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
     }
     const { accessToken, refreshToken } = getLocalUserData()
     const { temporaryToken } = getTemporaryToken()
-    const isPublicApi = config.params.isPublic
     if (accessToken || temporaryToken) {
       let decodedAccessToken: any = {}
       if (accessToken) {

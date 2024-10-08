@@ -151,7 +151,6 @@ const MyCartPage: NextPage<TProps> = () => {
   }
 
   const handleNavigateCheckoutProduct = () => {
-    console.log('check')
     const formatData = JSON.stringify(memoItemsSelectedProduct)
     router.push(
       {
