@@ -46,23 +46,24 @@ type Props = {
   children: ReactNode
 }
 
-const cleanUserData = (data: any): UserDataType => {
-  return {
-    id: data.id,
-    role: data.role,
-    email: data.email,
-    fullName: data.fullName,
-    firstName: data.firstName,
-    lastName: data.lastName,
-    middleName: data.middleName,
-    username: data.userName,
-    imageUrl: data.imageUrl,
-    likedProducts: [],
-    city: data.city.name,
-    phoneNumber: data.phoneNumber,
-    address: data.address
-  }
-}
+// const cleanUserData = (data: any): UserDataType => {
+//   return {
+//     id: data.id,
+//     role: data.role,
+//     email: data.email,
+//     fullName: data.fullName,
+//     firstName: data.firstName,
+//     lastName: data.lastName,
+//     middleName: data.middleName,
+//     username: data.userName,
+//     imageUrl: data.imageUrl,
+//     likedProducts: [],
+//     city: data.city.name,
+//     phoneNumber: data.phoneNumber,
+//     address: data.address,
+//     addresses:data.addresses
+//   }
+// }
 
 const AuthProvider = ({ children }: Props) => {
   // ** States
@@ -93,7 +94,7 @@ const AuthProvider = ({ children }: Props) => {
             const user = response.data
             setUser(user)
           })
-          .catch(e => {
+          .catch((e) => {
             clearLocalUserData()
             setUser(null)
             setLoading(false)

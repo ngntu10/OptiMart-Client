@@ -16,7 +16,7 @@ import toast from 'react-hot-toast'
 // ** Components
 import CustomTextField from 'src/components/text-field'
 
-// ** form
+// ** forma
 import { Controller, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
