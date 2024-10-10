@@ -24,6 +24,9 @@ import CustomTextField from 'src/components/text-field'
 import Icon from 'src/components/Icon'
 import CustomSelect from 'src/components/custom-select'
 import NoData from 'src/components/no-data'
+import ModalAddAddress from 'src/views/pages/checkout-product/Components/ModalAddAddress'
+import Spinner from 'src/components/spinner'
+import ModalWarning from 'src/views/pages/checkout-product/Components/ModalWarning'
 // ** Translate
 import { t } from 'i18next'
 import { useTranslation } from 'react-i18next'
@@ -44,18 +47,10 @@ import { getAllPaymentTypes } from 'src/services/payment-type'
 import { getAllDeliveryTypes } from 'src/services/delivery-type'
 import toast from 'react-hot-toast'
 import { resetInitialState } from 'src/stores/order-product'
-import ModalAddAddress from 'src/views/pages/checkout-product/Components/ModalAddAddress'
 import { getAllCities } from 'src/services/city'
 
 type TProps = {}
-type TDefaultValue = {
-  email: string
-  address: string
-  city: string
-  phoneNumber: string
-  role: string
-  fullName: string
-}
+
 const CheckoutProductPage: NextPage<TProps> = () => {
   // State
   const [optionPayments, setOptionPayments] = useState<{ label: string; value: string }[]>([])
@@ -65,6 +60,7 @@ const CheckoutProductPage: NextPage<TProps> = () => {
   const [openAddress, setOpenAddress] = useState(false)
   const [optionCities, setOptionCities] = useState<{ label: string; value: string }[]>([])
   const [loading, setLoading] = useState(false)
+  const [openWarning, setOpenWarning] = useState(false)
 
   // ** Hooks
   const { i18n } = useTranslation()
@@ -74,9 +70,23 @@ const CheckoutProductPage: NextPage<TProps> = () => {
   const theme = useTheme()
   // ** redux
   const dispatch: AppDispatch = useDispatch()
-  const { isLoading, isErrorCreate, isSuccessCreate, messageErrorCreate, typeError } = useSelector(
+  const { isLoading, isErrorCreate, isSuccessCreate, messageErrorCreate, orderItems } = useSelector(
     (state: RootState) => state.orderProduct
   )
+
+  const handleFormatDataProduct = (items: any) => {
+    const objectMap: Record<string, TItemOrderProduct> = {}
+    orderItems.forEach((order: any) => {
+      objectMap[order.product] = order
+    })
+    return items.map((item: any) => {
+      return {
+        ...objectMap[item.product],
+        amount: item.amount
+      }
+    })
+  }
+
   const memoQueryProduct = useMemo(() => {
     const result = {
       totalPrice: 0,
@@ -85,9 +95,15 @@ const CheckoutProductPage: NextPage<TProps> = () => {
     const data: any = router.query
     if (data) {
       result.totalPrice = data.totalPrice || 0
-      result.productsSelected = data.productsSelected ? JSON.parse(data.productsSelected) : []
+      result.productsSelected = data.productsSelected ? handleFormatDataProduct(JSON.parse(data.productsSelected)) : []
     }
     return result
+  }, [router.query, orderItems])
+  useEffect(() => {
+    const data: any = router.query
+    if(!data?.productsSelected) {
+      setOpenWarning(true)
+    }
   }, [router.query])
 
   const memoAddressDefault = useMemo(() => {
@@ -207,6 +223,8 @@ const CheckoutProductPage: NextPage<TProps> = () => {
   return (
     <>
       {/* {loading || (isLoading && <Spinner />)} */}
+      {loading || (isLoading && <Spinner />)}
+      <ModalWarning open={openWarning} onClose={() => setOpenAddress(false)} />
       <ModalAddAddress open={openAddress} onClose={() => setOpenAddress(false)} />
       <Box
         sx={{
