@@ -369,7 +369,7 @@ const MyCartPage: NextPage<TProps> = () => {
             fontWeight: 'bold'
           }}
         >
-          <Icon icon='icon-park-outline:buy' fontSize={20} style={{ position: 'relative', top: '-2px' }} />
+          <Icon icon='icon-park-outline:buy' fontSize={20} style={{ position: 'relative', top: '-2px' }} />x  
           {t('Buy_now')}
         </Button>
       </Box>

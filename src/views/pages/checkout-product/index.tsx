@@ -1,7 +1,9 @@
 // ** Next
 import { NextPage } from 'next'
+
 // ** React
 import { Fragment, useEffect, useMemo, useState } from 'react'
+
 // ** Mui
 import {
   Avatar,
@@ -19,6 +21,7 @@ import {
   Typography,
   useTheme
 } from '@mui/material'
+
 // ** Components
 import CustomTextField from 'src/components/text-field'
 import Icon from 'src/components/Icon'
@@ -27,26 +30,34 @@ import NoData from 'src/components/no-data'
 import ModalAddAddress from 'src/views/pages/checkout-product/Components/ModalAddAddress'
 import Spinner from 'src/components/spinner'
 import ModalWarning from 'src/views/pages/checkout-product/Components/ModalWarning'
+
 // ** Translate
 import { t } from 'i18next'
 import { useTranslation } from 'react-i18next'
+
 // ** Utils
 import { formatNumberToLocal, toFullName } from 'src/utils'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
+
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
 import { createOrderProductAsync } from 'src/stores/order-product/actions'
+
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
+
 // ** Other
 import { TItemOrderProduct } from 'src/types/order-product'
 import { useRouter } from 'next/router'
+import Swal from 'sweetalert2'
+import { getLocalProductCart, setLocalProductToCart } from 'src/helpers/storage'
+
 // ** Services
 import { getAllPaymentTypes } from 'src/services/payment-type'
 import { getAllDeliveryTypes } from 'src/services/delivery-type'
 import toast from 'react-hot-toast'
-import { resetInitialState } from 'src/stores/order-product'
+import { resetInitialState, updateProductToCart } from 'src/stores/order-product'
 import { getAllCities } from 'src/services/city'
 
 type TProps = {}
@@ -101,7 +112,7 @@ const CheckoutProductPage: NextPage<TProps> = () => {
   }, [router.query, orderItems])
   useEffect(() => {
     const data: any = router.query
-    if(!data?.productsSelected) {
+    if (!data?.productsSelected) {
       setOpenWarning(true)
     }
   }, [router.query])
@@ -155,11 +166,11 @@ const CheckoutProductPage: NextPage<TProps> = () => {
   // ** Fetch API
   const handleGetListPaymentMethod = async () => {
     setLoading(true)
-    await getAllPaymentTypes({ params: { limit: -1, page: -1 } })
-      .then((res:any) => {
+    await getAllPaymentTypes({ params: { limit: 20, page: 1 } })
+      .then((res: any) => {
         if (res.data) {
           setOptionPayments(
-            res?.data?.paymentTypes?.map((item: { name: string; id: string }) => ({
+            res?.data?.data?.map((item: { name: string; id: string }) => ({
               label: item.name,
               value: item.id
             }))
@@ -176,7 +187,7 @@ const CheckoutProductPage: NextPage<TProps> = () => {
     setLoading(true)
     await getAllCities({ params: { limit: -1, page: -1 } })
       .then(res => {
-        const data = res?.data.cities
+        const data = res?.data
         if (data) {
           setOptionCities(data?.map((item: { name: string; id: string }) => ({ label: item.name, value: item.id })))
         }
@@ -188,11 +199,11 @@ const CheckoutProductPage: NextPage<TProps> = () => {
   }
   const handleGetListDeliveryMethod = async () => {
     setLoading(true)
-    await getAllDeliveryTypes({ params: { limit: -1, page: -1 } })
-      .then(res => {
+    await getAllDeliveryTypes({ params: { limit: 20, page: 1 } })
+      .then((res: any) => {
         if (res.data) {
           setOptionDeliveries(
-            res?.data?.deliveryTypes?.map((item: { name: string; id: string; price: string }) => ({
+            res?.data?.map((item: { name: string; id: string; price: string }) => ({
               label: item.name,
               value: item.id,
               price: item.price
@@ -211,15 +222,66 @@ const CheckoutProductPage: NextPage<TProps> = () => {
     handleGetListPaymentMethod()
     handleGetListDeliveryMethod()
   }, [])
+
+  const handleChangeAmountCart = (items: TItemOrderProduct[]) => {
+    const productCart = getLocalProductCart()
+    const parseData = productCart ? JSON.parse(productCart) : {}
+    const objectMap: Record<string, number> = {}
+    items.forEach((item: any) => {
+      objectMap[item.product] = -item.amount
+    })
+    const listOrderItems:TItemOrderProduct[] = []
+    orderItems.forEach((order:TItemOrderProduct) => {
+      if(objectMap[order.product]) {
+        listOrderItems.push({
+          ...order,
+          amount: order.amount + objectMap[order.product]
+        })
+      }else {
+        listOrderItems.push(order)
+      }
+    })
+    const filterListOrder = listOrderItems.filter((item:TItemOrderProduct ) => item.amount)
+    if (user) {
+      dispatch(
+        updateProductToCart({
+          orderItems: filterListOrder
+        })
+      )
+      setLocalProductToCart({ ...parseData, [user?.id]: filterListOrder })
+    }
+  }
+
   useEffect(() => {
     if (isSuccessCreate) {
-      toast.success(t('Order_product_success'))
+      Swal.fire({
+        title: t('Congraturation!'),
+        text: t('Order_product_success'),
+        icon: 'success',
+        confirmButtonText: t('Confirm'),
+        background: theme.palette.background.paper,
+        color: `rgba(${theme.palette.customColors.main}, 0.78)`
+      }).then(result => {
+        if (result.isConfirmed) {
+        }
+      })
+      handleChangeAmountCart(memoQueryProduct.productsSelected)
+    
       dispatch(resetInitialState())
     } else if (isErrorCreate && messageErrorCreate) {
       toast.error(t('Order_product_error'))
+      Swal.fire({
+        title: t('Opps!'),
+        text: t('Order_product_error'),
+        icon: 'error',
+        confirmButtonText: t('Confirm'),
+        background: theme.palette.background.paper,
+        color: `rgba(${theme.palette.customColors.main}, 0.78)`
+      })
       dispatch(resetInitialState())
     }
   }, [isSuccessCreate, isErrorCreate, messageErrorCreate])
+
   return (
     <>
       {/* {loading || (isLoading && <Spinner />)} */}

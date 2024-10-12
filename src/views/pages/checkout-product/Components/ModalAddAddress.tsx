@@ -89,9 +89,6 @@ const ModalAddAddress = (props: TModalAddAddress) => {
     control,
     formState: { errors },
     reset,
-    getValues,
-    setError,
-    clearErrors
   } = useForm({
     defaultValues,
     mode: 'onBlur',
@@ -99,6 +96,7 @@ const ModalAddAddress = (props: TModalAddAddress) => {
   })
   // handle
   const onSubmit = (data: any) => {
+    console.log(data);
     if (!Object.keys(errors).length) {
       if (activeTab === 2) {
         const isHaveDefault = addresses.some(item => item.isDefault)
@@ -153,9 +151,9 @@ const ModalAddAddress = (props: TModalAddAddress) => {
     setLoading(true)
     await getAllCities({ params: { limit: -1, page: -1 } })
       .then(res => {
-        const data = res?.data.cities
+        const data = res?.data
         if (data) {
-          setOptionCities(data?.map((item: { name: string; _id: string }) => ({ label: item.name, value: item._id })))
+          setOptionCities(data?.map((item: { name: string; id: string }) => ({ label: item.name, value: item.id })))
         }
         setLoading(false)
       })
@@ -263,7 +261,7 @@ const ModalAddAddress = (props: TModalAddAddress) => {
                         name='radio-address-group'
                       >
                         {addresses.map((address, index) => {
-                          const findCity = optionCities.find(item => item.value === address.city)
+                          const findCity = optionCities.find(item => item.value == address.city)
                           return (
                             <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                               <FormControlLabel

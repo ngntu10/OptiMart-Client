@@ -16,6 +16,7 @@ const FallbackSpinner = ({ sx }: { sx?: BoxProps['sx'] }) => {
         alignItems: 'center',
         flexDirection: 'column',
         justifyContent: 'center',
+        backgroundColor: theme.palette.background.default,
         ...sx
       }}
     >
