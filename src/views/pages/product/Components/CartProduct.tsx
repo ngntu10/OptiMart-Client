@@ -213,7 +213,7 @@ const CardProduct = (props: TCardProduct) => {
             </Box>
           )}
         </Typography>
-        {item.sold && (
+        {item?.sold >0 && (
           <Typography variant='body2' color='text.secondary'>
             <>{t('Sold_product')}</> <b>{item.sold}</b> <>{t('Product')}</>
           </Typography>

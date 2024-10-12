@@ -39,6 +39,7 @@ import { getLocalProductCart, setLocalProductToCart } from 'src/helpers/storage'
 import { TProduct } from 'src/types/product'
 import NoData from 'src/components/no-data'
 import CardRelatedProduct from '../Components/CardRelatedProduct'
+import { ROUTE_CONFIG } from 'src/configs/route'
 
 type TProps = {}
 const DetailsProductPage: NextPage<TProps> = () => {
@@ -91,6 +92,19 @@ const DetailsProductPage: NextPage<TProps> = () => {
       .catch(() => {
         setLoading(false)
       })
+  }
+
+  const handleBuyProductToCart = (item: TProduct) => {
+    handleUpdateProductToCart(item)
+    router.push(
+      {
+        pathname: ROUTE_CONFIG.MY_CART,
+        query: {
+          selected: item.id
+        }
+      },
+      ROUTE_CONFIG.MY_CART
+    )
   }
 
   // ** Handle
@@ -243,8 +257,8 @@ const DetailsProductPage: NextPage<TProps> = () => {
                       <span>{t('not_review')}</span>
                     )}
                   </Typography>
-                  {' | '}
-                  {dataProduct.sold && (
+                  {dataProduct?.sold > 0 && ' | '}
+                  {dataProduct?.sold > 0 && (
                     <Typography variant='body2' color='text.secondary'>
                       <>{t('Sold_product')}</> <b>{dataProduct.sold}</b> <>{t('Product')}</>
                     </Typography>
@@ -423,6 +437,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
                       gap: '2px',
                       fontWeight: 'bold'
                     }}
+                    onClick={() => handleBuyProductToCart(dataProduct)}
                   >
                     <Icon icon='icon-park-outline:buy' fontSize={20} style={{ position: 'relative', top: '-2px' }} />
                     {t('Buy_now')}

@@ -152,7 +152,7 @@ const CardRelatedProduct = (props: TCardRelatedProduct) => {
             </Box>
           )}
         </Typography>
-        {item.sold && (
+        {item?.sold > 0 && (
           <Typography variant='body2' color='text.secondary'>
             <>{t('Sold_product', { count: item.sold })}</>
           </Typography>
