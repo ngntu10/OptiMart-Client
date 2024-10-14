@@ -85,7 +85,7 @@ export const authSlice = createSlice({
       state.isSuccessUpdateMe = !!action.payload?.data
       state.isErrorUpdateMe = !action.payload?.data
       state.messageUpdateMe = action.payload?.data?.message
-      state.userData = action.payload.data.data
+      state.userData = action.payload.data
     })
     builder.addCase(updateAuthMeAsync.rejected, (state, action) => {
       state.isLoading = false

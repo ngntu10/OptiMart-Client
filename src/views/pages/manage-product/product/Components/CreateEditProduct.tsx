@@ -186,7 +186,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
     resolver: yupResolver(schema)
   })
   // handle
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     if (!Object.keys(errors).length) {
       if (idProduct) {
         // update
@@ -210,7 +210,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
           handleChangeProductImage(fileAvatar, idProduct)
         }
       } else {
-        dispatch(
+        const productResponse = await dispatch(
           createProductAsync({
             name: data.name,
             slug: data.slug,
@@ -225,8 +225,9 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
             countInStock: Number(data.countInStock)
           })
         )
+        console.log(productResponse);
         if (fileAvatar) {
-          handleChangeProductImage(fileAvatar, '')
+          handleChangeProductImage(fileAvatar, productResponse.payload?.data?.data?.id)
         }
       }
     }

@@ -165,7 +165,7 @@ const ModalAddAddress = (props: TModalAddAddress) => {
     dispatch(
       updateAuthMeAsync({
         ...user,
-        addresses: addresses
+        addresses: addresses,
       })
     )
   }
@@ -246,7 +246,7 @@ const ModalAddAddress = (props: TModalAddAddress) => {
             <Box sx={{ backgroundColor: theme.palette.background.paper, borderRadius: '15px', py: 5, px: 4 }}>
               {activeTab === 1 ? (
                 <Box>
-                  {addresses.length > 0 ? (
+                  {addresses?.length > 0 ? (
                     <FormControl sx={{}}>
                       <FormLabel
                         sx={{ color: theme.palette.primary.main, fontWeight: 600, width: '260px', mb: 2 }}

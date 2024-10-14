@@ -123,7 +123,6 @@ const CheckoutProductPage: NextPage<TProps> = () => {
   }, [user?.addresses])
   const memoNameCity = useMemo(() => {
     const findCity = optionCities.find(item => item.value === memoAddressDefault?.city)
-    console.log(findCity)
     return findCity?.label
   }, [memoAddressDefault, optionCities])
   const memoPriceShipping = useMemo(() => {
@@ -281,6 +280,8 @@ const CheckoutProductPage: NextPage<TProps> = () => {
       dispatch(resetInitialState())
     }
   }, [isSuccessCreate, isErrorCreate, messageErrorCreate])
+
+console.log(user?.addresses);
 
   return (
     <>

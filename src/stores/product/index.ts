@@ -80,7 +80,6 @@ export const productSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(getAllProductsAsync.fulfilled, (state, action) => {
-      console.log(action)
       state.isLoading = false
       state.products.data = action.payload?.data || []
       state.products.total = action.payload?.data?.totalCount
