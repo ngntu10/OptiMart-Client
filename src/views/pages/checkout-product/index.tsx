@@ -117,12 +117,14 @@ const CheckoutProductPage: NextPage<TProps> = () => {
     }
   }, [router.query])
 
+
   const memoAddressDefault = useMemo(() => {
-    const findAddress = user?.addresses?.find(item => item.isDefault)
+    const findAddress = user?.addresses?.find(item => (item as any).isDefault == true)
     return findAddress
   }, [user?.addresses])
   const memoNameCity = useMemo(() => {
-    const findCity = optionCities.find(item => item.value === memoAddressDefault?.city)
+    const findCity = optionCities.find(item => item.value === (memoAddressDefault?.city as any)?.id)
+    console.log(optionCities, memoAddressDefault);
     return findCity?.label
   }, [memoAddressDefault, optionCities])
   const memoPriceShipping = useMemo(() => {
@@ -281,7 +283,6 @@ const CheckoutProductPage: NextPage<TProps> = () => {
     }
   }, [isSuccessCreate, isErrorCreate, messageErrorCreate])
 
-console.log(user?.addresses);
 
   return (
     <>
@@ -328,7 +329,7 @@ console.log(user?.addresses);
                   )}
                 </Typography>
                 <Typography component='span' sx={{ fontSize: '18px' }}>
-                  {memoAddressDefault?.address} {memoNameCity}
+                  {memoAddressDefault?.address}, {memoNameCity}
                 </Typography>
                 <Button sx={{ border: `1px solid ${theme.palette.primary.main}` }} onClick={() => setOpenAddress(true)}>
                   {t('Change_address')}

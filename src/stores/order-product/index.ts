@@ -38,8 +38,9 @@ export const orderProductSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(getAllOrderProductsByMeAsync.fulfilled, (state, action) => {
+      console.log(action);
       state.isLoading = false
-      state.ordersOfMe.data = action.payload?.data?.orders || []
+      state.ordersOfMe.data = action.payload?.data || []
       state.ordersOfMe.total = action.payload?.data?.totalCount
     })
     builder.addCase(getAllOrderProductsByMeAsync.rejected, (state, action) => {
@@ -53,10 +54,10 @@ export const orderProductSlice = createSlice({
     })
     builder.addCase(createOrderProductAsync.fulfilled, (state, action) => {
       state.isLoading = false
-      state.isSuccessCreate = !!action.payload?.data?.id
-      state.isErrorCreate = !action.payload?.data?.id
-      state.messageErrorCreate = action.payload?.message
-      state.typeError = action.payload?.typeError
+      state.isSuccessCreate = !!action.payload?.data
+      state.isErrorCreate = !action.payload?.data
+      state.messageErrorCreate = action.payload?.data?.data?.message
+      // state.typeError = action.payload?.typeError
     })
   }
 })

@@ -23,7 +23,6 @@ export const getAllPaymentTypesAsync = createAsyncThunk(
   `${serviceName}/get-all`,
   async (data: { params: TParamsGetPaymentTypes }) => {
     const response = await getAllPaymentTypes(data)
-
     return response
   }
 )
@@ -31,7 +30,6 @@ export const getAllPaymentTypesAsync = createAsyncThunk(
 export const createPaymentTypeAsync = createAsyncThunk(
   `${serviceName}/create`,
   async (data: TParamsCreatePaymentType) => {
-    console.log(data)
     const response = await createPaymentType(data)
 
     return response

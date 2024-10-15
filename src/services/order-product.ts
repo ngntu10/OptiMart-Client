@@ -15,12 +15,11 @@ export const getAllOrderProductsByMe = async (data: { params: TParamsGetOrderPro
   }
 }
 export const createOrderProduct = async (data: TParamsCreateOrderProduct) => {
-  try {
-    const res = await instanceAxios.post(`${API_ENDPOINT.MANAGE_ORDER.ORDER.INDEX}`, data)
-    return res.data
-  } catch (error: any) {
-    return error?.response?.data
-  }
+
+  const res = await instanceAxios.post(`${API_ENDPOINT.MANAGE_ORDER.ORDER.INDEX}`, data)
+  console.log(data);
+  return res
+  
 }
 export const getDetailsOrderProductByMe = async (id: string) => {
   try {

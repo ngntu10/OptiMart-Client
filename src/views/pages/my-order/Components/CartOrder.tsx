@@ -29,7 +29,7 @@ import { ROUTE_CONFIG } from 'src/configs/route'
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 import { getAllOrderProductsByMeAsync } from 'src/stores/order-product/actions'
 type TProps = {
-  dataOrder: TItemOrderProductMe
+  dataOrder: any
 }
 const CardOrder: NextPage<TProps> = props => {
   // ** Props
@@ -60,7 +60,7 @@ const CardOrder: NextPage<TProps> = props => {
       >
         <Divider />
         <Box mt={2} mb={2} sx={{display: "flex", flexDirection: "column", gap: 4}}>
-          {dataOrder?.orderItems?.map((item: TItemOrderProduct) => {
+          {dataOrder?.orderItemList?.map((item: TItemOrderProduct) => {
             return (
               <Box key={item.product} sx={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
                 <Box

@@ -9,8 +9,8 @@ export const serviceName = 'orderProduct'
 export const createOrderProductAsync = createAsyncThunk(
   `${serviceName}/create`,
   async (data: TParamsCreateOrderProduct) => {
-    console.log(data);
     const response = await createOrderProduct(data)
+    console.log(response);
     return response
   }
 )

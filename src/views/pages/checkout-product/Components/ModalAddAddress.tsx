@@ -51,6 +51,12 @@ type TDefaultValue = {
   phoneNumber: string
   fullName: string
 }
+
+type CIT = {
+  id: string
+  name: string
+}
+
 const ModalAddAddress = (props: TModalAddAddress) => {
   // State
   const [loading, setLoading] = useState(false)
@@ -84,11 +90,12 @@ const ModalAddAddress = (props: TModalAddAddress) => {
     phoneNumber: '',
     fullName: ''
   }
+
   const {
     handleSubmit,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
     defaultValues,
     mode: 'onBlur',
@@ -96,10 +103,10 @@ const ModalAddAddress = (props: TModalAddAddress) => {
   })
   // handle
   const onSubmit = (data: any) => {
-    console.log(data);
+    console.log(data)
     if (!Object.keys(errors).length) {
       if (activeTab === 2) {
-        const isHaveDefault = addresses.some(item => item.isDefault)
+        const isHaveDefault = addresses?.some(item => item.isDefault)
         const { firstName, lastName, middleName } = separationFullName(data.fullName, i18n.language)
         if (isEdit.isEdit) {
           const cloneAddresses = cloneDeep(addresses)
@@ -136,16 +143,15 @@ const ModalAddAddress = (props: TModalAddAddress) => {
     }
   }
   const onChangeAddress = (value: string) => {
-    const cloneAddresses = [...addresses]
-    setAddresses(
-      cloneAddresses.map((add, index) => {
-        return {
-          ...add,
-          isDefault: +value === index
-        }
-      })
-    )
+    setAddresses(prevAddresses => {
+      const newAddresses = prevAddresses.map((add, index) => ({
+        ...add,
+        isDefault: +value == index
+      }))
+      return newAddresses
+    })
   }
+
   // fetch api
   const fetchAllCities = async () => {
     setLoading(true)
@@ -165,7 +171,7 @@ const ModalAddAddress = (props: TModalAddAddress) => {
     dispatch(
       updateAuthMeAsync({
         ...user,
-        addresses: addresses,
+        addresses: addresses
       })
     )
   }
@@ -261,7 +267,8 @@ const ModalAddAddress = (props: TModalAddAddress) => {
                         name='radio-address-group'
                       >
                         {addresses.map((address, index) => {
-                          const findCity = optionCities.find(item => item.value == address.city)
+                          const a = address.city as String
+                          const findCity = optionCities.find(item => item.value == (address.city as any).id)
                           return (
                             <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                               <FormControlLabel
@@ -272,9 +279,9 @@ const ModalAddAddress = (props: TModalAddAddress) => {
                                   address?.middleName || '',
                                   address?.firstName || '',
                                   i18n.language
-                                )} ${address.phoneNumber} ${address.address} ${findCity?.label}`}
+                                )}, ${address.phoneNumber}, ${address.address}, ${findCity?.label}`}
                               />
-                              {address.isDefault && (
+                              {address?.isDefault == true && (
                                 <Button
                                   sx={{ border: `1px solid ${theme.palette.primary.main}` }}
                                   onClick={() => {
@@ -299,7 +306,7 @@ const ModalAddAddress = (props: TModalAddAddress) => {
                   <Box>
                     {' '}
                     <Button
-                      disabled={addresses.length > 3}
+                      disabled={addresses?.length > 3}
                       sx={{ border: `1px solid ${theme.palette.primary.main}`, mt: 3, mb: 2 }}
                       onClick={() => setActiveTab(2)}
                     >
