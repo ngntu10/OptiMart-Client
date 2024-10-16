@@ -149,7 +149,7 @@ export const convertUpdateProductToCart = (orderItems: TItemOrderProduct[], addI
   try {
     let result = []
     const cloneOrderItems = cloneDeep(orderItems)
-    const findItems = cloneOrderItems.find((item: TItemOrderProduct) => item.product === addItem.product)
+    const findItems = cloneOrderItems.find((item: TItemOrderProduct) => item.id === addItem.id)
     if (findItems) {
       findItems.amount += addItem.amount
     } else {
@@ -162,13 +162,32 @@ export const convertUpdateProductToCart = (orderItems: TItemOrderProduct[], addI
     return orderItems
   }
 }
+export const convertUpdateMultipleProductsCart = (orderItems: TItemOrderProduct[], addItems: any) => {
+  try {
+    let result = []
+    const cloneOrderItems = cloneDeep(orderItems)
+    addItems.forEach((addItem: any) => {
+      const findItems = cloneOrderItems.find((item: any) => item.name == addItem.name)
+      if (findItems) {
+        findItems.amount += addItem.amount
+      } else {
+        cloneOrderItems.push(addItem)
+      }
+    })
+    result = cloneOrderItems.filter((item: TItemOrderProduct) => item.amount)
 
-export const isExpiry = (startDate:Date | null, endDate:Date | null) => {
-  if(startDate && endDate) {
+    return result
+  } catch (error) {
+    return orderItems
+  }
+}
+
+export const isExpiry = (startDate: Date | null, endDate: Date | null) => {
+  if (startDate && endDate) {
     const currentTime = new Date().getTime()
     const startDateTime = new Date(startDate).getTime()
     const endDateTime = new Date(endDate).getTime()
-  
+
     return startDateTime <= currentTime && endDateTime > currentTime
   }
   return false

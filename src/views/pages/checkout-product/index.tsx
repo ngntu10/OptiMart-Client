@@ -88,7 +88,7 @@ const CheckoutProductPage: NextPage<TProps> = () => {
   const handleFormatDataProduct = (items: any) => {
     const objectMap: Record<string, TItemOrderProduct> = {}
     orderItems.forEach((order: any) => {
-      objectMap[order.product] = order
+      objectMap[order.id] = order
     })
     return items.map((item: any) => {
       return {
@@ -108,6 +108,7 @@ const CheckoutProductPage: NextPage<TProps> = () => {
       result.totalPrice = data.totalPrice || 0
       result.productsSelected = data.productsSelected ? handleFormatDataProduct(JSON.parse(data.productsSelected)) : []
     }
+    console.log("result", result);
     return result
   }, [router.query, orderItems])
   useEffect(() => {
@@ -124,7 +125,6 @@ const CheckoutProductPage: NextPage<TProps> = () => {
   }, [user?.addresses])
   const memoNameCity = useMemo(() => {
     const findCity = optionCities.find(item => item.value === (memoAddressDefault?.city as any)?.id)
-    console.log(optionCities, memoAddressDefault);
     return findCity?.label
   }, [memoAddressDefault, optionCities])
   const memoPriceShipping = useMemo(() => {
@@ -233,10 +233,10 @@ const CheckoutProductPage: NextPage<TProps> = () => {
     })
     const listOrderItems:TItemOrderProduct[] = []
     orderItems.forEach((order:TItemOrderProduct) => {
-      if(objectMap[order.product]) {
+      if(objectMap[order.id]) {
         listOrderItems.push({
           ...order,
-          amount: order.amount + objectMap[order.product]
+          amount: order.amount + objectMap[order.id]
         })
       }else {
         listOrderItems.push(order)
@@ -364,7 +364,7 @@ const CheckoutProductPage: NextPage<TProps> = () => {
             <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '10px', mt: '10px' }}>
               {memoQueryProduct?.productsSelected?.map((item: TItemOrderProduct, index: number) => {
                 return (
-                  <Fragment key={item.product}>
+                  <Fragment key={item.id}>
                     <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
                       <Avatar sx={{ width: '100px', height: '100px' }} src={item.image} />
                       <Typography

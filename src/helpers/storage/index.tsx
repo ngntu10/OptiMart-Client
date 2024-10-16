@@ -70,7 +70,6 @@ export const clearTemporaryToken = () => {
 }
 
 export const setLocalProductToCart = (data: Record<string, TItemOrderProduct[]>) => {
-  console.log("data", {data})
   if (typeof window !== 'undefined') {
     window.localStorage.setItem(LOCAL_PRODUCT_CART, JSON.stringify(data))
   }

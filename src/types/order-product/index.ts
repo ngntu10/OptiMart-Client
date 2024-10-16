@@ -4,7 +4,18 @@ export type TItemOrderProduct = {
   image: string
   price: number
   discount: number
-  product: string
+  id: string
+  slug: string
+}
+
+export type TItemProductMe = {
+  name: string
+  amount: number
+  image: string
+  price: number
+  discount: number
+  id: string
+  countInStock: number
   slug: string
 }
 
@@ -36,7 +47,7 @@ export type TItemOrderProductMe = {
     city: string
     phone: string
   }
-  orderItems: TItemOrderProduct[]
+  orderItems: TItemProductMe[]
   paymentMethod: {
     id: string
     name: string

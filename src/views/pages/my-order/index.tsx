@@ -1,51 +1,39 @@
 // ** Next
 import { NextPage } from 'next'
-// ** React
-import { Fragment, useEffect, useMemo, useState } from 'react'
-// ** Mui
-import {
-  Avatar,
-  Box,
-  Button,
-  Checkbox,
-  Divider,
-  IconButton,
-  Tab,
-  Tabs,
-  TabsProps,
-  Tooltip,
-  Typography,
-  styled,
-  useTheme
-} from '@mui/material'
-// ** Components
-import CustomTextField from 'src/components/text-field'
-import Icon from 'src/components/Icon'
-import CustomSelect from 'src/components/custom-select'
-// ** Translate
-import { t } from 'i18next'
-import { useTranslation } from 'react-i18next'
-// ** Utils
-import { cloneDeep, convertUpdateProductToCart, formatNumberToLocal } from 'src/utils'
-import { hexToRGBA } from 'src/utils/hex-to-rgba'
-// ** Redux
-import { updateProductToCart } from 'src/stores/order-product'
-import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from 'src/stores'
-// ** Hooks
-import { useAuth } from 'src/hooks/useAuth'
-// ** Other
-import { TItemOrderProduct, TItemOrderProductMe } from 'src/types/order-product'
-import { getLocalProductCart, setLocalProductToCart } from 'src/helpers/storage'
-import NoData from 'src/components/no-data'
 import { useRouter } from 'next/router'
-import { ROUTE_CONFIG } from 'src/configs/route'
-import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
-import { getAllOrderProductsByMeAsync } from 'src/stores/order-product/actions'
+
+// ** React
+import { useEffect, useState } from 'react'
+
+// ** Mui
+import { Box, Tab, Tabs, TabsProps, styled, useTheme } from '@mui/material'
+
+// ** Components
+import NoData from 'src/components/no-data'
 import CustomPagination from 'src/components/custom-pagination'
 import Spinner from 'src/components/spinner'
 import InputSearch from 'src/components/input-search'
+
+// ** Translate
+import { t } from 'i18next'
+import { useTranslation } from 'react-i18next'
+
+// ** Redux
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from 'src/stores'
+
+// ** Hooks
+import { useAuth } from 'src/hooks/useAuth'
+
+// ** Other
+import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
+import { getAllOrderProductsByMeAsync } from 'src/stores/order-product/actions'
 import CardOrder from './Components/CartOrder'
+import toast from 'react-hot-toast'
+
+// ** Types
+import { TItemOrderProductMe } from 'src/types/order-product'
+import { resetInitialState } from 'src/stores/order-product'
 
 type TProps = {}
 
@@ -99,7 +87,9 @@ const MyOrderPage: NextPage<TProps> = () => {
   const theme = useTheme()
   // ** redux
   const dispatch: AppDispatch = useDispatch()
-  const { ordersOfMe, isLoading } = useSelector((state: RootState) => state.orderProduct)
+  const { ordersOfMe, isLoading, isErrorCancelMe, isSuccessCancelMe, messageErrorCancelMe } = useSelector(
+    (state: RootState) => state.orderProduct
+  )
   // ** fetch API
   const handleGetListOrdersOfMe = () => {
     const query = {
@@ -125,6 +115,18 @@ const MyOrderPage: NextPage<TProps> = () => {
     handleGetListOrdersOfMe()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, pageSize, statusSelected, searchBy])
+
+  useEffect(() => {
+    if (isSuccessCancelMe) {
+      toast.success(t('Cancel_order_success'))
+      handleGetListOrdersOfMe()
+      dispatch(resetInitialState())
+    } else if (isErrorCancelMe && messageErrorCancelMe) {
+      toast.error(t('Cancel_order_error'))
+      dispatch(resetInitialState())
+    }
+  }, [isSuccessCancelMe, isErrorCancelMe, messageErrorCancelMe])
+
   return (
     <>
       {isLoading && <Spinner />}

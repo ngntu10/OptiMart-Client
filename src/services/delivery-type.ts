@@ -10,7 +10,6 @@ import {
 export const getAllDeliveryTypes = async (data: { params: TParamsGetDeliveryTypes }) => {
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.SETTING.DELIVERY_TYPE.INDEX}`, data)
-    console.log(res.data);
     return res.data
   } catch (error) {
     return error

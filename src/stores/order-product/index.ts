@@ -2,12 +2,20 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 // ** Actions
-import { createOrderProductAsync, getAllOrderProductsByMeAsync, serviceName } from 'src/stores/order-product/actions'
+import {
+  cancelOrderProductOfMeAsync,
+  createOrderProductAsync,
+  getAllOrderProductsByMeAsync,
+  serviceName
+} from 'src/stores/order-product/actions'
 
 const initialState = {
   isSuccessCreate: false,
   isErrorCreate: false,
   messageErrorCreate: '',
+  isSuccessCancelMe: false,
+  isErrorCancelMe: false,
+  messageErrorCancelMe: '',
   isLoading: false,
   typeError: '',
   orderItems: [],
@@ -38,7 +46,6 @@ export const orderProductSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(getAllOrderProductsByMeAsync.fulfilled, (state, action) => {
-      console.log(action);
       state.isLoading = false
       state.ordersOfMe.data = action.payload?.data || []
       state.ordersOfMe.total = action.payload?.data?.totalCount
@@ -58,6 +65,18 @@ export const orderProductSlice = createSlice({
       state.isErrorCreate = !action.payload?.data
       state.messageErrorCreate = action.payload?.data?.data?.message
       // state.typeError = action.payload?.typeError
+    })
+
+     // ** cancel order product of me
+     builder.addCase(cancelOrderProductOfMeAsync.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(cancelOrderProductOfMeAsync.fulfilled, (state, action) => {
+      state.isLoading = false
+      state.isSuccessCancelMe = !!action.payload?.data?.id
+      state.isErrorCancelMe = !action.payload?.data?.id
+      state.messageErrorCancelMe = action.payload?.message
+      state.typeError = action.payload?.typeError
     })
   }
 })
