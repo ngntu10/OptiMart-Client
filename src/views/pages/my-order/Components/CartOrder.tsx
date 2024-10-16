@@ -1,5 +1,6 @@
 // ** Next
 import { NextPage } from 'next'
+import { useRouter } from 'next/router'
 
 // ** React
 import { Fragment, useEffect, useMemo, useState } from 'react'
@@ -21,18 +22,17 @@ import { AppDispatch, RootState } from 'src/stores'
 import { useAuth } from 'src/hooks/useAuth'
 
 // ** Other
-import { TItemOrderProduct, TItemOrderProductMe, TItemProductMe } from 'src/types/order-product'
-import { useRouter } from 'next/router'
+import { TItemOrderProduct, TItemProductMe } from 'src/types/order-product'
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 import { cancelOrderProductOfMeAsync } from 'src/stores/order-product/actions'
 import ConfirmationDialog from 'src/components/confirmation-dialog'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 import { STATUS_ORDER_PRODUCT } from 'src/configs/orderProduct'
-import Icon from 'src/components/Icon'
 import { getLocalProductCart, setLocalProductToCart } from 'src/helpers/storage'
 import { TProduct } from 'src/types/product'
 import { updateProductToCart } from 'src/stores/order-product'
 import { ROUTE_CONFIG } from 'src/configs/route'
+import Icon from 'src/components/Icon'
 
 type TProps = {
   dataOrder: any
@@ -64,7 +64,7 @@ const CardOrder: NextPage<TProps> = props => {
   useEffect(() => {
     if (isSuccessCancelMe) {
       handleCloseDialog()
-    } 
+    }
   }, [isSuccessCancelMe])
 
   const handleUpdateProductToCart = (items: TItemOrderProduct[]) => {
@@ -90,10 +90,9 @@ const CardOrder: NextPage<TProps> = props => {
         price: item.price,
         discount: item.discount,
         id: item?.id,
-        slug: item?.slug,
+        slug: item?.slug
       }))
     )
-    console.log(dataOrder);
     router.push(
       {
         pathname: ROUTE_CONFIG.MY_CART,
@@ -107,9 +106,16 @@ const CardOrder: NextPage<TProps> = props => {
     )
   }
 
+  const handleNavigateDetailsOrder = () => {
+    router.push(`${ROUTE_CONFIG.MY_ORDER}/${dataOrder.id}`)
+  }
+
   const memeDisabledBuyAgain = useMemo(() => {
-    return dataOrder?.orderItems?.some((item: any) => !item.product.countInStock)
-  }, [dataOrder.orderItems])
+    console.log(dataOrder);
+    return dataOrder?.orderItemList?.some((item: any) => !item.countInStock)
+  }, [dataOrder.orderItemList])
+
+
 
   return (
     <>
@@ -131,7 +137,7 @@ const CardOrder: NextPage<TProps> = props => {
         }}
       >
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2, gap: 2 }}>
-          {dataOrder.status === 2 && (
+          {dataOrder?.orderStatus === 2 && (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Icon icon='carbon:delivery'></Icon>
               <Typography>
@@ -141,11 +147,16 @@ const CardOrder: NextPage<TProps> = props => {
             </Box>
           )}
           <Typography sx={{ textTransform: 'uppercase', color: theme.palette.primary.main, fontWeight: 600 }}>
-            {t(`${(STATUS_ORDER_PRODUCT as any)[dataOrder.status]?.label}`)}
+            {t(`${(STATUS_ORDER_PRODUCT as any)[dataOrder.orderStatus]?.label}`)}
           </Typography>
         </Box>
         <Divider />
-        <Box mt={2} mb={2} sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <Box
+          mt={2}
+          mb={2}
+          sx={{ display: 'flex', flexDirection: 'column', gap: 4, cursor: 'pointer' }}
+          onClick={handleNavigateDetailsOrder}
+        >
           {dataOrder?.orderItemList?.map((item: any) => {
             return (
               <Box key={item?.id} sx={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
@@ -269,7 +280,6 @@ const CardOrder: NextPage<TProps> = props => {
               gap: '2px',
               fontWeight: 'bold'
             }}
-            disabled={memeDisabledBuyAgain}
           >
             {t('Buy_again')}
           </Button>

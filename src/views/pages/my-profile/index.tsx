@@ -114,13 +114,12 @@ const MyProfilePage: NextPage<TProps> = () => {
       .then(async response => {
         setAvatar(response.imageUrl)
         const data = response
-        console.log(data)
         if (data) {
           setIsDisabledRole(!data?.role?.permissions.length)
           reset({
             email: data.email,
             address: data.address,
-            city: data.city,
+            city: data.city.id,
             phoneNumber: data.phoneNumber,
             role: data.role.id,
             fullName: toFullName(data?.lastName, data?.middleName, data?.firstName, i18n.language)
@@ -193,8 +192,8 @@ const MyProfilePage: NextPage<TProps> = () => {
         middleName: middleName,
         role: data.role,
         phoneNumber: data.phoneNumber,
-        address: data.address
-        // city: data.city
+        address: data.address,
+        city: data.city
       })
     )
     if (fileAvatar) {
@@ -204,7 +203,6 @@ const MyProfilePage: NextPage<TProps> = () => {
 
   // ###### Base-64
   const handleUploadAvatar = async (file: File) => {
-    console.log(123);
     setFileAvatar(file)
     const reader = new FileReader()
     reader.onload = () => {

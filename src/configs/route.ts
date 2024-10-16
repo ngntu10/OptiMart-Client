@@ -17,8 +17,8 @@ export const ROUTE_CONFIG = {
     MANAGE_TYPE_PRODUCT: '/manage-product/product-type'
   },
   MANAGE_ORDER: {
-    ORDER: '/manage-product/order',
-    MANAGE_REVIEW: '/manage-product/review'
+    ORDER: '/manage-order/order',
+    MANAGE_REVIEW: '/manage-order/review'
   },
   SETTINGS: {
     CITY: '/settings/city',

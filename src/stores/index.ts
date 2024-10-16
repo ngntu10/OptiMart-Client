@@ -22,7 +22,7 @@ export const store = configureStore({
     paymentType,
     productType,
     product,
-    orderProduct,
+    orderProduct, 
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

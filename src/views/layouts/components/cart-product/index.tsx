@@ -30,7 +30,6 @@ import { getLocalProductCart } from 'src/helpers/storage'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
-import { updateProductToCart } from 'src/stores/order-product'
 
 // ** Types
 import { TItemOrderProduct } from 'src/types/order-product'
@@ -38,6 +37,7 @@ import { TItemOrderProduct } from 'src/types/order-product'
 // ** Utils
 import { formatNumberToLocal, isExpiry } from 'src/utils'
 import NoData from 'src/components/no-data'
+import { updateProductToCart } from 'src/stores/order-product'
 
 type TProps = {}
 
@@ -87,7 +87,7 @@ const CartProduct = (props: TProps) => {
     }
   }, [user])
   const totalItemsCart = useMemo(() => {
-    const total = orderItems.reduce((result, current: TItemOrderProduct) => {
+    const total = orderItems.reduce((result: any, current: TItemOrderProduct) => {
       return result + current.amount
     }, 0)
     return total
@@ -142,7 +142,7 @@ const CartProduct = (props: TProps) => {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        {orderItems.length > 0 ? (
+        {orderItems?.length > 0 ? (
           <>
             <Box sx={{ maxHeight: '400px', overflow: 'auto' }}>
               {orderItems?.map((item: TItemOrderProduct) => {

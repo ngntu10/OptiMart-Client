@@ -118,7 +118,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
       image: item.image,
       price: item.price,
       discount: discountItem,
-      product: item.id,
+      id: item.id,
       slug: item.slug
     })
     if (user?.id) {
