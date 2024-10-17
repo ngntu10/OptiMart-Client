@@ -34,6 +34,7 @@ const StyleCard = styled(Card)(({ theme }) => ({
 const CardReview = (props: TCardReview) => {
     // ** Props
     const { item } = props
+    console.log(item);
     // ** Hooks
     const { i18n, t } = useTranslation()
     const { user } = useAuth()
@@ -115,7 +116,7 @@ const CardReview = (props: TCardReview) => {
                                 precision={0.5}
                                 readOnly
                             />
-                            <Typography>{getTimePast(new Date(item.updatedAt), t)}</Typography>
+                            <Typography>{getTimePast((item.updatedAt as any), t)}</Typography>
                         </Box>
                     </Box>
                 </Box>

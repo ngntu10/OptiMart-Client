@@ -29,6 +29,7 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'src/stores'
 import { updateProductToCart } from 'src/stores/order-product'
+import { ROUTE_CONFIG } from 'src/configs/route'
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
@@ -116,7 +117,6 @@ const AuthProvider = ({ children }: Props) => {
         console.log(response)
         if (response.data) {
           const user = response.data.user
-          console.log(user);
           if (params.rememberMe) {
             setLocalUserData(
               JSON.stringify(response.data.user),
@@ -146,11 +146,11 @@ const AuthProvider = ({ children }: Props) => {
     if (!LIST_PAGE_PUBLIC?.some(item => router.asPath?.startsWith(item))) {
       if (router.asPath !== '/') {
         router.replace({
-          pathname: '/login',
+          pathname: ROUTE_CONFIG.LOGIN,
           query: { returnUrl: router.asPath }
         })
       } else {
-        router.replace('/login')
+        router.replace(ROUTE_CONFIG.LOGIN)
       }
     }
     dispatch(

@@ -103,7 +103,6 @@ const ModalAddAddress = (props: TModalAddAddress) => {
   })
   // handle
   const onSubmit = (data: any) => {
-    console.log(data)
     if (!Object.keys(errors).length) {
       if (activeTab === 2) {
         const isHaveDefault = addresses?.some(item => item.isDefault)
@@ -227,6 +226,9 @@ const ModalAddAddress = (props: TModalAddAddress) => {
       setAddresses(user?.addresses)
     }
   }, [user?.addresses])
+
+
+
   return (
     <>
       {(isLoading || loading) && <Spinner />}
@@ -268,7 +270,7 @@ const ModalAddAddress = (props: TModalAddAddress) => {
                       >
                         {addresses.map((address, index) => {
                           const a = address.city as String
-                          const findCity = optionCities.find(item => item.value == (address.city as any).id)
+                          const findCity = optionCities.find(item => item.value == (address.city as any))
                           return (
                             <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                               <FormControlLabel

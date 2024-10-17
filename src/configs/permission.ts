@@ -1,4 +1,4 @@
-export const PERMISSIONS: any = {
+export const PERMISSIONS = {
   ADMIN: 'ADMIN.GRANTED',
   BASIC: 'BASIC.PUBLIC',
   DASHBOARD: 'DASHBOARD',

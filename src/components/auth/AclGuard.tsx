@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // ** React Imports
-import { ReactNode } from 'react'
+import { ReactNode, useEffect } from 'react'
 
 // ** Types
 import { buildAbilityFor, type ACLObj, AppAbility } from 'src/configs/acl'
@@ -10,6 +10,7 @@ import { useAuth } from 'src/hooks/useAuth'
 import { useRouter } from 'next/router'
 import { AbilityContext } from 'src/components/acl/Can'
 import { PERMISSIONS } from 'src/configs/permission'
+import { ROUTE_CONFIG } from 'src/configs/route'
 
 interface AclGuardProps {
   children: ReactNode
@@ -30,6 +31,12 @@ const AclGuard = (props: AclGuardProps) => {
       : auth.user?.role?.permissions
     : []
   const router = useRouter()
+
+  useEffect(() => {
+    if(router.route === "/") {
+      router.push(ROUTE_CONFIG.HOME)
+    }
+  }, [router])
 
   let ability: AppAbility
 

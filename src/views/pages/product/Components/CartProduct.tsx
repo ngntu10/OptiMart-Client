@@ -44,14 +44,13 @@ const StyleCard = styled(Card)(({ theme }) => ({
     objectFit: 'contain'
   }
 }))
-const CardProduct = (props: TCardProduct) => {
+const CardProduct = (props: any) => {
   // ** Props
   const { item } = props
   const { t } = useTranslation()
   const theme = useTheme()
   const router = useRouter()
   const { user } = useAuth()
-  console.log("item", item);
 
   // ** Redux
   const dispatch: AppDispatch = useDispatch()
@@ -214,7 +213,7 @@ const CardProduct = (props: TCardProduct) => {
             </Box>
           )}
         </Typography>
-        {item?.sold >0 && (
+        {item?.sold > 0 && (
           <Typography variant='body2' color='text.secondary'>
             <>{t('Sold_product')}</> <b>{item.sold}</b> <>{t('Product')}</>
           </Typography>
@@ -248,7 +247,13 @@ const CardProduct = (props: TCardProduct) => {
               </Typography>
             )}
             <Typography sx={{ display: 'flex', alignItems: 'center' }}>
-              {!!item.totalReviews ? <b>{item.totalReviews}</b> : <span>{t('not_review')}</span>}
+              {!!item.reviewList ? (
+                <span>
+                  <b>{item?.reviewList.length}</b> {t('Review')}
+                </span>
+              ) : (
+                <span>{t('not_review')}</span>
+              )}
             </Typography>
           </Box>
           <IconButton

@@ -87,6 +87,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
       .then(async response => {
         setLoading(false)
         const data = response?.data
+        console.log(data);
         if (data) {
           setDataProduct(data)
         }
@@ -323,9 +324,9 @@ const DetailsProductPage: NextPage<TProps> = () => {
                     </Box>
                   )}
                   <Typography sx={{ display: 'flex', alignItems: 'center' }}>
-                    {dataProduct.totalReviews > 0 ? (
+                    {dataProduct?.reviewList && dataProduct?.reviewList.length > 0 ? (
                       <span>
-                        <b>{dataProduct.totalReviews}</b> {t('Review')}
+                        <b>{dataProduct?.reviewList.length}</b> {t('Review')}
                       </span>
                     ) : (
                       <span>{t('not_review')}</span>
@@ -524,10 +525,14 @@ const DetailsProductPage: NextPage<TProps> = () => {
         <Grid container md={12} xs={12} mt={6}>
           <Grid container>
             <Grid container item md={9} xs={12}>
-              <Box>
+              <Box sx={{
+                height: '100%',
+                width: '100%',
+              }}>
                 <Box sx={{ backgroundColor: theme.palette.background.paper, borderRadius: '15px', py: 5, px: 4 }}>
                   <Box
                     sx={{
+                      
                       display: 'flex',
                       alignItems: 'center',
                       gap: 2,

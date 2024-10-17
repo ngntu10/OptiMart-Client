@@ -73,7 +73,7 @@ const ModalWriteReview = (props: TCreateReview) => {
             product: productId,
             user: userId,
             content: data.content,
-            star: 3.5
+            star: data.star
           })
         )
       }
