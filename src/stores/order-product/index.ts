@@ -133,9 +133,10 @@ export const orderProductSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(deleteOrderProductAsync.fulfilled, (state, action) => {
+      console.log(action);
       state.isLoading = false
-      state.isSuccessDelete = !!action.payload?.data?.id
-      state.isErrorDelete = !action.payload?.data?.id
+      state.isSuccessDelete = !!action.payload?.data
+      state.isErrorDelete = !action.payload?.data
       state.messageErrorDelete = action.payload?.message
       state.typeError = action.payload?.typeError
     })

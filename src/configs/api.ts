@@ -35,6 +35,9 @@ export const API_ENDPOINT = {
   MANAGE_ORDER: {
     ORDER: {
       INDEX: `${BASE_URL}/orders`
+    },
+    REVIEW: {
+      INDEX: `${BASE_URL}/reviews`
     }
   }
 }

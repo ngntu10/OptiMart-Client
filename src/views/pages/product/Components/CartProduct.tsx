@@ -51,6 +51,7 @@ const CardProduct = (props: TCardProduct) => {
   const theme = useTheme()
   const router = useRouter()
   const { user } = useAuth()
+  console.log("item", item);
 
   // ** Redux
   const dispatch: AppDispatch = useDispatch()

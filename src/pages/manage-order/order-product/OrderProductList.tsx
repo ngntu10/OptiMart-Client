@@ -38,10 +38,7 @@ import { usePermission } from 'src/hooks/usePermission'
 
 // ** Config
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
-import { PERMISSIONS } from 'src/configs/permission'
-import { getAllRoles } from 'src/services/role'
 import { STATUS_ORDER_PRODUCT } from 'src/configs/orderProduct'
-import { ThemeContext } from '@emotion/react'
 
 // ** Services
 import { getAllCities } from 'src/services/city'
@@ -279,7 +276,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
     setLoading(true)
     await getAllCities({ params: { limit: -1, page: -1 } })
       .then(res => {
-        const data = res?.data.cities
+        const data = res?.data
         if (data) {
           setOptionCities(data?.map((item: { name: string; id: string }) => ({ label: item.name, value: item.id })))
         }

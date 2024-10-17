@@ -20,26 +20,34 @@ import { t } from 'i18next'
 import { useTranslation } from 'react-i18next'
 
 // ** Utils
-import { convertUpdateProductToCart, formatNumberToLocal, isExpiry } from 'src/utils'
+import { convertUpdateProductToCart, formatNumberToLocal, isExpiry, formatFilter } from 'src/utils'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
 import { updateProductToCart } from 'src/stores/order-product'
+import { resetInitialState } from 'src/stores/reviews'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
 
 // ** Services
 import { getDetailsProductPublicBySlug, getListRelatedProductBySlug } from 'src/services/product'
+import { getAllReviews } from 'src/services/reviewProduct'
 
 // ** Other
 import { getLocalProductCart, setLocalProductToCart } from 'src/helpers/storage'
 import { TProduct } from 'src/types/product'
 import NoData from 'src/components/no-data'
 import CardRelatedProduct from '../Components/CardRelatedProduct'
+
+// ** Configs
 import { ROUTE_CONFIG } from 'src/configs/route'
+import { TReviewItem } from 'src/types/reviews'
+import toast from 'react-hot-toast'
+import { OBJECT_TYPE_ERROR_REVIEW } from 'src/configs/error'
+import CardReview from '../Components/CardReview'
 
 type TProps = {}
 const DetailsProductPage: NextPage<TProps> = () => {
@@ -48,7 +56,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
   const [dataProduct, setDataProduct] = useState<TProduct | any>({})
   const [amountProduct, setAmountProduct] = useState(1)
   const [listRelatedProduct, setRelatedProduct] = useState<TProduct[]>([])
-
+  const [listReviews, setListReview] = useState<TReviewItem[]>([])
   // ** Hooks
   const { i18n } = useTranslation()
   const router = useRouter()
@@ -61,6 +69,16 @@ const DetailsProductPage: NextPage<TProps> = () => {
   // ** redux
   const { orderItems } = useSelector((state: RootState) => state.orderProduct)
   const dispatch: AppDispatch = useDispatch()
+  const {
+    isSuccessEdit,
+    isErrorEdit,
+    isLoading,
+    messageErrorEdit,
+    isErrorDelete,
+    isSuccessDelete,
+    messageErrorDelete,
+    typeError
+  } = useSelector((state: RootState) => state.reviews)
 
   // fetch api
   const fetchGetDetailsProduct = async (slug: string) => {
@@ -78,13 +96,35 @@ const DetailsProductPage: NextPage<TProps> = () => {
       })
   }
 
+  const fetchGetAllListReviewByProduct = async (id: string) => {
+    setLoading(true)
+    await getAllReviews({
+      params: {
+        limit: -1,
+        page: -1,
+        order: 'createdAt desc',
+        isPublic: true,
+        ...formatFilter({ productId: id })
+      }
+    })
+      .then(async response => {
+        setLoading(false)
+        const data = response?.data
+        if (data) {
+          setListReview(data)
+        }
+      })
+      .catch(() => {
+        setLoading(false)
+      })
+  }
+
   const fetchListRelatedProduct = async (slug: string) => {
     setLoading(true)
     await getListRelatedProductBySlug({ params: { slug: slug } })
       .then(async response => {
         setLoading(false)
         const data = response?.data
-        console.log(data)
         if (data) {
           setRelatedProduct(data)
         }
@@ -147,6 +187,39 @@ const DetailsProductPage: NextPage<TProps> = () => {
     return isExpiry(dataProduct.discountStartDate, dataProduct.discountEndDate)
   }, [dataProduct])
 
+  useEffect(() => {
+    if (dataProduct.id) {
+      fetchGetAllListReviewByProduct(dataProduct.id)
+    }
+  }, [dataProduct.id])
+
+  useEffect(() => {
+    if (isSuccessEdit) {
+      toast.success(t('Update_review_success'))
+      fetchGetAllListReviewByProduct(dataProduct.id)
+      dispatch(resetInitialState())
+    } else if (isErrorEdit && messageErrorEdit && typeError) {
+      const errorConfig = OBJECT_TYPE_ERROR_REVIEW[typeError]
+      if (errorConfig) {
+        toast.error(t(errorConfig))
+      } else {
+        toast.error(t('Update_review_error'))
+      }
+      dispatch(resetInitialState())
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccessEdit, isErrorEdit, messageErrorEdit, typeError])
+  useEffect(() => {
+    if (isSuccessDelete) {
+      toast.success(t('Delete_review_success'))
+      fetchGetAllListReviewByProduct(dataProduct.id)
+      dispatch(resetInitialState())
+    } else if (isErrorDelete && messageErrorDelete) {
+      toast.error(t('Delete_review_error'))
+      dispatch(resetInitialState())
+    }
+  }, [isSuccessDelete, isErrorDelete, messageErrorDelete])
+
   return (
     <>
       {loading && <Spinner />}
@@ -193,7 +266,9 @@ const DetailsProductPage: NextPage<TProps> = () => {
                 </Box>
                 <Typography variant='body2' color='text.secondary'>
                   {dataProduct.countInStock > 0 ? (
-                    <>{t('Count_in_stock_product', { count: dataProduct.countInStock })}</>
+                    <>
+                      {t('Still')} <b>{dataProduct?.countInStock}</b> <span>{t('product_in_stock')}</span>
+                    </>
                   ) : (
                     <Box
                       sx={{
@@ -250,8 +325,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
                   <Typography sx={{ display: 'flex', alignItems: 'center' }}>
                     {dataProduct.totalReviews > 0 ? (
                       <span>
-                        <b>{dataProduct.totalReviews}</b>
-                        {t('Review')}
+                        <b>{dataProduct.totalReviews}</b> {t('Review')}
                       </span>
                     ) : (
                       <span>{t('not_review')}</span>
@@ -449,24 +523,47 @@ const DetailsProductPage: NextPage<TProps> = () => {
         </Grid>
         <Grid container md={12} xs={12} mt={6}>
           <Grid container>
-            <Grid
-              container
-              item
-              md={9}
-              xs={12}
-              sx={{ backgroundColor: theme.palette.background.paper, borderRadius: '15px', py: 5, px: 4 }}
-            >
-              <Box sx={{ height: '100%', width: '100%' }}>
+            <Grid container item md={9} xs={12}>
+              <Box>
+                <Box sx={{ backgroundColor: theme.palette.background.paper, borderRadius: '15px', py: 5, px: 4 }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 2,
+                      mt: 2,
+                      backgroundColor: theme.palette.customColors.bodyBg,
+                      padding: '8px',
+                      borderRadius: '8px'
+                    }}
+                  >
+                    <Typography
+                      variant='h6'
+                      sx={{
+                        color: `rgba(${theme.palette.customColors.main}, 0.68)`,
+                        fontWeight: 'bold',
+                        fontSize: '18px'
+                      }}
+                    >
+                      {t('Description_product')}
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      mt: 4,
+                      color: `rgba(${theme.palette.customColors.main}, 0.42)`,
+                      fontSize: '14px',
+                      backgroundColor: theme.palette.customColors.bodyBg,
+                      padding: 4,
+                      borderRadius: '10px'
+                    }}
+                    dangerouslySetInnerHTML={{ __html: dataProduct.description }}
+                  />
+                </Box>
                 <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 2,
-                    mt: 2,
-                    backgroundColor: theme.palette.customColors.bodyBg,
-                    padding: '8px',
-                    borderRadius: '8px'
-                  }}
+                  display={{ md: 'block', xs: 'none' }}
+                  sx={{ backgroundColor: theme.palette.background.paper, borderRadius: '15px', py: 5, px: 4 }}
+                  marginTop={{ md: 5, xs: 4 }}
                 >
                   <Typography
                     variant='h6'
@@ -476,20 +573,19 @@ const DetailsProductPage: NextPage<TProps> = () => {
                       fontSize: '18px'
                     }}
                   >
-                    {t('Description_product')}
+                    {t('Review_product')} <b style={{ color: theme.palette.primary.main }}>{listReviews?.length}</b>{' '}
+                    {t('ratings')}
                   </Typography>
+                  <Grid container spacing={8} mt={{ md: 0, xs: 1 }}>
+                    {listReviews.map((review: TReviewItem) => {
+                      return (
+                        <Grid key={review.id} item md={4} xs={12}>
+                          <CardReview item={review} />
+                        </Grid>
+                      )
+                    })}
+                  </Grid>
                 </Box>
-                <Box
-                  sx={{
-                    mt: 4,
-                    color: `rgba(${theme.palette.customColors.main}, 0.42)`,
-                    fontSize: '14px',
-                    backgroundColor: theme.palette.customColors.bodyBg,
-                    padding: 4,
-                    borderRadius: '10px'
-                  }}
-                  dangerouslySetInnerHTML={{ __html: dataProduct.description }}
-                />
               </Box>
             </Grid>
             <Grid container item md={3} xs={12} mt={{ md: 0, xs: 5 }}>
@@ -545,25 +641,37 @@ const DetailsProductPage: NextPage<TProps> = () => {
                 </Box>
               </Box>
             </Grid>
-            <Grid container item md={8} xs={12}>
-              <Box
+            <Box
+              display={{ md: 'none', xs: 'block' }}
+              sx={{ backgroundColor: theme.palette.background.paper, borderRadius: '15px', py: 5, px: 4 }}
+              marginTop={{ md: 5, xs: 4 }}
+            >
+              <Typography
+                variant='h6'
                 sx={{
-                  height: '100%',
-                  width: '100%',
-                  backgroundColor: theme.palette.background.paper,
-                  borderRadius: '15px',
-                  py: 5,
-                  px: 4
+                  color: `rgba(${theme.palette.customColors.main}, 0.68)`,
+                  fontWeight: 'bold',
+                  fontSize: '18px'
                 }}
-                marginTop={{ md: 5, xs: 0 }}
               >
-                Revieew
-              </Box>
-            </Grid>
+                {t('Review_product')} <b style={{ color: theme.palette.primary.main }}>{listReviews?.length}</b>{' '}
+                {t('ratings')}
+              </Typography>
+              <Grid container spacing={8} mt={{ md: 0, xs: 1 }}>
+                {listReviews.map((review: TReviewItem) => {
+                  return (
+                    <Grid key={review.id} item md={4} xs={12}>
+                      <CardReview item={review} />
+                    </Grid>
+                  )
+                })}
+              </Grid>
+            </Box>
           </Grid>
         </Grid>
       </Grid>
     </>
   )
 }
+
 export default DetailsProductPage

@@ -89,7 +89,7 @@ const HomePage: NextPage<TProps> = () => {
       params: { limit: pageSize, page: page, search: searchBy, order: sortBy, ...formatFilter(filterBy) }
     }
     await getAllProductsPublic(query).then((res: any) => {
-      console.log(res);
+      console.log("rese",res);
       if (res?.data) {
         setLoading(false)
         setProductsPublic({
