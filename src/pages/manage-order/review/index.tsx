@@ -12,5 +12,4 @@ const Index: NextPage<TProps> = () => {
   return <ReviewListPage />
 }
 
-Index.permission = [PERMISSIONS.MANAGE_ORDER.REVIEW.VIEW]
 export default Index

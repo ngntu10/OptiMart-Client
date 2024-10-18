@@ -32,7 +32,7 @@ const TablePermission = (props: TTablePermission) => {
   // handle
   const getValuePermission = (value: string, mode: string, parentValue?: string) => {
     try {
-      return parentValue ? PERMISSIONS[parentValue][value][mode] : PERMISSIONS[value]
+      return parentValue ? (PERMISSIONS as any)[parentValue][value][mode] : (PERMISSIONS as any)[value]
     } catch (error) {
       return ''
     }
@@ -40,8 +40,8 @@ const TablePermission = (props: TTablePermission) => {
 
   const handleIsChecked = (value: string, parentValue?: string) => {
     const allValue = parentValue
-      ? getAllValueOfObject(PERMISSIONS[parentValue][value])
-      : getAllValueOfObject(PERMISSIONS[value])
+      ? getAllValueOfObject((PERMISSIONS as any)[parentValue][value])
+      : getAllValueOfObject((PERMISSIONS as any)[value])
 
     const isCheckedAll = allValue.every(item => permissionSelected.includes(item))
 
