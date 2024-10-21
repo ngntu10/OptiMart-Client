@@ -18,6 +18,7 @@ import { convertUpdateMultipleProductsCart, convertUpdateProductToCart, formatNu
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
+
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
 
@@ -33,6 +34,7 @@ import { TProduct } from 'src/types/product'
 import { updateProductToCart } from 'src/stores/order-product'
 import { ROUTE_CONFIG } from 'src/configs/route'
 import Icon from 'src/components/Icon'
+import { PAYMENT_TYPES } from 'src/configs/payment'
 
 type TProps = {
   dataOrder: any
@@ -53,14 +55,21 @@ const CardOrder: NextPage<TProps> = props => {
   // ** Hooks
   const router = useRouter()
   const { user } = useAuth()
+  const {t} = useTranslation()
+  const PAYMENT_DATA = PAYMENT_TYPES()
 
   const handleConfirmCancel = () => {
     dispatch(cancelOrderProductOfMeAsync(dataOrder.id))
   }
+
   // ** handle
   const handleCloseDialog = () => {
     setOpenCancel(false)
   }
+
+  const handlePaymentOrder = () => {
+  }
+
   useEffect(() => {
     if (isSuccessCancelMe) {
       handleCloseDialog()
@@ -253,6 +262,21 @@ const CardOrder: NextPage<TProps> = props => {
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 4, mt: 6, justifyContent: 'flex-end' }}>
+           {/* {[0].includes(dataOrder.orderStatus) && dataOrder.paymentMethod.type !== PAYMENT_DATA.PAYMENT_LATER.value && ( */}
+           <Button
+              variant='outlined'
+              onClick={handlePaymentOrder}
+              sx={{
+                height: 40,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '2px',
+                backgroundColor: 'transparent !important',
+              }}
+            >
+              {t('Payment')}
+            </Button>
+          {/* )} */}
           {[0, 1].includes(dataOrder.orderStatus) && (
             <Button
               variant='outlined'
