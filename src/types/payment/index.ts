@@ -1,5 +1,5 @@
 export type TParamsCreateURLPayment = {
-    totalPrice: number
+    amount: number
     orderId: string
     language: string
   }

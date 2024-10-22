@@ -270,7 +270,7 @@ const ModalAddAddress = (props: TModalAddAddress) => {
                       >
                         {addresses.map((address, index) => {
                           const a = address.city as String
-                          const findCity = optionCities.find(item => item.value == (address.city as any))
+                          const findCity = optionCities.find(item => item.value == (address.city as any).id)
                           return (
                             <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                               <FormControlLabel

@@ -38,7 +38,7 @@ import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 import CreateEditCity from './components/CreateEditCity'
 
 // ** Utils
-import { formatDate } from 'src/utils'
+import { formatDate } from 'src/utils/date'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 type TProps = {}

@@ -35,6 +35,8 @@ import { updateProductToCart } from 'src/stores/order-product'
 import { ROUTE_CONFIG } from 'src/configs/route'
 import Icon from 'src/components/Icon'
 import { PAYMENT_TYPES } from 'src/configs/payment'
+import { createURLpaymentVNPay } from 'src/services/payment'
+import Spinner from 'src/components/spinner'
 
 type TProps = {
   dataOrder: any
@@ -42,9 +44,9 @@ type TProps = {
 const CardOrder: NextPage<TProps> = props => {
   // ** Props
   const { dataOrder } = props
-
   // State
   const [openCancel, setOpenCancel] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   // ** theme
   const theme = useTheme()
@@ -55,7 +57,7 @@ const CardOrder: NextPage<TProps> = props => {
   // ** Hooks
   const router = useRouter()
   const { user } = useAuth()
-  const {t} = useTranslation()
+  const { t, i18n } = useTranslation()
   const PAYMENT_DATA = PAYMENT_TYPES()
 
   const handleConfirmCancel = () => {
@@ -67,7 +69,28 @@ const CardOrder: NextPage<TProps> = props => {
     setOpenCancel(false)
   }
 
-  const handlePaymentOrder = () => {
+  const handlePaymentTypeOrder = (type: string) => {
+    switch (type) {
+      case PAYMENT_DATA.VN_PAYMENT.value: {
+        handlePaymentVNPay()
+        break
+      }
+      default:
+        break
+    }
+  }
+  const handlePaymentVNPay = async () => {
+    setLoading(true)
+    await createURLpaymentVNPay({
+      amount: dataOrder.totalPrice,
+      orderId: dataOrder?.id,
+      language: i18n.language === 'vi' ? 'vn' : i18n.language
+    }).then(res => {
+      if (res?.paymentUrl) {
+        window.open(res?.paymentUrl, '_blank')
+      }
+      setLoading(false)
+    })
   }
 
   useEffect(() => {
@@ -120,11 +143,8 @@ const CardOrder: NextPage<TProps> = props => {
   }
 
   const memeDisabledBuyAgain = useMemo(() => {
-    console.log(dataOrder);
     return dataOrder?.orderItemList?.some((item: any) => !item.countInStock)
   }, [dataOrder.orderItemList])
-
-
 
   return (
     <>
@@ -146,11 +166,20 @@ const CardOrder: NextPage<TProps> = props => {
         }}
       >
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2, gap: 2 }}>
-          {dataOrder?.orderStatus === 2 && (
+          {!!dataOrder.isDelivered && (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Icon icon='carbon:delivery'></Icon>
               <Typography>
                 <span style={{ color: theme.palette.success.main }}>{t('Order_has_been_delivery')}</span>
+                <span>{' | '}</span>
+              </Typography>
+            </Box>
+          )}
+          {!!dataOrder.isPaid && (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Icon icon='streamline:payment-10'></Icon>
+              <Typography>
+                <span style={{ color: theme.palette.success.main }}>{t('Order_has_been_paid')}</span>
                 <span>{' | '}</span>
               </Typography>
             </Box>
@@ -262,21 +291,21 @@ const CardOrder: NextPage<TProps> = props => {
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 4, mt: 6, justifyContent: 'flex-end' }}>
-           {/* {[0].includes(dataOrder.orderStatus) && dataOrder.paymentMethod.type !== PAYMENT_DATA.PAYMENT_LATER.value && ( */}
-           <Button
+          {[0].includes(dataOrder.orderStatus) && dataOrder?.paymentMethod?.type !== PAYMENT_DATA.PAYMENT_LATER.value && (
+            <Button
               variant='outlined'
-              onClick={handlePaymentOrder}
+              onClick={() => handlePaymentTypeOrder(dataOrder.paymentMethod.type)}
               sx={{
                 height: 40,
                 display: 'flex',
                 alignItems: 'center',
                 gap: '2px',
-                backgroundColor: 'transparent !important',
+                backgroundColor: 'transparent !important'
               }}
             >
               {t('Payment')}
             </Button>
-          {/* )} */}
+          )}
           {[0, 1].includes(dataOrder.orderStatus) && (
             <Button
               variant='outlined'

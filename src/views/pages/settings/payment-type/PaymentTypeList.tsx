@@ -42,7 +42,7 @@ import { usePermission } from 'src/hooks/usePermission'
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 
 // ** Utils
-import { formatDate } from 'src/utils'
+import { formatDate } from 'src/utils/date'
 import { PAYMENT_TYPES } from 'src/configs/payment'
 import CreateEditPaymentType from './Components/CreateEditPaymentType'
 

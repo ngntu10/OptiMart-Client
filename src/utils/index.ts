@@ -77,18 +77,6 @@ export const getAllValueOfObject = (obj: any, arrExlude?: string[]) => {
   }
 }
 
-export const formatDate = (
-  value: number[],
-  formatting: Intl.DateTimeFormatOptions = { month: 'numeric', day: 'numeric', year: 'numeric' }
-) => {
-  const { i18n } = useTranslation()
-  const currentLanguage = i18n.language
-  if (!value) return value
-
-  const date = new Date(value[0], value[1] - 1, value[2])
-
-  return Intl.DateTimeFormat(currentLanguage, formatting).format(date)
-}
 
 export const formatFilter = (filter: any) => {
   const result: Record<string, string> = {}

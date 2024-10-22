@@ -48,9 +48,9 @@ import { OBJECT_STATUS_PRODUCT } from 'src/configs/product'
 import { getAllProductTypes } from 'src/services/product-type'
 
 // ** Utils
-import { formatDate, formatNumberToLocal } from 'src/utils'
+import { formatNumberToLocal,formatFilter } from 'src/utils'
+import {formatDate} from "src/utils/date"
 import CreateEditProduct from './Components/CreateEditProduct'
-import { formatFilter } from 'src/utils'
 
 const ActiveUserStyled = styled(Chip)<ChipProps>(({ theme }) => ({
   backgroundColor: '#28c76f29',
