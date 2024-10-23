@@ -72,3 +72,14 @@ export const changeAvatar = async (file: File) => {
     return error
   }
 }
+
+
+export const loginAuthGoogle = async (idToken: string) => {
+  const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/login-google`, { idToken })
+  return res.data
+}
+
+export const registerAuthGoogle = async (idToken: string) => {
+    const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/register-google`, { idToken })
+    return res.data
+}

@@ -40,7 +40,9 @@ import {
 
 // ** Configs
 import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
-
+import { signIn, useSession } from 'next-auth/react'
+import { loginAuth } from 'src/services/auth'
+import { clearLocalPreTokenGoogle, getLocalPreTokenGoogle, setLocalPreTokenGoogle } from 'src/helpers/storage'
 import IconifyIcon from 'src/components/Icon'
 import { Icon } from '@iconify/react/dist/iconify.js'
 
@@ -63,6 +65,7 @@ const LoginPage: NextPage<Tprops> = () => {
   // ** State
   const [showPassword, setShowPassword] = useState(false)
   const [isRemember, setIsRemember] = useState(false)
+  const prevTokenLocal = getLocalPreTokenGoogle()
 
   //** Theme
   const theme = useTheme()
@@ -72,7 +75,11 @@ const LoginPage: NextPage<Tprops> = () => {
   const { t } = useTranslation()
 
   // ** context
-  const { login } = useAuth()
+  const { login, loginGoogle } = useAuth()
+
+  // ** Hooks
+  const { data: session } = useSession()
+  console.log('session', { session })
 
   const schema = yup.object().shape({
     email: yup.string().required(t('Required_field')).matches(EMAIL_REG, t('Rules_email')),
@@ -100,6 +107,19 @@ const LoginPage: NextPage<Tprops> = () => {
       })
     }
   }
+
+  const handleLoginGoogle = () => {
+    signIn('google')
+    clearLocalPreTokenGoogle()
+  }
+  useEffect(() => {
+    if ((session as any)?.accessToken && (session as any)?.accessToken !== prevTokenLocal) {
+      loginGoogle({ idToken: (session as any)?.accessToken, rememberMe: isRemember }, err => {
+        if (err?.response?.data?.typeError === 'INVALID') toast.error(t('The_email_or_password_wrong'))
+      })
+      setLocalPreTokenGoogle((session as any)?.accessToken)
+    }
+  }, [(session as any)?.accessToken])
 
   return (
     <>
@@ -301,9 +321,9 @@ const LoginPage: NextPage<Tprops> = () => {
                 >
                   <Icon icon='mdi:github' />
                 </IconButton>
-                <IconButton href='/' component={Link} sx={{ color: '#db4437' }} onClick={e => e.preventDefault()}>
-                  <Icon icon='mdi:google' />
-                </IconButton>
+                  <IconButton href='/' component={Link} sx={{ color: '#db4437' }} onClick={handleLoginGoogle}>
+                    <Icon icon='mdi:google' />
+                  </IconButton>
               </Box>
             </form>
           </Box>

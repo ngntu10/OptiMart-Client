@@ -16,6 +16,11 @@ export type TUserAddresses = {
   isDefault: boolean,
 }
 
+export type LoginGoogleParams = {
+  idToken: string
+  rememberMe?: boolean
+}
+
 export type UserDataType = {
   id: string
   role: {
@@ -43,4 +48,6 @@ export type AuthValuesType = {
   setLoading: (value: boolean) => void
   setUser: (value: UserDataType | null) => void
   login: (params: LoginParams, errorCallback?: ErrCallbackType) => void
+  loginGoogle: (params: LoginGoogleParams, errorCallback?: ErrCallbackType) => void
+
 }

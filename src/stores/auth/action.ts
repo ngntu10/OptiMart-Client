@@ -2,8 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 import { AxiosResponse } from 'axios'
 
 // ** services
-import { changeAvatar, changePasswordMe, registerAuth, updateAuthMe } from 'src/services/auth'
-
+import { changeAvatar, changePasswordMe, registerAuth, registerAuthGoogle, updateAuthMe } from 'src/services/auth'
 // ** Types
 import { TChangePassword } from 'src/types/auth'
 
@@ -51,6 +50,19 @@ export const changePasswordMeAsync = createAsyncThunk(
     // return response
   }
 )
+
+
+export const registerAuthGoogleAsync = createAsyncThunk(`${serviceName}/register-google`, async (idToken: string) => {
+  const response = await registerAuthGoogle(idToken)
+  if (response?.data) {
+    return response
+  }
+
+  return {
+    data: null,
+    message: response?.response?.data?.message
+  }
+})
 
 export const changeAvatarAsync = createAsyncThunk('auth/changAvatar', async (file: File) => {
   const response: any = await changeAvatar(file)

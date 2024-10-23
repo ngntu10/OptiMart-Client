@@ -259,9 +259,11 @@ const CheckoutProductPage: NextPage<TProps> = () => {
       })
   }
   useEffect(() => {
+    setLoading(true)
     fetchAllCities()
     handleGetListPaymentMethod()
     handleGetListDeliveryMethod()
+    setLoading(false)
   }, [])
 
   const handleChangeAmountCart = (items: TItemOrderProduct[]) => {
@@ -326,7 +328,6 @@ const CheckoutProductPage: NextPage<TProps> = () => {
 
   return (
     <>
-      {/* {loading || (isLoading && <Spinner />)} */}
       {loading || (isLoading && <Spinner />)}
       <ModalWarning open={openWarning} onClose={() => setOpenAddress(false)} />
       <ModalAddAddress open={openAddress} onClose={() => setOpenAddress(false)} />

@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { NextPage } from 'next'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
+import { useSession, signIn, signOut } from 'next-auth/react'
 
 //** React
 import { useEffect, useState } from 'react'
@@ -39,6 +40,7 @@ import {
 // ** Configs
 import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
 import { Icon } from '@iconify/react/dist/iconify.js'
+import { clearLocalPreTokenGoogle, getLocalPreTokenGoogle, setLocalPreTokenGoogle } from 'src/helpers/storage'
 
 // ** Images
 import RegisterDark from '/public/images/register-dark.png'
@@ -48,14 +50,16 @@ import RegisterLight from '/public/images/register-light.png'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
 import { resetInitialState } from 'src/stores/auth'
-import { registerAuthAsync } from 'src/stores/auth/action'
 import { ROUTE_CONFIG } from 'src/configs/route'
+import { registerAuthAsync, registerAuthGoogleAsync } from 'src/stores/auth/action'
 
 type Tprops = {}
 
 const RegisterPage: NextPage<Tprops> = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const prevTokenLocal = getLocalPreTokenGoogle()
+
   // ** router
   const router = useRouter()
 
@@ -68,6 +72,10 @@ const RegisterPage: NextPage<Tprops> = () => {
 
   // ** Translate
   const { t } = useTranslation()
+
+  // ** Hooks
+  const { data: session, ...restsss } = useSession()
+  console.log('restsss', { restsss, session })
 
   const schema = yup.object().shape({
     email: yup.string().required(t('Required_field')).matches(EMAIL_REG, t('Rules_email')),
@@ -101,16 +109,27 @@ const RegisterPage: NextPage<Tprops> = () => {
 
   useEffect(() => {
     if (message) {
-      console.log(message)
       if (isError) {
         toast.error(message)
+        dispatch(resetInitialState())
       } else if (isSuccess) {
-        toast.success(message)
+        toast.success(t('Sign_up_success'))
         router.push(ROUTE_CONFIG.LOGIN)
+        dispatch(resetInitialState())
       }
-      dispatch(resetInitialState())
     }
   }, [isError, isSuccess, message])
+
+  const handleRegisterGoogle = async () => {
+    signIn('google')
+    clearLocalPreTokenGoogle()
+  }
+  useEffect(() => {
+    if ((session as any)?.accessToken && (session as any)?.accessToken !== prevTokenLocal) {
+      dispatch(registerAuthGoogleAsync((session as any)?.accessToken))
+      setLocalPreTokenGoogle((session as any)?.accessToken)
+    }
+  }, [(session as any)?.accessToken])
 
   return (
     <>
@@ -332,7 +351,7 @@ const RegisterPage: NextPage<Tprops> = () => {
                 >
                   <Icon icon='mdi:github' />
                 </IconButton>
-                <IconButton href='/' component={Link} sx={{ color: '#db4437' }} onClick={e => e.preventDefault()}>
+                <IconButton href='/' component={Link} sx={{ color: '#db4437' }} onClick={handleRegisterGoogle}>
                   <Icon icon='mdi:google' />
                 </IconButton>
               </Box>
