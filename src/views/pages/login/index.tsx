@@ -12,6 +12,7 @@ import { useContext, useEffect, useRef, useState } from 'react'
 
 // ** Components
 import CustomTextField from 'src/components/text-field'
+import { ROUTE_CONFIG } from 'src/configs/route'
 
 // ** form
 import { Controller, useForm } from 'react-hook-form'
@@ -289,10 +290,7 @@ const LoginPage: NextPage<Tprops> = () => {
                   }
                   label={t('Remember_me')}
                 />
-                <Typography
-                  variant='body2'
-                  style={{ color: `${theme.palette.primary.main} !important`, fontSize: '15px' }}
-                >
+                <Typography variant='body2' component={Link} href={`${ROUTE_CONFIG.FORGOT_PASSWORD}`}>
                   {t('Forgot_password')}?
                 </Typography>
               </Box>
@@ -303,7 +301,7 @@ const LoginPage: NextPage<Tprops> = () => {
                 <Typography>{t('You_have_account')}</Typography>
 
                 <Link
-                  href='/register'
+                   href={`${ROUTE_CONFIG.REGISTER}`}
                   style={{
                     color: theme.palette.mode === 'light' ? theme.palette.common.black : theme.palette.common.white,
                     fontSize: '16px'

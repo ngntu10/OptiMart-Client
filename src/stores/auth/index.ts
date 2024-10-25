@@ -3,7 +3,16 @@ import { Dispatch } from 'redux'
 import { createSlice } from '@reduxjs/toolkit'
 
 // ** Axios Imports
-import { changePasswordMeAsync, registerAuthGoogleAsync, registerAuthAsync, serviceName, updateAuthMeAsync, registerAuthFacebookAsync } from './action'
+import {
+  changePasswordMeAsync,
+  registerAuthGoogleAsync,
+  registerAuthAsync,
+  serviceName,
+  updateAuthMeAsync,
+  registerAuthFacebookAsync,
+  resetPasswordAuthAsync,
+  forgotPasswordAuthAsync
+} from './action'
 
 // ** Type
 import { UserDataType } from 'src/contexts/types'
@@ -22,6 +31,12 @@ type TInitialData = {
   isSuccessChangeAvatar: boolean
   messageChangePassword: string
   userData: UserDataType | null
+  isSuccessResetPassword: boolean
+  isErrorResetPassword: boolean
+  messageResetPassword: string
+  isSuccessForgotPassword: boolean
+  isErrorForgotPassword: boolean
+  messageForgotPassword: string
 }
 const initialState: TInitialData = {
   isLoading: false,
@@ -36,7 +51,13 @@ const initialState: TInitialData = {
   isErrorChangePassword: false,
   isSuccessChangeAvatar: false,
   messageChangePassword: '',
-  userData: null
+  userData: null,
+  isSuccessForgotPassword: true,
+  isErrorForgotPassword: false,
+  messageForgotPassword: '',
+  isSuccessResetPassword: true,
+  isErrorResetPassword: false,
+  messageResetPassword: ''
 }
 
 export const authSlice = createSlice({
@@ -54,6 +75,12 @@ export const authSlice = createSlice({
       state.isSuccessChangePassword = false
       state.isErrorChangePassword = true
       state.messageChangePassword = ''
+      state.isSuccessForgotPassword = false
+      state.isErrorForgotPassword = true
+      state.messageForgotPassword = ''
+      state.isSuccessResetPassword = false
+      state.isErrorResetPassword = true
+      state.messageResetPassword = ''
     }
   },
   extraReducers: builder => {
@@ -75,27 +102,27 @@ export const authSlice = createSlice({
       state.message = ''
     })
 
-       // ** register facebook
-       builder.addCase(registerAuthFacebookAsync.pending, (state, action) => {
-        state.isLoading = true
-      })
-      builder.addCase(registerAuthFacebookAsync.fulfilled, (state, action) => {
-        state.isLoading = false
-        state.isSuccess = !!action.payload?.data?.email
-        state.isError = !action.payload?.data?.email
-        state.message = action.payload?.message
-        state.typeError = action.payload?.typeError
-      })
-      builder.addCase(registerAuthFacebookAsync.rejected, (state, action) => {
-        state.isLoading = false
-        state.isSuccess = false
-        state.isError = true
-        state.message = ''
-        state.typeError = ''
-      })
+    // ** register facebook
+    builder.addCase(registerAuthFacebookAsync.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(registerAuthFacebookAsync.fulfilled, (state, action) => {
+      state.isLoading = false
+      state.isSuccess = !!action.payload?.data?.email
+      state.isError = !action.payload?.data?.email
+      state.message = action.payload?.message
+      state.typeError = action.payload?.typeError
+    })
+    builder.addCase(registerAuthFacebookAsync.rejected, (state, action) => {
+      state.isLoading = false
+      state.isSuccess = false
+      state.isError = true
+      state.message = ''
+      state.typeError = ''
+    })
 
-     // ** register
-     builder.addCase(registerAuthGoogleAsync.pending, (state, action) => {
+    // ** register
+    builder.addCase(registerAuthGoogleAsync.pending, (state, action) => {
       state.isLoading = true
     })
     builder.addCase(registerAuthGoogleAsync.fulfilled, (state, action) => {
@@ -148,6 +175,44 @@ export const authSlice = createSlice({
       state.isSuccessChangePassword = false
       state.isErrorChangePassword = false
       state.messageChangePassword = ''
+    })
+
+    // ** reset password
+    builder.addCase(resetPasswordAuthAsync.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(resetPasswordAuthAsync.fulfilled, (state, action) => {
+      state.isLoading = false
+      state.isSuccessResetPassword = Boolean(action.payload?.data)
+      state.isErrorResetPassword = !Boolean(action.payload?.data)
+
+      state.messageResetPassword = action.payload?.message
+      state.typeError = action.payload?.typeError
+    })
+    builder.addCase(resetPasswordAuthAsync.rejected, (state, action) => {
+      state.isLoading = false
+      state.isSuccessResetPassword = false
+      state.isErrorResetPassword = true
+      state.messageResetPassword = ''
+      state.typeError = ''
+    })
+    // ** forgot password
+    builder.addCase(forgotPasswordAuthAsync.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(forgotPasswordAuthAsync.fulfilled, (state, action) => {
+      state.isLoading = false
+      state.isSuccessForgotPassword = Boolean(action.payload?.data)
+      state.isErrorForgotPassword = !Boolean(action.payload?.data)
+      state.messageForgotPassword = action.payload?.message
+      state.typeError = action.payload?.typeError
+    })
+    builder.addCase(forgotPasswordAuthAsync.rejected, (state, action) => {
+      state.isLoading = false
+      state.isSuccessForgotPassword = false
+      state.isErrorForgotPassword = true
+      state.message = ''
+      state.typeError = ''
     })
   }
 })
