@@ -16,10 +16,17 @@ import authConfig, { LIST_PAGE_PUBLIC } from 'src/configs/auth'
 import { API_ENDPOINT } from 'src/configs/api'
 
 // ** Types
-import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType, LoginGoogleParams } from './types'
+import {
+  AuthValuesType,
+  LoginParams,
+  ErrCallbackType,
+  UserDataType,
+  LoginGoogleParams,
+  LoginFacebookParams
+} from './types'
 
 // ** services
-import { loginAuth, loginAuthGoogle } from 'src/services/auth'
+import { loginAuth, loginAuthFacebook, loginAuthGoogle } from 'src/services/auth'
 
 // ** helper
 import { clearLocalUserData, setLocalUserData, setTemporaryToken } from 'src/helpers/storage'
@@ -41,6 +48,7 @@ const defaultProvider: AuthValuesType = {
   login: () => Promise.resolve(),
   logout: () => Promise.resolve(),
   loginGoogle: () => Promise.resolve(),
+  loginFacebook: () => Promise.resolve()
 }
 
 const AuthContext = createContext(defaultProvider)
@@ -68,17 +76,16 @@ type Props = {
 //   }
 // }
 
-
 const AuthProvider = ({ children }: Props) => {
   // ** States
   const [user, setUser] = useState<UserDataType | null>(defaultProvider.user)
   const [loading, setLoading] = useState<boolean>(defaultProvider.loading)
-  
+
   // ** Hooks
   const router = useRouter()
-  
+
   const { t } = useTranslation()
-  
+
   // ** Redux
   const dispatch: AppDispatch = useDispatch()
 
@@ -88,47 +95,58 @@ const AuthProvider = ({ children }: Props) => {
       if (storedToken) {
         setLoading(true)
         await instanceAxios
-        .get(API_ENDPOINT.AUTH.AUTH_ME, {
-          headers: {
-            Authorization: `Bearer ${storedToken}`
-          }
-        })
-        .then(async response => {
-          setLoading(false)
-          const user = response.data
-          setUser(user)
-        })
-        .catch((e) => {
-          clearLocalUserData()
-          setUser(null)
-          setLoading(false)
-          if (!router.pathname.includes('login')) {
-            router.replace('/login')
-          }
-        })
+          .get(API_ENDPOINT.AUTH.AUTH_ME, {
+            headers: {
+              Authorization: `Bearer ${storedToken}`
+            }
+          })
+          .then(async response => {
+            setLoading(false)
+            const user = response.data
+            setUser(user)
+          })
+          .catch(e => {
+            clearLocalUserData()
+            setUser(null)
+            setLoading(false)
+            if (!router.pathname.includes('login')) {
+              router.replace('/login')
+            }
+          })
       } else {
         setLoading(false)
       }
     }
-    
+
     initAuth()
   }, [])
-  
+
   const handleLoginGoogle = (params: LoginGoogleParams, errorCallback?: ErrCallbackType) => {
     loginAuthGoogle(params?.idToken)
-      .then(async (response:any) => {
-        if (params.rememberMe) {
-          setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
-        } else {
-          setTemporaryToken(response.data.access_token)
-        }
+      .then(async response => {
+        setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
+
         toast.success(t('Login_success'))
         const returnUrl = router.query.returnUrl
         setUser({ ...response.data.user })
         const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
         router.replace(redirectURL as string)
       })
-      .catch((err:any) => {
+      .catch(err => {
+        if (errorCallback) errorCallback(err)
+      })
+  }
+  const handleLoginFacebook = (params: LoginFacebookParams, errorCallback?: ErrCallbackType) => {
+    loginAuthFacebook(params?.idToken)
+      .then(async (response: any) => {
+        setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
+        toast.success(t('Login_success'))
+        const returnUrl = router.query.returnUrl
+        setUser({ ...response.data.user })
+        const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
+        router.replace(redirectURL as string)
+      })
+      .catch((err: any) => {
         if (errorCallback) errorCallback(err)
       })
   }
@@ -187,7 +205,8 @@ const AuthProvider = ({ children }: Props) => {
     setLoading,
     login: handleLogin,
     logout: handleLogout,
-    loginGoogle: handleLoginGoogle
+    loginGoogle: handleLoginGoogle,
+    loginFacebook: handleLoginFacebook
   }
 
   return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>

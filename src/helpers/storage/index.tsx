@@ -1,4 +1,4 @@
-import { ACCESS_TOKEN, PRE_GOOGLE_TOKEN, REFRESH_TOKEN, TEMPORARY_TOKEN, USER_DATA } from 'src/configs/auth'
+import { ACCESS_TOKEN, PRE_AUTH_TOKEN, REFRESH_TOKEN, TEMPORARY_TOKEN, USER_DATA } from 'src/configs/auth'
 import { LOCAL_PRODUCT_CART } from 'src/configs/product'
 import { TItemOrderProduct } from 'src/types/order-product'
 
@@ -77,22 +77,22 @@ export const getLocalProductCart = () => {
   if (typeof window !== 'undefined') {
     return window.localStorage.getItem(LOCAL_PRODUCT_CART)
   }
-  return ""
+  return ''
 }
 
-export const setLocalPreTokenGoogle = (token: string) => {
+export const setLocalPreTokenAuthSocial = (token: string) => {
   if (typeof window !== 'undefined') {
-    window.localStorage.setItem(PRE_GOOGLE_TOKEN, token)
+    window.localStorage.setItem(PRE_AUTH_TOKEN, token)
   }
 }
-export const clearLocalPreTokenGoogle = () => {
+export const clearLocalPreTokenAuthSocial = () => {
   if (typeof window !== 'undefined') {
-    window.localStorage.removeItem(PRE_GOOGLE_TOKEN)
+    window.localStorage.removeItem(PRE_AUTH_TOKEN)
   }
 }
-export const getLocalPreTokenGoogle = () => {
+export const getLocalPreTokenAuthSocial = () => {
   if (typeof window !== 'undefined') {
-    return window.localStorage.getItem(PRE_GOOGLE_TOKEN)
+    return window.localStorage.getItem(PRE_AUTH_TOKEN)
   }
-  return ""
+  return ''
 }

@@ -40,7 +40,6 @@ import {
 // ** Configs
 import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
 import { Icon } from '@iconify/react/dist/iconify.js'
-import { clearLocalPreTokenGoogle, getLocalPreTokenGoogle, setLocalPreTokenGoogle } from 'src/helpers/storage'
 
 // ** Images
 import RegisterDark from '/public/images/register-dark.png'
@@ -51,14 +50,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
 import { resetInitialState } from 'src/stores/auth'
 import { ROUTE_CONFIG } from 'src/configs/route'
-import { registerAuthAsync, registerAuthGoogleAsync } from 'src/stores/auth/action'
+import { registerAuthAsync, registerAuthFacebookAsync, registerAuthGoogleAsync } from 'src/stores/auth/action'
+import { clearLocalPreTokenAuthSocial, getLocalPreTokenAuthSocial, setLocalPreTokenAuthSocial } from 'src/helpers/storage'
 
 type Tprops = {}
 
 const RegisterPage: NextPage<Tprops> = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const prevTokenLocal = getLocalPreTokenGoogle()
+  const prevTokenLocal = getLocalPreTokenAuthSocial()
 
   // ** router
   const router = useRouter()
@@ -75,7 +75,6 @@ const RegisterPage: NextPage<Tprops> = () => {
 
   // ** Hooks
   const { data: session, ...restsss } = useSession()
-  console.log('restsss', { restsss, session })
 
   const schema = yup.object().shape({
     email: yup.string().required(t('Required_field')).matches(EMAIL_REG, t('Rules_email')),
@@ -120,14 +119,22 @@ const RegisterPage: NextPage<Tprops> = () => {
     }
   }, [isError, isSuccess, message])
 
-  const handleRegisterGoogle = async () => {
+  const handleRegisterGoogle = () => {
     signIn('google')
-    clearLocalPreTokenGoogle()
+    clearLocalPreTokenAuthSocial()
+  }
+  const handleRegisterFacebook = () => {
+    signIn('facebook')
+    clearLocalPreTokenAuthSocial()
   }
   useEffect(() => {
     if ((session as any)?.accessToken && (session as any)?.accessToken !== prevTokenLocal) {
-      dispatch(registerAuthGoogleAsync((session as any)?.accessToken))
-      setLocalPreTokenGoogle((session as any)?.accessToken)
+      if((session as any)?.provider === "facebook") {
+        dispatch(registerAuthFacebookAsync((session as any)?.accessToken))
+      }else {
+        dispatch(registerAuthGoogleAsync((session as any)?.accessToken))
+      }
+      setLocalPreTokenAuthSocial((session as any)?.accessToken)
     }
   }, [(session as any)?.accessToken])
 
@@ -337,7 +344,7 @@ const RegisterPage: NextPage<Tprops> = () => {
                 {t('Or')}
               </Divider>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <IconButton href='/' component={Link} sx={{ color: '#497ce2' }} onClick={e => e.preventDefault()}>
+                <IconButton href='/' component={Link} sx={{ color: '#497ce2' }} onClick={handleRegisterFacebook}>
                   <Icon icon='mdi:facebook' />
                 </IconButton>
                 <IconButton href='/' component={Link} sx={{ color: '#1da1f2' }} onClick={e => e.preventDefault()}>

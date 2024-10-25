@@ -11,10 +11,8 @@ import { TLoginAuth, TRegisterAuth, TChangePassword } from 'src/types/auth'
 export const loginAuth = async (data: TLoginAuth) => {
   try {
     const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/login`, data)
-    console.log(res)
     return res.data
   } catch (error: any) {
-    console.log(error?.response?.data)
     return error?.response?.data
   }
 }
@@ -28,8 +26,7 @@ export const registerAuth = async (data: TRegisterAuth) => {
   }
 }
 
-export const updateAuthMe = async (data: any) => {
-  console.log(data)
+export const updateAuthMe = async (data: any) => {  
   try {
     const res = await instanceAxios.put(`${API_ENDPOINT.AUTH.INDEX}/update-info`, data)
     return res
@@ -73,6 +70,19 @@ export const changeAvatar = async (file: File) => {
   }
 }
 
+export const loginAuthFacebook = async (idToken: string) => {
+  const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/login-facebook`, { idToken })
+  return res.data
+}
+
+export const registerAuthFacebook = async (idToken: string) => {
+  try {
+    const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/register-facebook`, { idToken })
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
 
 export const loginAuthGoogle = async (idToken: string) => {
   const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/login-google`, { idToken })
