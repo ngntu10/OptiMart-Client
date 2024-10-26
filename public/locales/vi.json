@@ -201,7 +201,7 @@
   "Upload_image_product": "Tải ảnh sản phẩm",
   "Status_product": "Trạng thái sản phẩm",
 
-  "Count_in_stock": "Số lượng sản phẩm trong kho",
+  "Count_in_stock": "Còn",
   "Price": "Giá",
   "Enter_price": "Nhập giá",
   "Enter_your_count": "Nhập số lượng",
@@ -325,7 +325,7 @@
   "Forgot_password_success": "Gửi yêu cầu thành công",
   "Forgot_password_error": "Gửi yêu cầu thất bại",
   "No_sell_product": "Chưa bán sản phẩm",
-  "Sort_new_create": "Sắp xếp mới nhất",
+  "Sort_new_create": "Sản phẩm mới nhất",
   "Sort_best_sold": "Bán chạy nhất",
   "Sort_by": "Sắp xếp theo",
   "Comment": "Bình luận",

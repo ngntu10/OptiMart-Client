@@ -23,6 +23,8 @@ import { OBJECT_TYPE_ERROR_PRODUCT } from 'src/configs/error'
 // ** Types
 import { TProduct } from 'src/types/product'
 import CardProduct from '../product/Components/CartProduct'
+import CardSkeleton from 'src/views/pages/product/Components/CardSkeleton'
+
 type TProps = {}
 const StyledTabs = styled(Tabs)<TabsProps>(({ theme }) => ({
   '&.MuiTabs-root': {
@@ -155,44 +157,68 @@ const MyProductPage: NextPage<TProps> = () => {
           </Box>
           {tabActive === TYPE_VALUE.liked && (
             <Box sx={{ height: '100%', width: '100%', mt: 6 }}>
-              <Grid container md={12} xs={12} spacing={6}>
-                {likedProducts?.data?.length > 0 ? (
-                  <>
-                    {likedProducts?.data?.map((item: TProduct) => {
-                      return (
-                        <Grid item key={item.id} md={3} sm={6} xs={12}>
-                          <CardProduct item={item} />
-                        </Grid>
-                      )
-                    })}
-                  </>
-                ) : (
-                  <Box sx={{ width: '100%', mt: 10 }}>
-                    <NoData widthImage='60px' heightImage='60px' textNodata={t('No_product')} />
-                  </Box>
-                )}
-              </Grid>
+              {isLoading ? (
+                <Grid container md={12} xs={12} spacing={6}>
+                  {Array.from({ length: 6 }).map((_, index) => {
+                    return (
+                      <Grid item key={index} md={3} sm={6} xs={12}>
+                        <CardSkeleton />
+                      </Grid>
+                    )
+                  })}
+                </Grid>
+              ) : (
+                <Grid container md={12} xs={12} spacing={6}>
+                  {likedProducts?.data?.length > 0 ? (
+                    <>
+                      {likedProducts?.data?.map((item: TProduct) => {
+                        return (
+                          <Grid item key={item.id} md={3} sm={6} xs={12}>
+                            <CardProduct item={item} />
+                          </Grid>
+                        )
+                      })}
+                    </>
+                  ) : (
+                    <Box sx={{ width: '100%', mt: 10 }}>
+                      <NoData widthImage='60px' heightImage='60px' textNodata={t('No_product')} />
+                    </Box>
+                  )}
+                </Grid>
+              )}
             </Box>
           )}
           {tabActive === TYPE_VALUE.viewed && (
             <Box sx={{ height: '100%', width: '100%', mt: 6 }}>
-              <Grid container md={12} xs={12} spacing={6}>
-                {viewedProducts?.data?.length > 0 ? (
-                  <>
-                    {viewedProducts?.data?.map((item: TProduct) => {
-                      return (
-                        <Grid item key={item.id} md={3} sm={6} xs={12}>
-                          <CardProduct item={item} />
-                        </Grid>
-                      )
-                    })}
-                  </>
-                ) : (
-                  <Box sx={{ width: '100%', mt: 10 }}>
-                    <NoData widthImage='60px' heightImage='60px' textNodata={t('No_product')} />
-                  </Box>
-                )}
-              </Grid>
+              {isLoading ? (
+                <Grid container md={12} xs={12} spacing={6}>
+                  {Array.from({ length: 6 }).map((_, index) => {
+                    return (
+                      <Grid item key={index} md={3} sm={6} xs={12}>
+                        <CardSkeleton />
+                      </Grid>
+                    )
+                  })}
+                </Grid>
+              ) : (
+                <Grid container md={12} xs={12} spacing={6}>
+                  {viewedProducts?.data?.length > 0 ? (
+                    <>
+                      {viewedProducts?.data?.map((item: TProduct) => {
+                        return (
+                          <Grid item key={item.id} md={3} sm={6} xs={12}>
+                            <CardProduct item={item} />
+                          </Grid>
+                        )
+                      })}
+                    </>
+                  ) : (
+                    <Box sx={{ width: '100%', mt: 10 }}>
+                      <NoData widthImage='60px' heightImage='60px' textNodata={t('No_product')} />
+                    </Box>
+                  )}
+                </Grid>
+              )}
             </Box>
           )}
         </Grid>

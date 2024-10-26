@@ -9,7 +9,8 @@ const StyledSelect = styled(Select)<SelectProps>(({ theme }) => ({
   '& .MuiSelect-select.MuiSelect-outlined.MuiInputBase-input': {
     padding: '8px 8px 8px 8px !important',
     height: '38px',
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+    backgroundColor: theme.palette.background.paper
   },
   legend: {
     display: 'none'

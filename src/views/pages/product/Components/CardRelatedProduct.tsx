@@ -123,38 +123,42 @@ const CardRelatedProduct = (props: TCardRelatedProduct) => {
             </Box>
           )}
         </Box>
-        <Typography variant='body2' color='text.secondary'>
-          {item.countInStock > 0 ? (
-            <>{t('Count_in_stock_product', { count: item.countInStock })}</>
-          ) : (
-            <Box
+        {item.countInStock > 0 ? (
+          <Typography variant='body2' color='text.secondary' sx={{ my: 1 }}>
+            <>{t('Count_in_stock')}</> <b>{item.countInStock}</b> <>{t('Product')}</>
+          </Typography>
+        ) : (
+          <Box
+            sx={{
+              backgroundColor: hexToRGBA(theme.palette.error.main, 0.42),
+              width: '60px',
+              height: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '2px',
+              my: 1
+            }}
+          >
+            <Typography
+              variant='h6'
               sx={{
-                backgroundColor: hexToRGBA(theme.palette.error.main, 0.42),
-                width: '60px',
-                height: '20px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: '2px',
-                my: 1
+                color: theme.palette.error.main,
+                fontSize: '12px',
+                whiteSpace: 'nowrap'
               }}
             >
-              <Typography
-                variant='h6'
-                sx={{
-                  color: theme.palette.error.main,
-                  fontSize: '12px',
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                Hết hàng
-              </Typography>
-            </Box>
-          )}
-        </Typography>
-        {item?.sold > 0 && (
+              Hết hàng
+            </Typography>
+          </Box>
+        )}
+        {item.sold > 0 ? (
           <Typography variant='body2' color='text.secondary'>
-            <>{t('Sold_product', { count: item.sold })}</>
+            <>{t('Sold_product')}</> <b>{item.sold}</b> <>{t('Product')}</>
+          </Typography>
+        ) : (
+          <Typography variant='body2' color='text.secondary'>
+            {t('No_sell_product')}
           </Typography>
         )}
         {item?.city?.name && (

@@ -34,6 +34,8 @@ import toast from 'react-hot-toast'
 import { resetInitialState } from 'src/stores/product'
 import { OBJECT_TYPE_ERROR_PRODUCT } from 'src/configs/error'
 import CardProduct from 'src/views/pages/product/Components/CartProduct'
+import CustomSelect from 'src/components/custom-select'
+import CardSkeleton from 'src/views/pages/product/Components/CardSkeleton'
 
 type TProps = {}
 const StyledTabs = styled(Tabs)<TabsProps>(({ theme }) => ({
@@ -89,7 +91,6 @@ const HomePage: NextPage<TProps> = () => {
       params: { limit: pageSize, page: page, search: searchBy, order: sortBy, ...formatFilter(filterBy) }
     }
     await getAllProductsPublic(query).then((res: any) => {
-      console.log("rese",query);
       if (res?.data) {
         setLoading(false)
         setProductsPublic({
@@ -219,12 +220,34 @@ const HomePage: NextPage<TProps> = () => {
           })}
         </StyledTabs>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
-          <Box sx={{ width: '300px' }}>
-            <InputSearch
-              placeholder={t('Search_name_product')}  
-              value={searchBy}
-              onChange={(value: string) => setSearchBy(value)}
-            />
+          <Box sx={{ display: 'flex', gap: '20px' }}>
+            <Box sx={{ width: '300px' }}>
+              <CustomSelect
+                fullWidth
+                onChange={e => {
+                  setSortBy(e.target.value as string)
+                }}
+                value={sortBy}
+                options={[
+                  {
+                    label: t('Sort_best_sold'),
+                    value: 'sold desc'
+                  },
+                  {
+                    label: t('Sort_new_create'),
+                    value: 'createdAt desc'
+                  }
+                ]}
+                placeholder={t('Sort_by')}
+              />
+            </Box>
+            <Box sx={{ width: '300px' }}>
+              <InputSearch
+                placeholder={t('Search_name_product')}
+                value={searchBy}
+                onChange={(value: string) => setSearchBy(value)}
+              />
+            </Box>
           </Box>
         </Box>
         <Box
@@ -254,40 +277,60 @@ const HomePage: NextPage<TProps> = () => {
               </Box>
             </Grid>
             <Grid item md={9} xs={12}>
-              <Grid
-                container
-                spacing={{
-                  md: 6,
-                  xs: 4
-                }}
-              >
-                {productsPublic?.data?.length > 0 ? (
-                  <>
-                    {productsPublic?.data?.map((item: TProduct) => {
-                      return (
-                        <Grid item key={item.id} md={4} sm={6} xs={12}>
-                          <CardProduct item={item} />
-                        </Grid>
-                      )
-                    })}
-                  </>
-                ) : (
-                  <Box sx={{ width: '100%', mt: 10 }}>
-                    <NoData widthImage='60px' heightImage='60px' textNodata={t('No_product')} />
-                  </Box>
-                )}
-              </Grid>
+              {loading ? (
+                <Grid
+                  container
+                  spacing={{
+                    md: 6,
+                    xs: 4
+                  }}
+                >
+                  {Array.from({ length: 6 }).map((_, index) => {
+                    return (
+                      <Grid item key={index} md={4} sm={6} xs={12}>
+                        <CardSkeleton />
+                      </Grid>
+                    )
+                  })}
+                </Grid>
+              ) : (
+                <Grid
+                  container
+                  spacing={{
+                    md: 6,
+                    xs: 4
+                  }}
+                >
+                  {productsPublic?.data?.length > 0 ? (
+                    <>
+                      {productsPublic?.data?.map((item: TProduct) => {
+                        return (
+                          <Grid item key={item.id} md={4} sm={6} xs={12}>
+                            <CardProduct item={item} />
+                          </Grid>
+                        )
+                      })}
+                    </>
+                  ) : (
+                    <Box sx={{ width: '100%', mt: 10 }}>
+                      <NoData widthImage='60px' heightImage='60px' textNodata={t('No_product')} />
+                    </Box>
+                  )}
+                </Grid>
+              )}
             </Grid>
           </Grid>
         </Box>
-        <CustomPagination
-          onChangePagination={handleOnchangePagination}
-          pageSizeOptions={PAGE_SIZE_OPTION}
-          pageSize={pageSize}
-          page={page}
-          rowLength={productsPublic.total}
-          isHideShowed
-        />
+        <Box>
+          <CustomPagination
+            onChangePagination={handleOnchangePagination}
+            pageSizeOptions={PAGE_SIZE_OPTION}
+            pageSize={pageSize}
+            page={page}
+            rowLength={productsPublic.total}
+            isHideShowed
+          />
+        </Box>
       </Box>
     </>
   )
