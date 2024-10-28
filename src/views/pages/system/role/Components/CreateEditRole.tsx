@@ -15,6 +15,7 @@ import Icon from 'src/components/Icon'
 import CustomModal from 'src/components/custom-modal'
 import Spinner from 'src/components/spinner'
 import CustomTextField from 'src/components/text-field'
+import { PERMISSIONS } from 'src/configs/permission'
 
 // ** Services
 import { getDetailsRole } from 'src/services/role'
@@ -70,7 +71,7 @@ const CreateEditRole = (props: TCreateEditRole) => {
         // update
         dispatch(updateRoleAsync({ name: data?.name, id: idRole }))
       } else {
-        dispatch(createRoleAsync({ name: data?.name }))
+        dispatch(createRoleAsync({ name: data?.name, permissions: [PERMISSIONS.DASHBOARD] }))
       }
     }
   }

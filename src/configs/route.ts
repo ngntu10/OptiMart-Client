@@ -4,11 +4,11 @@ export const ROUTE_CONFIG = {
   LOGIN: '/login',
   PRODUCT: '/product',
   MY_CART: '/my-cart',
-  MY_ORDER: "/my-order",
+  MY_ORDER: '/my-order',
   MY_PRODUCT: '/my-product',
   FORGOT_PASSWORD: '/forgot-password',
   RESET_PASSWORD: '/reset-password',
-  REGISTER: "/register",
+  REGISTER: '/register',
   CHECKOUT_PRODUCT: '/checkout-product',
   CHANGE_PASSWORD: '/change-password',
   SYSTEM: {
@@ -17,7 +17,8 @@ export const ROUTE_CONFIG = {
   },
   MANAGE_PRODUCT: {
     PRODUCT: '/manage-product/product',
-    MANAGE_TYPE_PRODUCT: '/manage-product/product-type'
+    MANAGE_TYPE_PRODUCT: '/manage-product/product-type',
+    COMMENT: '/manage-product/comment'
   },
   MANAGE_ORDER: {
     ORDER: '/manage-order/order',

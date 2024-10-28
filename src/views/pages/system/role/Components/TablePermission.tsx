@@ -153,7 +153,7 @@ const TablePermission = (props: TTablePermission) => {
           <>
             {!row.isHideView && !row.isParent && (
               <Checkbox
-                disabled={disabled}
+                disabled={disabled || row.value === PERMISSIONS.DASHBOARD}
                 value={value}
                 onChange={e => {
                   handleOnChangeCheckBox(e.target.value)

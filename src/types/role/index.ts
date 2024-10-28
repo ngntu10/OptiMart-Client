@@ -6,7 +6,8 @@ export type TParamsGetRoles = {
 }
 
 export type TParamsCreateRole = {
-  name: string
+  name: string,
+  permissions?: string[]
 }
 
 export type TParamsEditRole = {
