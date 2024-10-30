@@ -129,3 +129,5 @@ const CommentItem = ({ item }: TProps) => {
     )
 
 }
+
+export default CommentItem

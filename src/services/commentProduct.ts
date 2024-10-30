@@ -45,14 +45,7 @@ export const deleteComment = async (id: string) => {
     return error?.response?.data
   }
 }
-export const getAllComments = async (data: { params: TParamsGetComments }) => {
-  try {
-    const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.COMMENT.INDEX}`, data)
-    return res.data
-  } catch (error) {
-    return error
-  }
-}
+
 export const getDetailsComment = async (id: string) => {
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.COMMENT.INDEX}/${id}`)
@@ -82,6 +75,15 @@ export const deleteMultipleComment = async (data: TParamsDeleteMultipleComment) 
 export const getAllCommentsPublic = async (data: { params: TParamsGetComments }) => {
   try {
     const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.COMMENT.INDEX}/public`, data)
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
+
+export const getAllComments = async (data: { params: TParamsGetComments }) => {
+  try {
+    const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.COMMENT.INDEX}`, data)
     return res.data
   } catch (error) {
     return error

@@ -49,10 +49,10 @@ import toast from 'react-hot-toast'
 import { OBJECT_TYPE_ERROR_REVIEW } from 'src/configs/error'
 import CardReview from '../Components/CardReview'
 import CommentInput from 'src/views/pages/product/Components/CommentInput'
-import CommentItem from 'src/views/pages/product/Components/CommentItem'
 import { getAllCommentsPublic } from 'src/services/commentProduct'
 import { TCommentItemProduct } from 'src/types/comment'
 import { createCommentAsync } from 'src/stores/comment/actions'
+import CommentItem from '../Components/CommentItem'
 
 type TProps = {}
 const DetailsProductPage: NextPage<TProps> = () => {
