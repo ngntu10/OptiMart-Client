@@ -34,7 +34,7 @@ const initialState = {
     total: 0
   }
 }
-export const orderProductSlice = createSlice({
+export const reviewSlice = createSlice({
   name: serviceName,
   initialState,
   reducers: {
@@ -149,5 +149,5 @@ export const orderProductSlice = createSlice({
     })
   }
 })
-export const { resetInitialState } = orderProductSlice.actions
-export default orderProductSlice.reducer
+export const { resetInitialState } = reviewSlice.actions
+export default reviewSlice.reducer

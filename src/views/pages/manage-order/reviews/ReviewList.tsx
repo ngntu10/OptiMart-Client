@@ -5,11 +5,11 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 // ** Mui
 import { Box, Grid, Typography, useTheme } from '@mui/material'
-import { GridColDef, GridSortModel } from '@mui/x-data-grid'
+import { GridColDef, GridRowSelectionModel, GridSortModel } from '@mui/x-data-grid'
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
-import { deleteReviewAsync, getAllReviewAsync } from 'src/stores/reviews/actions'
+import { deleteMultipleReviewAsync, deleteReviewAsync, getAllReviewAsync } from 'src/stores/reviews/actions'
 import { resetInitialState } from 'src/stores/reviews'
 // ** Components
 import GridDelete from 'src/components/grid-delete'
@@ -32,6 +32,7 @@ import { usePermission } from 'src/hooks/usePermission'
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 import { FILTER_REVIEW_CMS } from 'src/configs/reviews'
 import { Tooltip } from '@mui/material'
+import TableHeader from 'src/components/table-header'
 // ** Services
 type TProps = {}
 const ReviewListPage: NextPage<TProps> = () => {
@@ -52,6 +53,8 @@ const ReviewListPage: NextPage<TProps> = () => {
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
   const [page, setPage] = useState(1)
   const [filterBy, setFilterBy] = useState<Record<string, string | string[]>>({})
+  const [openDeleteMultipleMultiple, setOpenDeleteMultipleMultiple] = useState(false)
+  const [selectedRow, setSelectedRow] = useState<string[]>([])
   // ** Hooks
   const { VIEW, UPDATE, DELETE } = usePermission('SYSTEM.MANAGE_ORDER.REVIEW', ['CREATE', 'VIEW', 'UPDATE', 'DELETE'])
   const { i18n } = useTranslation()
@@ -67,6 +70,9 @@ const ReviewListPage: NextPage<TProps> = () => {
     isErrorDelete,
     isSuccessDelete,
     messageErrorDelete,
+    isSuccessMultipleDelete,
+    isErrorMultipleDelete,
+    messageErrorMultipleDelete,
     typeError
   } = useSelector((state: RootState) => state.reviews)
   // ** theme
@@ -99,6 +105,26 @@ const ReviewListPage: NextPage<TProps> = () => {
       id: ''
     })
   }
+
+  const handleCloseConfirmDeleteMultiple = () => {
+    setOpenDeleteMultipleMultiple(false)
+  }
+  const handleDeleteMultipleReview = () => {
+    dispatch(
+      deleteMultipleReviewAsync({
+        reviewIds: selectedRow
+      })
+    )
+  }
+  const handleAction = (action: string) => {
+    switch (action) {
+      case 'delete': {
+        setOpenDeleteMultipleMultiple(true)
+        break
+      }
+    }
+  }
+
   const handleDeleteReview = () => {
     dispatch(deleteReviewAsync(openDeleteReview.id))
   }
@@ -207,9 +233,24 @@ const ReviewListPage: NextPage<TProps> = () => {
     handleGetListReviews()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy, searchBy, page, pageSize, filterBy])
+
+  useEffect(() => {
+    if (isSuccessMultipleDelete) {
+      toast.success(t('Delete_multiple_review_success'))
+      handleGetListReviews()
+      dispatch(resetInitialState())
+      handleCloseConfirmDeleteMultiple()
+      setSelectedRow([])
+    } else if (isErrorMultipleDelete && messageErrorMultipleDelete) {
+      toast.error(t('Delete_multiple_review_error'))
+      dispatch(resetInitialState())
+    }
+  }, [isSuccessMultipleDelete, isErrorMultipleDelete, messageErrorMultipleDelete])
+
   useEffect(() => {
     setFilterBy({ minStar: starSelected })
   }, [starSelected])
+
   useEffect(() => {
     if (isSuccessEdit) {
       toast.success(t('Update_review_success'))
@@ -248,6 +289,14 @@ const ReviewListPage: NextPage<TProps> = () => {
         title={t('Title_delete_review')}
         description={t('Confirm_delete_review')}
       />
+      <ConfirmationDialog
+        open={openDeleteMultipleMultiple}
+        handleClose={handleCloseConfirmDeleteMultiple}
+        handleCancel={handleCloseConfirmDeleteMultiple}
+        handleConfirm={handleDeleteMultipleReview}
+        title={t('Title_delete_multiple_review')}
+        description={t('Confirm_delete_multiple_review')}
+      />
       <EditReview open={openEdit.open} onClose={handleCloseEdit} idReview={openEdit.id} />
       {isLoading && <Spinner />}
       <Box
@@ -261,23 +310,35 @@ const ReviewListPage: NextPage<TProps> = () => {
         }}
       >
         <Grid container sx={{ height: '100%', width: '100%' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 4, mb: 4, width: '100%' }}>
-            <Box sx={{ width: '200px' }}>
-              <CustomSelect
-                fullWidth
-                onChange={e => {
-                  setStarSelected(e.target.value as string[])
-                }}
-                multiple
-                options={optionReviews}
-                value={starSelected}
-                placeholder={t('Star')}
-              />
+          {!selectedRow.length && (
+            <Box
+              sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 4, mb: 4, width: '100%' }}
+            >
+              <Box sx={{ width: '200px' }}>
+                <CustomSelect
+                  fullWidth
+                  onChange={e => {
+                    setStarSelected(e.target.value as string[])
+                  }}
+                  multiple
+                  options={optionReviews}
+                  value={starSelected}
+                  placeholder={t('Star')}
+                />
+              </Box>
+              <Box sx={{ width: '200px' }}>
+                <InputSearch value={searchBy} onChange={(value: string) => setSearchBy(value)} />
+              </Box>
             </Box>
-            <Box sx={{ width: '200px' }}>
-              <InputSearch value={searchBy} onChange={(value: string) => setSearchBy(value)} />
-            </Box>
-          </Box>
+          )}
+          {selectedRow?.length > 0 && (
+            <TableHeader
+              numRow={selectedRow?.length}
+              onClear={() => setSelectedRow([])}
+              handleAction={handleAction}
+              actions={[{ label: t('Xóa'), value: 'delete', disabled: !DELETE }]}
+            />
+          )}
           <CustomDataGrid
             rows={reviews.data}
             columns={columns}
@@ -288,6 +349,7 @@ const ReviewListPage: NextPage<TProps> = () => {
                 color: `${theme.palette.primary.main} !important`
               }
             }}
+            checkboxSelection
             sortingOrder={['desc', 'asc']}
             sortingMode='server'
             onSortModelChange={handleSort}
@@ -295,6 +357,9 @@ const ReviewListPage: NextPage<TProps> = () => {
             disableRowSelectionOnClick
             slots={{
               pagination: PaginationComponent
+            }}
+            onRowSelectionModelChange={(row: GridRowSelectionModel) => {
+              setSelectedRow(row as string[])
             }}
             disableColumnFilter
             disableColumnMenu

@@ -115,7 +115,7 @@ const EditReview = (props: TCreateReview) => {
             borderRadius: '15px',
             backgroundColor: theme.palette.customColors.bodyBg
           }}
-          minWidth={{ md: '40px', xs: '80vw' }}
+          minWidth={{ md: '400px', xs: '80vw' }}
           maxWidth={{ md: '40vw', xs: '80vw' }}
         >
           <Box sx={{ display: 'flex', justifyContent: 'center', position: 'relative', paddingBottom: '20px' }}>

@@ -1,312 +1,181 @@
-// ** Next
-import { NextPage } from 'next'
 // ** React
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
+// ** Form
+import { yupResolver } from '@hookform/resolvers/yup'
+import { Controller, useForm } from 'react-hook-form'
+import * as yup from 'yup'
+
 // ** Mui
-import {  Box, Grid, Typography, useTheme } from '@mui/material'
-import { GridColDef, GridSortModel } from '@mui/x-data-grid'
-// ** Redux
-import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from 'src/stores'
-import { deleteReviewAsync, getAllReviewAsync } from 'src/stores/reviews/actions'
-import { resetInitialState } from 'src/stores/reviews'
-// ** Components
-import GridDelete from 'src/components/grid-delete'
-import GridEdit from 'src/components/grid-edit'
-import InputSearch from 'src/components/input-search'
-import CustomDataGrid from 'src/components/custom-data-grid'
+import { Box, Button, Grid, IconButton, Typography, useTheme } from '@mui/material'
+
+// ** Component
+import Icon from 'src/components/Icon'
+import CustomModal from 'src/components/custom-modal'
 import Spinner from 'src/components/spinner'
-import ConfirmationDialog from 'src/components/confirmation-dialog'
-import CustomPagination from 'src/components/custom-pagination'
-import CustomSelect from 'src/components/custom-select'
-import EditReview from 'src/views/pages/manage-order/reviews/Components/EditReview'
-// ** Others
-import toast from 'react-hot-toast'
-import { OBJECT_TYPE_ERROR_ROLE } from 'src/configs/error'
-import { formatFilter, toFullName } from 'src/utils'
-import { hexToRGBA } from 'src/utils/hex-to-rgba'
-// ** Hooks
-import { usePermission } from 'src/hooks/usePermission'
-// ** Config
-import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
-import { FILTER_REVIEW_CMS } from 'src/configs/reviews'
-import { Tooltip } from '@mui/material'
+import CustomTextField from 'src/components/text-field'
+
 // ** Services
-type TProps = {}
-const CommentListPage: NextPage<TProps> = () => {
-  // ** Translate
-  const { t } = useTranslation()
+import { getDetailsComment } from 'src/services/commentProduct'
+
+// ** Redux
+import { AppDispatch } from 'src/stores'
+import { useDispatch } from 'react-redux'
+import { updateCommentAsync } from 'src/stores/comment/actions'
+
+interface TEditComment {
+  open: boolean
+  onClose: () => void
+  idComment?: string
+}
+
+type TDefaultValue = {
+  content: string
+}
+
+const EditComment = (props: TEditComment) => {
   // State
-  const [openEdit, setOpenEdit] = useState({
-    open: false,
-    id: ''
-  })
-  const [openDeleteReview, setOpenDeleteReview] = useState({
-    open: false,
-    id: ''
-  })
-  const [sortBy, setSortBy] = useState('createdAt desc')
-  const [searchBy, setSearchBy] = useState('')
-  const [starSelected, setStarSelected] = useState<string[]>([])
-  const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
-  const [page, setPage] = useState(1)
-  const [filterBy, setFilterBy] = useState<Record<string, string | string[]>>({})
-  // ** Hooks
-  const { VIEW, UPDATE, DELETE } = usePermission('SYSTEM.MANAGE_ORDER.REVIEW', ['CREATE', 'VIEW', 'UPDATE', 'DELETE'])
-  const { i18n } = useTranslation()
-  const optionReviews = FILTER_REVIEW_CMS()
-  /// ** redux
-  const dispatch: AppDispatch = useDispatch()
-  const {
-    reviews,
-    isSuccessEdit,
-    isErrorEdit,
-    isLoading,
-    messageErrorEdit,
-    isErrorDelete,
-    isSuccessDelete,
-    messageErrorDelete,
-    typeError,
-  } = useSelector((state: RootState) => state.reviews)
-  // ** theme
+  const [loading, setLoading] = useState(false)
+
+  // ** Props
+  const { open, onClose, idComment } = props
+
+  // Hooks
   const theme = useTheme()
-  // fetch api
-  const handleGetListReviews = () => {
-    const query = {
-      params: { limit: pageSize, page: page, search: searchBy, order: sortBy, ...formatFilter(filterBy) }
-    }
-    dispatch(getAllReviewAsync(query))
+  const { t, i18n } = useTranslation()
+
+  // ** Redux
+  const dispatch: AppDispatch = useDispatch()
+
+  const schema = yup.object().shape({
+    content: yup.string().required(t('Required_field'))
+  })
+
+  const defaultValues: TDefaultValue = {
+    content: ''
   }
+
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+    reset,
+    getValues,
+    setError,
+    clearErrors
+  } = useForm({
+    defaultValues,
+    mode: 'onBlur',
+    resolver: yupResolver(schema)
+  })
+
   // handle
-  const handleCloseConfirmDeleteReview = () => {
-    setOpenDeleteReview({
-      open: false,
-      id: ''
-    })
-  }
-  const handleSort = (sort: GridSortModel) => {
-    const sortOption = sort[0]
-    if (sortOption) {
-      setSortBy(`${sortOption.field} ${sortOption.sort}`)
-    } else {
-      setSortBy('createdAt desc')
-    }
-  }
-  const handleCloseEdit = () => {
-    setOpenEdit({
-      open: false,
-      id: ''
-    })
-  }
-  const handleDeleteReview = () => {
-    dispatch(deleteReviewAsync(openDeleteReview.id))
-  }
-  const handleOnchangePagination = (page: number, pageSize: number) => {
-    setPage(page)
-    setPageSize(pageSize)
-  }
-  const columns: GridColDef[] = [
-    {
-      field: "firstName",
-      headerName: t('User'),
-      hideSortIcons: true,
-      flex: 1,
-      renderCell: params => {
-        const { row } = params
-        const fullName =
-          toFullName(
-            row?.user?.lastName || '',
-            row?.user?.middleName || '',
-            row?.user?.firstName || '',
-            i18n.language
-          )
-        return (
-          <Typography sx={{overflow: "hidden", textOverflow: "ellipsis", width: "100%"}}>
-            {fullName}
-          </Typography>
-        )
-      }
-    },
-    {
-      field: 'name',
-      headerName: t('Product_name'),
-      minWidth: 200,
-      maxWidth: 200,
-      renderCell: params => {
-        const { row } = params
-        return <Typography sx={{overflow: "hidden", textOverflow: "ellipsis", width: "100%"}}>
-          <Tooltip title={row.product.name}>
-            <span>{row?.product?.name}</span>
-          </Tooltip>
-        </Typography>
-      }
-    },
-    {
-      field: 'content',
-      headerName: t('Content'),
-      minWidth: 200,
-      flex: 1,
-      renderCell: params => {
-        const { row } = params
-        return <Typography>{row?.content}</Typography>
-      }
-    },
-    {
-      field: 'star',
-      headerName: t('Star'),
-      hideSortIcons: true,
-      minWidth: 200,
-      maxWidth: 200,
-      renderCell: params => {
-        const { row } = params
-        return <Typography>{row?.star}</Typography>
-      }
-    },
-    {
-      field: 'action',
-      headerName: t('Actions'),
-      minWidth: 150,
-      sortable: false,
-      align: 'left',
-      renderCell: params => {
-        return (
-          <>
-            <GridEdit
-              disabled={!UPDATE}
-              onClick={() =>
-                setOpenEdit({
-                  open: true,
-                  id: String(params.id)
-                })
-              }
-            />
-            <GridDelete
-              disabled={!DELETE}
-              onClick={() =>
-                setOpenDeleteReview({
-                  open: true,
-                  id: String(params.id)
-                })
-              }
-            />
-          </>
+  const onSubmit = (data: any) => {
+    if (!Object.keys(errors).length) {
+      // update
+      if (idComment) {
+        dispatch(
+          updateCommentAsync({
+            id: idComment,
+            content: data.content
+          })
         )
       }
     }
-  ]
-  const PaginationComponent = () => {
-    return (
-      <CustomPagination
-        onChangePagination={handleOnchangePagination}
-        pageSizeOptions={PAGE_SIZE_OPTION}
-        pageSize={pageSize}
-        page={page}
-        rowLength={reviews.total}
-      />
-    )
   }
+
+  // fetch api
+  const fetchDetailsComment = async (id: string) => {
+    setLoading(true)
+    await getDetailsComment(id)
+      .then(res => {
+        const data = res.data
+        if (data) {
+          reset({
+            content: data?.content
+          })
+        }
+        setLoading(false)
+      })
+      .catch(e => {
+        setLoading(false)
+      })
+  }
+
   useEffect(() => {
-    handleGetListReviews()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sortBy, searchBy, page, pageSize, filterBy])
-  useEffect(() => {
-    setFilterBy({minStar: starSelected })
-  }, [starSelected])
-  useEffect(() => {
-    if (isSuccessEdit) {
-      toast.success(t('Update_review_success'))
-      handleGetListReviews()
-      handleCloseEdit()
-      dispatch(resetInitialState())
-    } else if (isErrorEdit && messageErrorEdit && typeError) {
-      const errorConfig = OBJECT_TYPE_ERROR_ROLE[typeError]
-      if (errorConfig) {
-        toast.error(t(errorConfig))
-      } else {
-        toast.error(t('Update_review_error'))
-      }
-      dispatch(resetInitialState())
+    if (!open) {
+      reset({
+        ...defaultValues
+      })
+    } else if (idComment && open) {
+      fetchDetailsComment(idComment)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSuccessEdit, isErrorEdit, messageErrorEdit, typeError])
-  useEffect(() => {
-    if (isSuccessDelete) {
-      toast.success(t('Delete_review_success'))
-      handleGetListReviews()
-      dispatch(resetInitialState())
-      handleCloseConfirmDeleteReview()
-    } else if (isErrorDelete && messageErrorDelete) {
-      toast.error(t('Delete_review_error'))
-      dispatch(resetInitialState())
-    }
-  }, [isSuccessDelete, isErrorDelete, messageErrorDelete])
+  }, [open, idComment])
+
   return (
     <>
-      <ConfirmationDialog
-        open={openDeleteReview.open}
-        handleClose={handleCloseConfirmDeleteReview}
-        handleCancel={handleCloseConfirmDeleteReview}
-        handleConfirm={handleDeleteReview}
-        title={t('Title_delete_review')}
-        description={t('Confirm_delete_review')}
-      />
-      <EditReview open={openEdit.open} onClose={handleCloseEdit} idReview={openEdit.id} />
-      {isLoading && <Spinner />}
-      <Box
-        sx={{
-          backgroundColor: theme.palette.background.paper,
-          display: 'flex',
-          alignItems: 'center',
-          padding: '20px',
-          height: '100%',
-          width: '100%'
-        }}
-      >
-        <Grid container sx={{ height: '100%', width: '100%' }}>
-          <Box
-            sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 4, mb: 4, width: '100%' }}
-          >
-            <Box sx={{ width: '200px' }}>
-              <CustomSelect
-                fullWidth
-                onChange={e => {
-                  setStarSelected(e.target.value as string[])
-                }}
-                multiple
-                options={optionReviews}
-                value={starSelected}
-                placeholder={t('Star')}
-              />
-            </Box>
-            <Box sx={{ width: '200px' }}>
-              <InputSearch value={searchBy} onChange={(value: string) => setSearchBy(value)} />
-            </Box>
+      {loading && <Spinner />}
+      <CustomModal open={open} onClose={onClose}>
+        <Box
+          sx={{
+            padding: '20px',
+            borderRadius: '15px',
+            backgroundColor: theme.palette.customColors.bodyBg
+          }}
+          minWidth={{ md: '400px', xs: '80vw' }}
+          maxWidth={{ md: '40vw', xs: '80vw' }}
+        >
+          <Box sx={{ display: 'flex', justifyContent: 'center', position: 'relative', paddingBottom: '20px' }}>
+            <Typography variant='h4' sx={{ fontWeight: 600 }}>
+              {' '}
+              {t('Edit_comment')}
+            </Typography>
+            <IconButton sx={{ position: 'absolute', top: '-4px', right: '-10px' }} onClick={onClose}>
+              <Icon icon='material-symbols-light:close' fontSize={'30px'} />
+            </IconButton>
           </Box>
-          <CustomDataGrid
-            rows={reviews.data}
-            columns={columns}
-            autoHeight
-            sx={{
-              '.row-selected': {
-                backgroundColor: `${hexToRGBA(theme.palette.primary.main, 0.08)} !important`,
-                color: `${theme.palette.primary.main} !important`
-              }
-            }}
-            sortingOrder={['desc', 'asc']}
-            sortingMode='server'
-            onSortModelChange={handleSort}
-            getRowId={row => row.id}
-            disableRowSelectionOnClick
-            slots={{
-              pagination: PaginationComponent
-            }}
-            disableColumnFilter
-            disableColumnMenu
-          />
-        </Grid>
-      </Box>
+          <form onSubmit={handleSubmit(onSubmit)} autoComplete='off' noValidate>
+            <Box sx={{ backgroundColor: theme.palette.background.paper, borderRadius: '15px', py: 5, px: 4 }}>
+              <Grid container spacing={5}>
+                <Grid container item md={12} xs={12}>
+                  <Box sx={{ height: '100%', width: '100%' }}>
+                    <Grid container spacing={4}>
+                      <Grid item md={12} xs={12}>
+                        <Controller
+                          control={control}
+                          render={({ field: { onChange, onBlur, value } }) => (
+                            <CustomTextField
+                              fullWidth
+                              required
+                              label={t('Content')}
+                              onChange={onChange}
+                              onBlur={onBlur}
+                              value={value}
+                              placeholder={t('Enter_content')}
+                              error={Boolean(errors?.content)}
+                              helperText={errors?.content?.message}
+                            />
+                          )}
+                          name='content'
+                        />
+                      </Grid>
+                    </Grid>
+                  </Box>
+                </Grid>
+              </Grid>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2 }}>
+                {t('Update')}
+              </Button>
+            </Box>
+          </form>
+        </Box>
+      </CustomModal>
     </>
   )
 }
-export default CommentListPage
+
+export default EditComment
