@@ -9,6 +9,7 @@ import {
 import { API_ENDPOINT } from 'src/configs/api'
 // Axios
 import instanceAxios from 'src/helpers/axios'
+import axios from 'axios'
 export const addReview = async (data: TParamsAddReview) => {
   const res = await instanceAxios.post(`${API_ENDPOINT.MANAGE_ORDER.REVIEW.INDEX}`, data)
   return res.data
@@ -36,7 +37,7 @@ export const deleteReview = async (id: string) => {
 }
 
 export const getAllReviews = async (data: { params: TParamsGetReviews }) => {
-  const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_ORDER.REVIEW.INDEX}`, data)
+  const res = await axios.get(`${API_ENDPOINT.MANAGE_ORDER.REVIEW.INDEX}`, data)
   return res.data
 }
 

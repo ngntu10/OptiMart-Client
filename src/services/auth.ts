@@ -56,9 +56,8 @@ export const changePasswordMe = async (data: TChangePassword) => {
 export const changeAvatar = async (file: File) => {
   try {
     const formData = new FormData()
-    console.log(file)
     formData.append('file', file)
-    const res = await instanceAxios.post(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/image`, formData, {
+    const res = await instanceAxios.post(`${API_ENDPOINT.AUTH.INDEX}/avatar`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }

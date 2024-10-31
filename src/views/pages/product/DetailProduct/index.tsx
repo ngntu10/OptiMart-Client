@@ -83,7 +83,13 @@ const DetailsProductPage: NextPage<TProps> = () => {
     messageErrorCreate: messageErrorCreateComment,
     isSuccessReply,
     isErrorReply,
-    messageErrorReply
+    messageErrorReply,
+    isSuccessDelete: isSuccessDeleteComment,
+    isErrorDelete: isErrorDeleteComment,
+    messageErrorDelete: messageErrorDeleteComment,
+    isSuccessEdit: isSuccessEditComment,
+    isErrorEdit: isErrorEditComment,
+    messageErrorEdit: messageErrorEditComment
   } = useSelector((state: RootState) => state.comments)
   const { orderItems } = useSelector((state: RootState) => state.orderProduct)
   const dispatch: AppDispatch = useDispatch()
@@ -105,7 +111,6 @@ const DetailsProductPage: NextPage<TProps> = () => {
       .then(async response => {
         setLoading(false)
         const data = response?.data
-        console.log(data)
         if (data) {
           setDataProduct(data)
         }
@@ -117,14 +122,17 @@ const DetailsProductPage: NextPage<TProps> = () => {
 
   const fetchListCommentProduct = async () => {
     setLoading(true)
-    await getAllCommentsPublic({ params: { limit: -1, page: -1, order: 'createdAt desc', productId: productId } })
+    await getAllCommentsPublic({
+      params: { limit: -1, page: -1, order: 'createdAt desc', isPublic: true, productId: productId }
+    })
       .then(async response => {
         setLoading(false)
         const data = response?.data
+        console.log(response);
         if (data) {
           setListComment({
-            data: data.comments,
-            total: data.totalCount
+            data: data,
+            total: response.totalCount
           })
         }
       })
@@ -231,11 +239,12 @@ const DetailsProductPage: NextPage<TProps> = () => {
       }
     }
   }
+  
 
   const renderCommentItem = (item: TCommentItemProduct, level: number) => {
     level += 1
     return (
-      <Box sx={{ marginLeft: `${level * 80}px` }}>
+      <Box sx={{ marginLeft: `${level * 55}px` }}>
         <CommentItem item={item} />
         {item.replies && item?.replies?.length > 0 && (
           <>
@@ -249,12 +258,39 @@ const DetailsProductPage: NextPage<TProps> = () => {
   }
 
   useEffect(() => {
-    if (productId) {
-      fetchGetDetailsProduct(productId)
-      fetchListRelatedProduct(productId)
+    const fetchData = async () => {
+      if (productId) {
+        await fetchGetDetailsProduct(productId);
+        fetchListRelatedProduct(productId);
+        fetchListCommentProduct();
+      }
+    };
+  
+    fetchData();
+  }, [productId]);
+
+  useEffect(() => {
+    if (isSuccessDeleteComment) {
+      toast.success(t('Delete_comment_success'))
       fetchListCommentProduct()
+      dispatch(resetInitialState())
+    } else if (isErrorDeleteComment && messageErrorDeleteComment) {
+      toast.error(t('Delete_comment_error'))
+      dispatch(resetInitialState())
     }
-  }, [productId])
+  }, [isSuccessDeleteComment, isErrorDeleteComment, messageErrorDeleteComment])
+
+  useEffect(() => {
+    if (isSuccessEditComment) {
+      toast.success(t('Update_comment_success'))
+      fetchListCommentProduct()
+      dispatch(resetInitialState())
+    } else if (isErrorEditComment && messageErrorEditComment) {
+      toast.error(t('Update_comment_error'))
+      dispatch(resetInitialState())
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccessEditComment, isErrorEditComment, messageErrorEditComment, typeError])
 
   const memoIsExpiry = useMemo(() => {
     return isExpiry(dataProduct.discountStartDate, dataProduct.discountEndDate)
@@ -686,6 +722,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
                   </Grid>
                 </Box>
                 <Box
+                  display={{ md: 'block', xs: 'none' }}
                   sx={{
                     backgroundColor: theme.palette.background.paper,
                     borderRadius: '15px',
@@ -796,6 +833,38 @@ const DetailsProductPage: NextPage<TProps> = () => {
                   )
                 })}
               </Grid>
+            </Box>
+            <Box
+              display={{ md: 'none', xs: 'block' }}
+              sx={{
+                backgroundColor: theme.palette.background.paper,
+                borderRadius: '15px',
+                py: 5,
+                px: 4,
+                width: '100%'
+              }}
+              marginTop={{ md: 5, xs: 4 }}
+            >
+              <Typography
+                variant='h6'
+                sx={{
+                  color: `rgba(${theme.palette.customColors.main}, 0.68)`,
+                  fontWeight: 'bold',
+                  fontSize: '18px'
+                }}
+              >
+                {t('Comment_product')} <b style={{ color: theme.palette.primary.main }}>{listComment?.total}</b>{' '}
+                {t('comments')}
+              </Typography>
+              <Box sx={{ width: '100%' }}>
+                <CommentInput onApply={handleComment} />
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '20px' }}>
+                  {listComment?.data?.map((comment: TCommentItemProduct) => {
+                    const level: number = -1
+                    return <Fragment key={comment.id}>{renderCommentItem(comment, level)}</Fragment>
+                  })}
+                </Box>
+              </Box>
             </Box>
           </Grid>
         </Grid>

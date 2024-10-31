@@ -1,6 +1,6 @@
 // ** React
 import { useTranslation } from 'react-i18next'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 // ** Mui
 import { Avatar, Box, Button, IconButton, styled } from '@mui/material'
 // ** Components
@@ -41,9 +41,10 @@ const StyleWrapper = styled(Box)(({ theme }) => ({
   }
 }))
 interface TCommentInput {
-  onApply: (comment: string, item?: TCommentItemProduct) => void
+  onApply: (comment: string, isEdit: boolean, item?: TCommentItemProduct) => void
   onCancel?: () => void
   item?: TCommentItemProduct
+  isEdit?: boolean
 }
 const CommentInput = (props: TCommentInput) => {
   const [inputComment, setInputComment] = useState('')
@@ -63,13 +64,22 @@ const CommentInput = (props: TCommentInput) => {
     }
   }
   const handleApply = () => {
-    props.onApply(inputComment, props?.item)
+    props.onApply(inputComment, !!props?.isEdit, props?.item)
     setIsFocus(false)
     setInputComment('')
   }
+
+  useEffect(() => {
+    if (props.isEdit && props.item) {
+      setInputComment(props?.item?.content)
+    }
+  }, [props.isEdit])
+
   return (
     <StyleWrapper>
-      <Avatar src={user?.imageUrl || ''} sx={{ height: '40px !important', width: '40px !important', mt: 4 }} />
+      {!props.isEdit && (
+        <Avatar src={user?.imageUrl || ''} sx={{ height: '40px !important', width: '40px !important', mt: 4 }} />
+      )}
       <Box sx={{ flex: 1 }}>
         <CustomTextField
           fullWidth
@@ -110,7 +120,7 @@ const CommentInput = (props: TCommentInput) => {
                 {t('Cancel')}
               </Button>
               <Button variant='contained' onClick={handleApply}>
-                {t('Comment')}
+                {props.isEdit ? t('Edit_comment') : t('Comment')}
               </Button>
             </Box>
           </Box>

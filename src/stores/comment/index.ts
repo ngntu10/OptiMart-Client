@@ -5,10 +5,12 @@ import {
   createCommentAsync,
   deleteCommentAsync,
   deleteMultipleCommentAsync,
+  deleteMyCommentAsync,
   getAllCommentCMSAsync,
   replyCommentAsync,
   serviceName,
-  updateCommentAsync
+  updateCommentAsync,
+  updateMyCommentAsync
 } from 'src/stores/comment/actions'
 
 const initialState = {
@@ -65,8 +67,8 @@ export const commentSlice = createSlice({
     })
     builder.addCase(getAllCommentCMSAsync.fulfilled, (state, action) => {
       state.isLoading = false
-      state.comments.data = action.payload?.data?.comments || []
-      state.comments.total = action.payload?.data?.totalCount
+      state.comments.data = action.payload?.data || []
+      state.comments.total = action.payload?.totalCount
     })
     builder.addCase(getAllCommentCMSAsync.rejected, (state, action) => {
       state.isLoading = false
@@ -96,7 +98,6 @@ export const commentSlice = createSlice({
       state.typeError = action.payload?.typeError
     })
 
-
     // ** update comment
     builder.addCase(updateCommentAsync.pending, (state, action) => {
       state.isLoading = true
@@ -114,33 +115,34 @@ export const commentSlice = createSlice({
     })
     builder.addCase(deleteCommentAsync.fulfilled, (state, action) => {
       state.isLoading = false
-      state.isSuccessDelete = !!action.payload?.data?.id
-      state.isErrorDelete = !action.payload?.data?.id
+      state.isSuccessDelete = !!action.payload?.data
+      state.isErrorDelete = !action.payload?.data
       state.messageErrorDelete = action.payload?.message
       state.typeError = action.payload?.typeError
     })
-    // // ** delete my review
-    // builder.addCase(deleteMyReviewAsync.pending, (state, action) => {
-    //   state.isLoading = true
-    // })
-    // builder.addCase(deleteMyReviewAsync.fulfilled, (state, action) => {
-    //   state.isLoading = false
-    //   state.isSuccessDelete = !!action.payload?.data?.id
-    //   state.isErrorDelete = !action.payload?.data?.id
-    //   state.messageErrorDelete = action.payload?.message
-    //   state.typeError = action.payload?.typeError
-    // })
-    // // ** update my review
-    // builder.addCase(updateMyReviewAsync.pending, (state, action) => {
-    //   state.isLoading = true
-    // })
-    // builder.addCase(updateMyReviewAsync.fulfilled, (state, action) => {
-    //   state.isLoading = false
-    //   state.isSuccessEdit = !!action.payload?.data?.id
-    //   state.isErrorEdit = !action.payload?.data?.id
-    //   state.messageErrorEdit = action.payload?.message
-    //   state.typeError = action.payload?.typeError
-    // })
+    // ** delete my comment
+    builder.addCase(deleteMyCommentAsync.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(deleteMyCommentAsync.fulfilled, (state, action) => {
+      state.isLoading = false
+      state.isSuccessDelete = !!action.payload?.data
+      state.isErrorDelete = !action.payload?.data
+      state.messageErrorDelete = action.payload?.message
+      state.typeError = action.payload?.typeError
+    })
+
+    // ** update my comment
+    builder.addCase(updateMyCommentAsync.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(updateMyCommentAsync.fulfilled, (state, action) => {
+      state.isLoading = false
+      state.isSuccessEdit = !!action.payload?.data?.id
+      state.isErrorEdit = !action.payload?.data?.id
+      state.messageErrorEdit = action.payload?.message
+      state.typeError = action.payload?.typeError
+    })
     // ** delete multiple comment
     builder.addCase(deleteMultipleCommentAsync.pending, (state, action) => {
       state.isLoading = true
