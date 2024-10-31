@@ -359,9 +359,12 @@
   "Payment_vn_pay_failed": "Thanh toán VNPay thất bại",
   "ratings": "đánh giá",
   "comments": "bình luận",
-  "Product_details": "Chi tiết sản phẩm",
+  "Product_details": "Sản phẩm",
   "Invalid_file": "File không hợp lệ. Vui lòng kiểm tra lại định dạng",
   "Logout_success": "Đăng xuất thành công",
   "Count_in_stock_product": "Còn {{count}} sản phẩm trong kho",
-  "Description_product": "Mô tả sản phẩm"
+  "Description_product": "Mô tả sản phẩm",
+  "day_ago": "ngày truớc",
+  "month_ago": "tháng trước",
+  "year_ago": "năm trước"
 }

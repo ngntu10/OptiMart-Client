@@ -21,13 +21,13 @@ export const getTimePast = (createdAt: number[], t: any): string => {
     if (pastTimeDate < 1) {
       return `${t('recently')}`; // Dưới 1 ngày => "Gần đây"
     }
-    return `${Math.floor(pastTimeDate)} ${t('day')}`; // Dưới 30 ngày => X ngày
+    return `${Math.floor(pastTimeDate)} ${t('day_ago')}`; // Dưới 30 ngày => X ngày
   } else if (pastTimeDate < 365) {
     const month = Math.floor(pastTimeDate / 30);
-    return `${month} ${t('month')}`; // Dưới 1 năm => X tháng
+    return `${month} ${t('month_ago')}`; // Dưới 1 năm => X tháng
   } else {
     const year = Math.floor(pastTimeDate / 365);
-    return `${year} ${t('year')}`; // Trên 1 năm => X năm
+    return `${year} ${t('year_ago')}`; // Trên 1 năm => X năm
   }
 };
 

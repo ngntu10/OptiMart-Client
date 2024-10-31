@@ -26,7 +26,7 @@ import { useAuth } from 'src/hooks/useAuth'
 // ** Services
 import { deleteMyCommentAsync, replyCommentAsync, updateMyCommentAsync } from 'src/stores/comment/actions'
 interface TProps {
-  item: TCommentItemProduct
+  item: any
 }
 
 const CommentItem = ({ item }: TProps) => {
@@ -127,7 +127,7 @@ const CommentItem = ({ item }: TProps) => {
                       i18n.language
                     )}
                   </Typography>
-                  {/* <Typography color='secondary'>{getTimePast(new Date(item.createdAt), t)}</Typography> */}
+                  <Typography color='secondary'>{getTimePast(item.createAt, t)}</Typography>
                 </Box>
               </Box>
               {editComment ? (

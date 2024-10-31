@@ -58,7 +58,7 @@ type TProps = {}
 const DetailsProductPage: NextPage<TProps> = () => {
   // State
   const [loading, setLoading] = useState(false)
-  const [dataProduct, setDataProduct] = useState<TProduct | any>({})
+  const [dataProduct, setDataProduct] = useState<any>({})
   const [amountProduct, setAmountProduct] = useState(1)
   const [listRelatedProduct, setRelatedProduct] = useState<TProduct[]>([])
   const [listReviews, setListReview] = useState<TReviewItem[]>([])
@@ -111,6 +111,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
       .then(async response => {
         setLoading(false)
         const data = response?.data
+        console.log(data);
         if (data) {
           setDataProduct(data)
         }
@@ -128,7 +129,6 @@ const DetailsProductPage: NextPage<TProps> = () => {
       .then(async response => {
         setLoading(false)
         const data = response?.data
-        console.log(response);
         if (data) {
           setListComment({
             data: data,
@@ -239,7 +239,6 @@ const DetailsProductPage: NextPage<TProps> = () => {
       }
     }
   }
-  
 
   const renderCommentItem = (item: TCommentItemProduct, level: number) => {
     level += 1
@@ -260,14 +259,14 @@ const DetailsProductPage: NextPage<TProps> = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (productId) {
-        await fetchGetDetailsProduct(productId);
-        fetchListRelatedProduct(productId);
-        fetchListCommentProduct();
+        await fetchGetDetailsProduct(productId)
+        fetchListRelatedProduct(productId)
+        fetchListCommentProduct()
       }
-    };
-  
-    fetchData();
-  }, [productId]);
+    }
+
+    fetchData()
+  }, [productId])
 
   useEffect(() => {
     if (isSuccessDeleteComment) {
@@ -354,6 +353,13 @@ const DetailsProductPage: NextPage<TProps> = () => {
     <>
       {loading && <Spinner />}
       <Grid container sx={{ overflow: 'hidden' }}>
+        <Box marginTop={{ md: 5, xs: 4 }}>
+          <Typography sx={{ color: theme.palette.primary.main, fontWeight: '600', marginBottom: '8px' }}>
+            {t('Product_details')}
+            {' / '}
+            {dataProduct.productType?.name} / {dataProduct?.name}
+          </Typography>
+        </Box>
         <Grid
           container
           item
