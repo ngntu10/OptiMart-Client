@@ -41,8 +41,11 @@ import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 import CreateEditUser from './Components/CreateEditUser'
 import { PERMISSIONS } from 'src/configs/permission'
 import { getAllRoles } from 'src/services/role'
-import { OBJECT_STATUS_USER } from 'src/configs/user'
+import { CONFIG_USER_TYPE, OBJECT_STATUS_USER, OBJECT_TYPE_USER } from 'src/configs/user'
 import { getAllCities } from 'src/services/city'
+import { getCountUserType } from 'src/services/report'
+import CardCountUser from './Components/CardCountUser'
+import IconifyIcon from 'src/components/Icon'
 
 type TProps = {}
 
@@ -91,7 +94,13 @@ const UserListPage: NextPage<TProps> = () => {
   const [page, setPage] = useState(1)
   const [selectedRow, setSelectedRow] = useState<TSelectedRow[]>([])
   const [filterBy, setFilterBy] = useState<Record<string, string | string[]>>({})
+  const [typeSelected, setTypeSelected] = useState<string[]>([])
   const CONSTANT_STATUS_USER = OBJECT_STATUS_USER()
+  const CONSTANT_USER_TYPE = OBJECT_TYPE_USER()
+  const [countUserType, setCountUserType] = useState<{
+    data: Record<number, number>
+    totalUser: number
+  }>({} as any)
 
   // ** Hooks
   const { VIEW, UPDATE, DELETE, CREATE } = usePermission('SYSTEM.USER', ['CREATE', 'VIEW', 'UPDATE', 'DELETE'])
@@ -99,6 +108,22 @@ const UserListPage: NextPage<TProps> = () => {
 
   // ** Translate
   const { t } = useTranslation()
+
+  const mapUserType = {
+    1: {
+      title: t('Google'),
+      icon: 'flat-color-icons:google'
+    },
+    2: {
+      title: t('Facebook'),
+      icon: 'logos:facebook'
+    },
+    3: {
+      title: t('Email'),
+      icon: 'logos:google-gmail',
+      iconSize: 18
+    }
+  }
 
   /// ** redux
   const dispatch: AppDispatch = useDispatch()
@@ -252,6 +277,27 @@ const UserListPage: NextPage<TProps> = () => {
       }
     },
     {
+      field: 'userType',
+      headerName: t('User Type'),
+      minWidth: 120,
+      maxWidth: 120,
+      renderCell: params => {
+        const { row } = params
+        return (
+          <>
+            {row.userType && (
+              <Box>
+                <IconifyIcon
+                  icon={(mapUserType as any)[row.userType]?.icon}
+                  fontSize={(mapUserType as any)[row.userType]?.iconSize || 24}
+                />
+              </Box>
+            )}
+          </>
+        )
+      }
+    },
+    {
       field: 'action',
       headerName: t('Actions'),
       minWidth: 150,
@@ -328,6 +374,22 @@ const UserListPage: NextPage<TProps> = () => {
       })
   }
 
+  const fetchAllCountUserType = async () => {
+    setLoading(true)
+    await getCountUserType()
+      .then(res => {
+        const data = res
+        setLoading(false)
+        setCountUserType({
+          data: data?.data,
+          totalUser: data?.total
+        })
+      })
+      .catch(e => {
+        setLoading(false)
+      })
+  }
+
   useEffect(() => {
     if (isSuccessMultipleDelete) {
       toast.success(t('Delete_multiple_user_success'))
@@ -346,12 +408,13 @@ const UserListPage: NextPage<TProps> = () => {
   }, [selectedRow])
 
   useEffect(() => {
-    setFilterBy({ roleId: roleSelected, status: statusSelected, cityId: citySelected })
-  }, [roleSelected, statusSelected, citySelected])
+    setFilterBy({ roleId: roleSelected, status: statusSelected, cityId: citySelected, userType: typeSelected })
+  }, [roleSelected, statusSelected, citySelected, typeSelected])
 
   useEffect(() => {
     fetchAllRoles()
     fetchAllCities()
+    fetchAllCountUserType()
   }, [])
 
   // fetch api
@@ -397,6 +460,26 @@ const UserListPage: NextPage<TProps> = () => {
     }
   }, [isSuccessDelete, isErrorDelete, messageErrorDelete])
 
+  const dataListUser = [
+    {
+      icon: 'tabler:user',
+      userType: 4
+    },
+    {
+      userType: CONFIG_USER_TYPE.GOOGLE,
+      icon: 'flat-color-icons:google'
+    },
+    {
+      icon: 'logos:facebook',
+      userType: CONFIG_USER_TYPE.FACEBOOK
+    },
+    {
+      icon: 'logos:google-gmail',
+      iconSize: '18',
+      userType: CONFIG_USER_TYPE.DEFAULT
+    }
+  ]
+
   return (
     <>
       {loading && <Spinner />}
@@ -423,6 +506,17 @@ const UserListPage: NextPage<TProps> = () => {
         status={1}
       />
       {isLoading && <Spinner />}
+      <Box sx={{ backgroundColor: 'inherit', width: '100%', mb: 4 }}>
+        <Grid container spacing={6} sx={{ height: '100%' }}>
+          {dataListUser?.map((item: any, index: number) => {
+            return (
+              <Grid item xs={12} md={3} sm={6} key={index}>
+                <CardCountUser {...item} countUserType={countUserType} />
+              </Grid>
+            )
+          })}
+        </Grid>
+      </Box>
       <Box
         sx={{
           backgroundColor: theme.palette.background.paper,
@@ -430,7 +524,8 @@ const UserListPage: NextPage<TProps> = () => {
           alignItems: 'center',
           padding: '20px',
           height: '100%',
-          width: '100%'
+          width: '100%',
+          borderRadius: '15px'
         }}
       >
         <Grid container sx={{ height: '100%', width: '100%' }}>
@@ -472,6 +567,18 @@ const UserListPage: NextPage<TProps> = () => {
                   options={Object.values(CONSTANT_STATUS_USER)}
                   value={statusSelected}
                   placeholder={t('Status')}
+                />
+              </Box>
+              <Box sx={{ width: '200px' }}>
+                <CustomSelect
+                  fullWidth
+                  onChange={e => {
+                    setTypeSelected(e.target.value as string[])
+                  }}
+                  multiple
+                  options={Object.values(CONSTANT_USER_TYPE)}
+                  value={typeSelected}
+                  placeholder={t('User_type')}
                 />
               </Box>
               <Box sx={{ width: '200px' }}>

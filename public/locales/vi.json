@@ -366,5 +366,6 @@
   "Description_product": "Mô tả sản phẩm",
   "day_ago": "ngày truớc",
   "month_ago": "tháng trước",
-  "year_ago": "năm trước"
+  "year_ago": "năm trước",
+  "User_type" : "Loại người dùng"
 }

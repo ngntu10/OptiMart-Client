@@ -338,5 +338,6 @@
   "Create_user_error": "Create user failed",
   "day_ago": "day",
   "month_ago": "month",
-  "year_ago": "year"
+  "year_ago": "year",
+  "User_type": "User type"
 }

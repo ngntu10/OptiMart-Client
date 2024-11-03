@@ -52,10 +52,10 @@ const UserLayout: NextPage<TProps> = ({ children }) => {
             width: `calc(100% - 32px)`,
             maxWidth: `calc(100% - 32px) !important`,
             overflow: 'auto',
-            maxHeight: `calc(100vh - ${theme.mixins.toolbar.minHeight}px - 32px)`,
-            height: `calc(100vh - ${theme.mixins.toolbar.minHeight}px - 32px)`,
+            // maxHeight: `calc(100vh - ${theme.mixins.toolbar.minHeight}px - 32px)`,
+            // minHeight: `calc(100vh - ${theme.mixins.toolbar.minHeight}px - 32px)`,
             padding: '0 !important',
-            borderRadius: '15px'
+            // borderRadius: '15px'
           }}
         >
           {children}

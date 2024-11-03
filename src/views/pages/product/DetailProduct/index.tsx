@@ -864,7 +864,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
               </Typography>
               <Box sx={{ width: '100%' }}>
                 <CommentInput onApply={handleComment} />
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '20px' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: "30px", maxHeight: "500px", overflow: "auto" }}>
                   {listComment?.data?.map((comment: TCommentItemProduct) => {
                     const level: number = -1
                     return <Fragment key={comment.id}>{renderCommentItem(comment, level)}</Fragment>

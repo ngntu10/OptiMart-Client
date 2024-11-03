@@ -10,6 +10,7 @@ import {
 import { API_ENDPOINT } from 'src/configs/api'
 // Axios
 import instanceAxios from 'src/helpers/axios'
+import axios from 'axios'
 
 export const addComment = async (data: TParamsAddComment) => {
   try {
@@ -74,7 +75,7 @@ export const deleteMultipleComment = async (data: TParamsDeleteMultipleComment) 
 
 export const getAllCommentsPublic = async (data: { params: TParamsGetComments }) => {
   try {
-    const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.COMMENT.INDEX}/public`, data)
+    const res = await axios.get(`${API_ENDPOINT.MANAGE_PRODUCT.COMMENT.INDEX}/public`, data)
     return res.data
   } catch (error) {
     return error

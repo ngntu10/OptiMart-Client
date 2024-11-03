@@ -106,7 +106,6 @@ const CreateEditUser = (props: TCreateEditUser) => {
   const names = [t('Active_user'), t('Locked_user')]
 
   const defaultValues: TDefaultValue = {
-    password: '',
     fullName: '',
     email: '',
     role: '',
@@ -143,8 +142,8 @@ const CreateEditUser = (props: TCreateEditUser) => {
             middleName,
             phoneNumber: data.phoneNumber,
             role: data?.role,
-            email: data.email,
-            city: data.city,
+            email: data?.email,
+            city: data?.city,
             address: data?.address,
             id: idUser,
             status: status
@@ -214,15 +213,14 @@ const CreateEditUser = (props: TCreateEditUser) => {
     await getDetailsUser(id)
       .then(res => {
         const data = res.data
-        console.log(res);
+        console.log(data);
         if (data) {
           reset({
             fullName: toFullName(data?.lastName, data?.middleName, data?.firstName, i18n.language),
-            password: data.password,
-            phoneNumber: data.phoneNumber,
+            phoneNumber: data?.phoneNumber,
             role: data?.role?.name,
             email: data.email,
-            city: data.city.id,
+            city: data?.city?.id,
             address: data?.address,
             status: data?.status
           })  
@@ -364,7 +362,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
                                     setValue('role', String(e.target.value))
                                   }}
                                   options={optionRoles}
-                                  value={roleSelected}
+                                  value={value}
                                   placeholder={t('Role')}
                                 />
                               </Box>
