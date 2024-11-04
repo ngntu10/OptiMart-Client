@@ -5,6 +5,7 @@ import { TItemOrderProduct } from 'src/types/order-product'
 import { useTranslation } from 'react-i18next'
 import { ContentState, EditorState } from 'draft-js'
 import htmlToDraft from 'html-to-draftjs'
+import Chart from 'chart.js/auto';
 
 export const toFullName = (lastName: string, middleName: string, firstName: string, language: string) => {
   if (language === 'vi') {
@@ -180,3 +181,4 @@ export const isExpiry = (startDate: Date | null, endDate: Date | null) => {
   }
   return false
 }
+

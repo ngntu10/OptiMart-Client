@@ -33,6 +33,8 @@
     "add": "^2.0.6",
     "axios": "^1.6.2",
     "axios-mock-adapter": "^1.22.0",
+    "chart.js": "^4.4.6",
+    "chartjs": "^0.3.24",
     "draft-js": "0.11.7",
     "draftjs-to-html": "^0.9.1",
     "emoji-picker-react": "^4.12.0",

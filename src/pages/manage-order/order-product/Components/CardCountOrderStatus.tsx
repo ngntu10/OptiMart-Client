@@ -9,64 +9,69 @@ import { hexToRGBA } from 'src/utils/hex-to-rgba'
 import { useTranslation } from 'react-i18next'
 // ** Type Import
 // ** Custom Component Import
-export type CardCountUserProps = {
+export type CardCountStatusOrderProps = {
   icon: string
   sx?: SxProps<Theme>
   avatarSize?: number
   iconSize?: number | string
-  userType: number
-  countUserType: {
+  status: number
+  countStatusOrder: {
     data: Record<number, number>
-    totalUser: number
+    total: number
   }
 }
-const CardCountUser = (props: any) => {
+const CardCountStatusOrder = (props: any) => {
   // ** Hooks
   const theme = useTheme()
   const { t } = useTranslation()
   // ** Props
-  const { sx, icon, countUserType, count, iconSize = 24, avatarSize = 38, userType } = props
-  const mapUserType = {
-    1: {
-      title: t('Google Users'),
-      count: countUserType?.data?.[1],
+  const { sx, icon, countStatusOrder, iconSize = 24, avatarSize = 38, status } = props
+  const mapOrderStatus = {
+    0: {
+      title: t('Wait_payment'),
+      count: countStatusOrder?.data?.[0],
       themeColor: theme.palette.success.main
     },
+    1: {
+      title: t('Wait_delivery'),
+      count: countStatusOrder?.data?.[1],
+      themeColor: theme.palette.warning.main
+    },
     2: {
-      title: t('Facebook Users'),
-      count: countUserType?.data?.[2],
+      title: t('Done_order'),
+      count: countStatusOrder?.data?.[2],
       themeColor: theme.palette.error.main
     },
     3: {
-      title: t('Email Users'),
-      count: countUserType?.data?.[3],
+      title: t('Cancel_order'),
+      count: countStatusOrder?.data?.[3],
       themeColor: theme.palette.info.main
     },
     4: {
-      title: t('Total Users'),
-      count: countUserType?.totalUser,
+      title: t('Total orders'),
+      count: countStatusOrder?.total,
       themeColor: theme.palette.primary.main
     }
   }
 
   return (
-    <Card sx={{ ...sx, backgroundColor: hexToRGBA((mapUserType as any)[userType]?.themeColor, 0.8) }}>
+    <Card sx={{ ...sx, backgroundColor: hexToRGBA((mapOrderStatus as any)[status]?.themeColor, 0.7), minHeight: '150px' }}>
       <CardContent sx={{ gap: 3, display: 'flex', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
           <Typography sx={{ mb: 1, color: theme.palette.customColors.lightPaperBg }}>
-            {(mapUserType as any)[userType]?.title}
+            {(mapOrderStatus as any)[status]?.title}
           </Typography>
           <Box sx={{ mb: 1, columnGap: 1.5, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
             <Typography variant='h4' sx={{ color: theme.palette.customColors.lightPaperBg, fontWeight: 'bold' }}>
-              {(mapUserType as any)[userType]?.count}
+              {(mapOrderStatus as any)[status]?.count}
             </Typography>
           </Box>
         </Box>
         <Avatar variant='rounded' sx={{ width: avatarSize, height: avatarSize }}>
-          <Icon icon={icon} fontSize={iconSize} color={(mapUserType as any)[userType]?.themeColor} />
+          <Icon icon={icon} fontSize={iconSize} color={(mapOrderStatus as any)[status]?.themeColor} />
         </Avatar>
       </CardContent>
     </Card>
   )
 }
-export default CardCountUser
+export default CardCountStatusOrder

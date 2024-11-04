@@ -47,6 +47,8 @@ import { getAllCities } from 'src/services/city'
 import { TItemProductMe } from 'src/types/order-product'
 import EditOrderProduct from './Components/EditOrderProduct'
 import GridView from 'src/components/grid-view'
+import { getCountOrderStatus } from 'src/services/report'
+import CardCountStatusOrder from './Components/CardCountOrderStatus'
 type TProps = {}
 type TSelectedRow = { id: string; role: { name: string; permissions: string[] } }
 interface StatusOrderChipT extends ChipProps {
@@ -80,6 +82,10 @@ const OrderProductListPage: NextPage<TProps> = () => {
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
   const [page, setPage] = useState(1)
   const [filterBy, setFilterBy] = useState<Record<string, string | string[]>>({})
+  const [countOrderStatus, setCountOrderStatus] = useState<{
+    data: Record<number, number>
+    total: number
+  }>({} as any)
   // ** Hooks
   const { VIEW, UPDATE, DELETE } = usePermission('SYSTEM.MANAGE_ORDER.ORDER', ['CREATE', 'VIEW', 'UPDATE', 'DELETE'])
   const { i18n } = useTranslation()
@@ -94,25 +100,25 @@ const OrderProductListPage: NextPage<TProps> = () => {
     isErrorDelete,
     isSuccessDelete,
     messageErrorDelete,
-    typeError,
+    typeError
   } = useSelector((state: RootState) => state.orderProduct)
   // ** theme
   const theme = useTheme()
   const STATUS_ORDER_PRODUCT_STYLE = {
     0: {
-      label: "Wait_payment",
+      label: 'Wait_payment',
       background: theme.palette.warning.main
     },
     1: {
-      label: "Wait_delivery",
+      label: 'Wait_delivery',
       background: theme.palette.secondary.main
     },
     2: {
-      label: "Done_order",
+      label: 'Done_order',
       background: theme.palette.success.main
     },
     3: {
-      label: "Cancel_order",
+      label: 'Cancel_order',
       background: theme.palette.error.main
     }
   }
@@ -138,7 +144,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
       setSortBy('createdAt desc')
     }
   }
-  const handleCloseEdit  = () => {
+  const handleCloseEdit = () => {
     setOpenEdit({
       open: false,
       id: ''
@@ -153,7 +159,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
   }
   const columns: GridColDef[] = [
     {
-      field: "items",
+      field: 'items',
       headerName: t('Product_items'),
       hideSortIcons: true,
       flex: 1,
@@ -163,11 +169,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
         return (
           <AvatarGroup max={1}>
             {row.orderItemList?.map((item: TItemProductMe) => {
-
-
-              return (
-                <Avatar key={item?.id} alt={item?.slug} src={item?.image} />
-              )
+              return <Avatar key={item?.id} alt={item?.slug} src={item?.image} />
             })}
           </AvatarGroup>
         )
@@ -221,9 +223,15 @@ const OrderProductListPage: NextPage<TProps> = () => {
       maxWidth: 180,
       renderCell: params => {
         const { row } = params
-        console.log(row);
         return (
-          <>{<OrderStatusStyled background={(STATUS_ORDER_PRODUCT_STYLE as any)[row.orderStatus]?.background} label={t((STATUS_ORDER_PRODUCT_STYLE as any)[row.orderStatus]?.label)} />}</>
+          <>
+            {
+              <OrderStatusStyled
+                background={(STATUS_ORDER_PRODUCT_STYLE as any)[row.orderStatus]?.background}
+                label={t((STATUS_ORDER_PRODUCT_STYLE as any)[row.orderStatus]?.label)}
+              />
+            }
+          </>
         )
       }
     },
@@ -286,6 +294,24 @@ const OrderProductListPage: NextPage<TProps> = () => {
         setLoading(false)
       })
   }
+
+  const fetchAllCountStatusOrder = async () => {
+    setLoading(true)
+    await getCountOrderStatus()
+      .then(res => {
+        console.log(res)
+        const data = res?.data
+        setLoading(false)
+        setCountOrderStatus({
+          data: data?.data,
+          total: data?.total
+        })
+      })
+      .catch(e => {
+        setLoading(false)
+      })
+  }
+
   useEffect(() => {
     handleGetListOrderProducts()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -294,10 +320,12 @@ const OrderProductListPage: NextPage<TProps> = () => {
   useEffect(() => {
     setFilterBy({ status: statusSelected, cityId: citySelected })
   }, [statusSelected, citySelected])
-  
+
   useEffect(() => {
     fetchAllCities()
+    fetchAllCountStatusOrder()
   }, [])
+
   useEffect(() => {
     if (isSuccessEdit) {
       handleGetListOrderProducts()
@@ -317,7 +345,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
 
   useEffect(() => {
     if (isSuccessDelete) {
-       toast.success(t('Delete_order_product_success'))
+      toast.success(t('Delete_order_product_success'))
       handleGetListOrderProducts()
       dispatch(resetInitialState())
       handleCloseConfirmDeleteOrder()
@@ -328,11 +356,36 @@ const OrderProductListPage: NextPage<TProps> = () => {
   }, [isSuccessDelete, isErrorDelete, messageErrorDelete])
 
   const memoOptionStatus = useMemo(() => {
-    return Object.values(STATUS_ORDER_PRODUCT).map((item) => ({
+    return Object.values(STATUS_ORDER_PRODUCT).map(item => ({
       label: t(item.label),
       value: item.value
     }))
   }, [])
+
+  const dataListOrderStatus = [
+    {
+      icon: 'lets-icons:order-light',
+      status: 4
+    },
+    {
+      icon: 'ic:twotone-payment',
+      status: STATUS_ORDER_PRODUCT[0].value
+    },
+    {
+      status: STATUS_ORDER_PRODUCT[1].value,
+      icon: 'carbon:delivery'
+    },
+    {
+      icon: 'ic:baseline-done-all',
+      iconSize: '18',
+      status: STATUS_ORDER_PRODUCT[2].value
+    },
+    {
+      icon: 'line-md:cancel',
+      status: STATUS_ORDER_PRODUCT[3].value
+    }
+  ]
+
   return (
     <>
       {loading && <Spinner />}
@@ -346,6 +399,17 @@ const OrderProductListPage: NextPage<TProps> = () => {
       />
       <EditOrderProduct open={openEdit.open} onClose={handleCloseEdit} idOrder={openEdit.id} />
       {isLoading && <Spinner />}
+      <Box sx={{ backgroundColor: 'inherit', width: '100%', mb: 4 }}>
+        <Grid container spacing={6} sx={{ height: '100%', display: 'flex', justifyContent: 'space-between' }}>
+          {dataListOrderStatus?.map((item: any, index: number) => {
+            return (
+              <Grid item xs={12} md={2} sm={6} key={index}>
+                <CardCountStatusOrder {...item} countStatusOrder={countOrderStatus} />
+              </Grid>
+            )
+          })}
+        </Grid>
+      </Box>
       <Box
         sx={{
           backgroundColor: theme.palette.background.paper,
@@ -358,9 +422,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
         }}
       >
         <Grid container sx={{ height: '100%', width: '100%' }}>
-          <Box
-            sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 4, mb: 4, width: '100%' }}
-          >
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 4, mb: 4, width: '100%' }}>
             <Box sx={{ width: '200px' }}>
               <CustomSelect
                 fullWidth

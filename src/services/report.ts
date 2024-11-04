@@ -8,3 +8,49 @@ export const getCountUserType = async () => {
     return error
   }
 }
+
+export const getCountProductStatus = async () => {
+  try {
+    const res = await instanceAxios.get(`${API_ENDPOINT.REPORT.INDEX}/product-status/count`)
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
+
+export const getCountAllRecords = async () => {
+  try {
+    const res = await instanceAxios.get(`${API_ENDPOINT.REPORT.INDEX}/all-records/count`)
+    
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
+
+export const getCountProductTypes = async () => {
+  try {
+    const res = await instanceAxios.get(`${API_ENDPOINT.REPORT.INDEX}/product-type/count`)
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
+
+export const getCountRevenueYear = async () => {
+  try {
+    const res = await instanceAxios.get(`${API_ENDPOINT.REPORT.INDEX}/revenue-total`)
+    return res.data
+  } catch (error) {
+    return error
+  }
+}
+
+export const getCountOrderStatus = async () => {
+  try {
+    const res = await instanceAxios.get(`${API_ENDPOINT.REPORT.INDEX}/order-status/count`)
+    return res.data
+  } catch (error) {
+    return error
+  }
+}

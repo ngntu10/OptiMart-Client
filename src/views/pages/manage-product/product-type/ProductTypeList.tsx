@@ -187,8 +187,8 @@ const ProductTypeListPage: NextPage<TProps> = () => {
       maxWidth: 180,
       renderCell: params => {
         const { row } = params
-
-        return <Typography>{formatDate(row?.createdAt, { dateStyle: 'medium' })}</Typography>
+          return null
+        // return <Typography>{formatDate(row?.createdAt, { dateStyle: 'medium' })}</Typography>
       }
     },
     {
