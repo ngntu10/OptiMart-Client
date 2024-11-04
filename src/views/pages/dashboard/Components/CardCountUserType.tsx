@@ -12,7 +12,6 @@ const CardCountUserType = (props: TProps) => {
   const { data } = props
   const mapObject = OBJECT_TYPE_USER()
   const { t } = useTranslation()
-  console.log('data', { data })
   const theme = useTheme()
   const labelMemo = useMemo(() => {
     if (data) {
@@ -57,7 +56,6 @@ const CardCountUserType = (props: TProps) => {
         height: '400px',
         width: '100%',
         borderRadius: '15px',
-        mt: 4,
         canvas: {
           width: '100% !important'
         }

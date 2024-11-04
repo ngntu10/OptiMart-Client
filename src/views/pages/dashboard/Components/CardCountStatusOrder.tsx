@@ -13,7 +13,6 @@ const CardCountOrderStatus = (props: TProps) => {
   const { data } = props
   const [mapObject] = useState(() => STATUS_ORDER_PRODUCT)
   const { t } = useTranslation()
-  console.log('data', { data })
   const theme = useTheme()
   const labelMemo = useMemo(() => {
     if (data) {
@@ -65,7 +64,6 @@ const CardCountOrderStatus = (props: TProps) => {
         height: '400px',
         width: '100%',
         borderRadius: '15px',
-        mt: 4,
         canvas: {
           width: '100% !important'
         }

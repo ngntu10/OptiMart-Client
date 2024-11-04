@@ -61,7 +61,6 @@ export const roleSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(createRoleAsync.fulfilled, (state, action) => {
-      console.log(action)
       state.isLoading = false
       state.isSuccessCreateEdit = !!action.payload?.data?.data?.id
       state.isErrorCreateEdit = !action.payload?.data?.data?.id
@@ -73,7 +72,6 @@ export const roleSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(updateRoleAsync.fulfilled, (state, action) => {
-      console.log(action)
       state.isLoading = false
       state.isSuccessCreateEdit = !!action.payload?.data?.data.id
       state.isErrorCreateEdit = !action.payload?.data?.data.id
@@ -85,7 +83,6 @@ export const roleSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(deleteRoleAsync.fulfilled, (state, action) => {
-      console.log(action)
       state.isLoading = false
       state.isSuccessDelete = !!action.payload?.data.data
       state.isErrorDelete = !action.payload?.data?.data

@@ -26,7 +26,6 @@ const CardCountProduct = (props: any) => {
   const { t } = useTranslation()
   // ** Props
   const { sx, icon, countProductStatus, count, iconSize = 24, avatarSize = 38, status } = props
-  console.log(countProductStatus);
   const mapProductStatus = {
     1: {
       title: t('Public Products'),

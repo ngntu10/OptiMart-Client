@@ -145,7 +145,6 @@ export const authSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(updateAuthMeAsync.fulfilled, (state, action) => {
-      console.log('action', { action })
       state.isLoading = false
       state.isSuccessUpdateMe = !!action.payload?.data
       state.isErrorUpdateMe = !action.payload?.data

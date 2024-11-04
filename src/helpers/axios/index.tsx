@@ -75,7 +75,6 @@ const AxiosInterceptor: FC<TAxiosInterceptor> = ({ children }) => {
                 }
               )
               .then(res => {
-                console.log(res)
                 const newAccessToken = res?.data.accessToken
                 if (newAccessToken) {
                   config.headers['Authorization'] = `Bearer ${newAccessToken}`

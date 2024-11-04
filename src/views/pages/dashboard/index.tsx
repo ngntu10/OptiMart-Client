@@ -18,6 +18,8 @@ import CardProductType from './Components/CardProductType'
 import CardCountRevenue from './Components/CardCountRevenue'
 import CardCountUserType from './Components/CardCountUserType'
 import CardCountOrderStatus from './Components/CardCountStatusOrder'
+import { getAllProducts } from 'src/services/product'
+import CardProductPopular from './Components/CardCountPopular'
 
 export interface TCountProductType {
   typeName: string
@@ -30,6 +32,17 @@ export interface TCountRevenue {
   total: number
 }
 
+export interface TProductPopular {
+  name: string
+  price: string
+  image: string
+  slug: string
+  _id: string
+  type: {
+    name: string
+  }
+}
+
 const Dashboard = () => {
   const [loading, setLoading] = useState(false)
   const [countRecords, setCountRecords] = useState<Record<string, number>>({})
@@ -37,6 +50,7 @@ const Dashboard = () => {
   const [countRevenues, setCountRevenues] = useState<TCountRevenue[]>([])
   const [countUserType, setCountUserType] = useState<Record<number, number>>({} as any)
   const [countOrderStatus, setCountOrderStatus] = useState<Record<number, number>>({} as any)
+  const [listProductPopular, setListProductPopular] = useState<TProductPopular[]>([])
 
   // ** Fetch API
   const fetchAllCountRecords = async () => {
@@ -56,7 +70,6 @@ const Dashboard = () => {
     setLoading(true)
     await getCountRevenueYear()
       .then(res => {
-        console.log(res)
         const data = res?.data
         setLoading(false)
         setCountRevenues(data)
@@ -71,10 +84,21 @@ const Dashboard = () => {
     await getCountProductTypes()
       .then(res => {
         const data = res?.data
-
-        console.log(res)
         setLoading(false)
         setCountProductTypes(data)
+      })
+      .catch(e => {
+        setLoading(false)
+      })
+  }
+
+  const fetchListProductPopular = async () => {
+    setLoading(true)
+    await getAllProducts({ params: { limit: 5, page: 1, order: 'sold desc' } })
+      .then(res => {
+        const data = res?.data
+        setLoading(false)
+        setListProductPopular(data)
       })
       .catch(e => {
         setLoading(false)
@@ -112,6 +136,7 @@ const Dashboard = () => {
     fetchAllTotalRevenues()
     fetchAllCountUserType()
     fetchAllCountStatusOrder()
+    fetchListProductPopular()
   }, [])
   return (
     <Box>
@@ -123,6 +148,9 @@ const Dashboard = () => {
         </Grid>
         <Grid item md={6} xs={12}>
           <CardCountRevenue data={countRevenues} />
+        </Grid>
+        <Grid item md={4} xs={12}>
+          <CardProductPopular data={listProductPopular} />
         </Grid>
         <Grid item md={4} xs={12}>
           <CardCountUserType data={countUserType} />

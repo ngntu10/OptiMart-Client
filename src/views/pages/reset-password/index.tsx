@@ -53,7 +53,6 @@ const ResetPasswordPage: NextPage<TProps> = () => {
   // ** Router
     const router = useRouter()
     const secretKey = router?.query?.secretKey as string
-    console.log(secretKey);
   // ** theme
   const theme = useTheme()
   const schema = yup.object().shape({

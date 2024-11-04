@@ -192,7 +192,6 @@ const CheckoutProductPage: NextPage<TProps> = () => {
         totalPrice: totalPrice
       })
     ).then((res: any) => {
-      console.log(res);
       const idPaymentMethod = res?.payload?.data?.paymentMethod
       const orderId = res?.payload?.data?.id
       const amount = res?.payload?.data?.amount
@@ -241,7 +240,7 @@ const CheckoutProductPage: NextPage<TProps> = () => {
     setLoading(true)
     await getAllDeliveryTypes({ params: { limit: 20, page: 1 } })
       .then((res: any) => {
-        console.log(res);
+
         if (res.data) {
           setOptionDeliveries(
             res?.data?.map((item: { name: string; id: string; price: string }) => ({

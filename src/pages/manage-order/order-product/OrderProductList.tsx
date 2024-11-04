@@ -299,7 +299,6 @@ const OrderProductListPage: NextPage<TProps> = () => {
     setLoading(true)
     await getCountOrderStatus()
       .then(res => {
-        console.log(res)
         const data = res?.data
         setLoading(false)
         setCountOrderStatus({

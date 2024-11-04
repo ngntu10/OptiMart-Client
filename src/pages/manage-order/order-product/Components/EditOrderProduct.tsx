@@ -113,7 +113,6 @@ const EditOrderProduct = (props: TCreateEditProduct) => {
     await getDetailsOrderProduct(id)
       .then(res => {
         const data = res.data
-        console.log(res)
         if (data) {
           reset({
             fullName: data?.shippingAddress?.fullName,

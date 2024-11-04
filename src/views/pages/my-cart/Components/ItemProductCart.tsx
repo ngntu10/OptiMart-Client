@@ -33,7 +33,6 @@ interface TItemOrderProductState extends TItemOrderProduct {
 const ItemProductCart = ({ item, index, selectedRows, handleChangeCheckbox }: TProps) => {
   // ** State
   const [itemState, setItemState] = useState<TItemOrderProductState>(item)
-  console.log('item', { item })
   // ** Hooks
   const { user } = useAuth()
   const theme = useTheme()
@@ -43,7 +42,6 @@ const ItemProductCart = ({ item, index, selectedRows, handleChangeCheckbox }: TP
   // ** fetch
   const fetchDetailsProduct = async (id: string) => {
     const res = await getDetailsProduct(id)
-    console.log('resres', { res })
     const data = res.data
     if (data) {
       const discountItem = isExpiry(data.discountStartDate, data.discountEndDate) ? data.discount : 0

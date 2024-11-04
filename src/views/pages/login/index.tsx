@@ -85,7 +85,6 @@ const LoginPage: NextPage<Tprops> = () => {
 
   // ** Hooks
   const { data: session, status } = useSession()
-  console.log('session', { session, status })
 
   const schema = yup.object().shape({
     email: yup.string().required(t('Required_field')).matches(EMAIL_REG, t('Rules_email')),

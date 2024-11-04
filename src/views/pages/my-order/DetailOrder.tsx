@@ -150,7 +150,6 @@ const MyOrderPage: NextPage<TProps> = () => {
         slug: item?.slug
       }))
     )
-    console.log(dataOrder)
     router.push(
       {
         pathname: ROUTE_CONFIG.MY_CART,

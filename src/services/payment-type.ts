@@ -30,7 +30,6 @@ export const createPaymentType = async (data: TParamsCreatePaymentType) => {
 export const updatePaymentType = async (data: TParamsEditPaymentType) => {
   const { id, ...rests } = data
   try {
-    console.log(data);
     const res = await instanceAxios.put(`${API_ENDPOINT.SETTING.PAYMENT_TYPE.INDEX}/${id}`, rests)
 
     return res

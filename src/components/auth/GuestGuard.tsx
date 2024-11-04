@@ -25,7 +25,6 @@ const GuestGuard = (props: GuestGuardProps) => {
   // ** router
   const router = useRouter()
   const { data: session, status } = useSession()
-  console.log("session", {session})
 
   useEffect(() => {
     if (!router.isReady) {

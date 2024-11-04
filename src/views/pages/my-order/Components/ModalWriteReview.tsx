@@ -64,7 +64,6 @@ const ModalWriteReview = (props: TCreateReview) => {
   })
   // handle
   const onSubmit = (data: any) => {
-    console.log('errors', { errors, productId, userId })
     if (!Object.keys(errors).length) {
       // update
       if (productId && userId) {
@@ -87,7 +86,6 @@ const ModalWriteReview = (props: TCreateReview) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
-  console.log('gh', { value: getValues() })
   return (
     <>
       {loading && <Spinner />}

@@ -74,7 +74,6 @@ export const paymentTypeSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(createPaymentTypeAsync.fulfilled, (state, action) => {
-      console.log(action)
       state.isLoading = false
       state.isSuccessCreateEdit = !!action.payload?.data?.data?.id
       state.isErrorCreateEdit = !action.payload?.data?.data?.id
@@ -87,7 +86,6 @@ export const paymentTypeSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(updatePaymentTypeAsync.fulfilled, (state, action) => {
-      console.log(action)
       state.isLoading = false
       state.isSuccessCreateEdit = !!action.payload?.data?.data.id
       state.isErrorCreateEdit = !action.payload?.data?.data.id

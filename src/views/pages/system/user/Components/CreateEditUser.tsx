@@ -130,7 +130,6 @@ const CreateEditUser = (props: TCreateEditUser) => {
 
   // handle
   const onSubmit = (data: TDefaultValue) => {
-    console.log(data)
     if (!Object.keys(errors).length) {
       const { firstName, lastName, middleName } = separationFullName(data.fullName, i18n.language)
       if (idUser) {
@@ -213,7 +212,6 @@ const CreateEditUser = (props: TCreateEditUser) => {
     await getDetailsUser(id)
       .then(res => {
         const data = res.data
-        console.log(data);
         if (data) {
           reset({
             fullName: toFullName(data?.lastName, data?.middleName, data?.firstName, i18n.language),

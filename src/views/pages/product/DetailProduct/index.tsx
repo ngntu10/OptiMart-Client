@@ -111,7 +111,6 @@ const DetailsProductPage: NextPage<TProps> = () => {
       .then(async response => {
         setLoading(false)
         const data = response?.data
-        console.log(data);
         if (data) {
           setDataProduct(data)
         }

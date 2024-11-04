@@ -10,7 +10,6 @@ interface TProps {
 const CardProductType = (props: TProps) => {
   // Props
     const { data } = props
-    console.log(data);
   const theme = useTheme()
   const { t } = useTranslation()
   const labelsMemo = useMemo(() => {

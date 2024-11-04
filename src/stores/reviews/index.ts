@@ -64,13 +64,11 @@ export const reviewSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(getAllReviewAsync.fulfilled, (state, action) => {
-      console.log(action);
       state.isLoading = false
       state.reviews.data = action.payload?.data || []
       state.reviews.total = action.payload?.data?.totalCount
     })
     builder.addCase(getAllReviewAsync.rejected, (state, action) => {
-      console.log(action);
       state.isLoading = false
       state.reviews.data = []
       state.reviews.total = 0
@@ -80,7 +78,6 @@ export const reviewSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(createReviewAsync.fulfilled, (state, action) => {
-      console.log(action);
       state.isLoading = false
       state.isSuccessCreate = !!action.payload?.data?.id
       state.isErrorCreate = !action.payload?.data?.id
@@ -92,7 +89,6 @@ export const reviewSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(updateReviewAsync.fulfilled, (state, action) => {
-      console.log(action);
       state.isLoading = false
       state.isSuccessEdit = !!action.payload?.data?.id
       state.isErrorEdit = !action.payload?.data?.id
@@ -104,7 +100,6 @@ export const reviewSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(deleteReviewAsync.fulfilled, (state, action) => {
-      console.log(action);
       state.isLoading = false
       state.isSuccessDelete = !!action.payload?.data?.id
       state.isErrorDelete = !action.payload?.data?.id
@@ -116,7 +111,6 @@ export const reviewSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(deleteMyReviewAsync.fulfilled, (state, action) => {
-      console.log(action);
       state.isLoading = false
       state.isSuccessDelete = !!action.payload?.data?.id
       state.isErrorDelete = !action.payload?.data?.id
@@ -128,7 +122,6 @@ export const reviewSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(updateMyReviewAsync.fulfilled, (state, action) => {
-      console.log(action);
       state.isLoading = false
       state.isSuccessEdit = !!action.payload?.data?.id
       state.isErrorEdit = !action.payload?.data?.id
@@ -140,7 +133,6 @@ export const reviewSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(deleteMultipleReviewAsync.fulfilled, (state, action) => {
-      console.log(action);
       state.isLoading = false
       state.isSuccessMultipleDelete = !!action.payload?.data?.id
       state.isErrorMultipleDelete = !action.payload?.data?.id

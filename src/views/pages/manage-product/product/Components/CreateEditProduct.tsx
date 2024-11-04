@@ -225,7 +225,6 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
             countInStock: Number(data.countInStock)
           })
         )
-        console.log(productResponse);
         if (fileAvatar) {
           handleChangeProductImage(fileAvatar, productResponse.payload?.data?.data?.id)
         }
@@ -609,7 +608,6 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
                                 required
                                 minDate={new Date()}
                                 onChange={(date: Date | null) => {
-                                  console.log(date)
                                   onChange(date)
                                 }}
                                 label={`${t('Start_date_discount')}`}
