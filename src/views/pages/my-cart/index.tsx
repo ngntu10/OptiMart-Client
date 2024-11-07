@@ -87,41 +87,41 @@ const MyCartPage: NextPage<TProps> = () => {
   }, [router.query])
 
   // ** Handle
-  const handleChangeAmountCart = (item: TItemOrderProduct, amount: number) => {
-    const productCart = getLocalProductCart()
-    const parseData = productCart ? JSON.parse(productCart) : {}
-    const listOrderItems = convertUpdateProductToCart(orderItems, {
-      name: item.name,
-      amount: amount,
-      image: item.image,
-      price: item.price,
-      discount: item.discount,
-      id: item.id,
-      slug: item.slug
-    })
-    if (user) {
-      dispatch(
-        updateProductToCart({
-          orderItems: listOrderItems
-        })
-      )
-      setLocalProductToCart({ ...parseData, [user?.id]: listOrderItems })
-    }
-  }
-  const handleDeleteProductCart = (id: string) => {
-    const productCart = getLocalProductCart()
-    const parseData = productCart ? JSON.parse(productCart) : {}
-    const cloneOrderItems = cloneDeep(orderItems)
-    const filteredItems = cloneOrderItems.filter((item: TItemOrderProduct) => item.id !== id)
-    if (user) {
-      dispatch(
-        updateProductToCart({
-          orderItems: filteredItems
-        })
-      )
-      setLocalProductToCart({ ...parseData, [user?.id]: filteredItems })
-    }
-  }
+  // const handleChangeAmountCart = (item: TItemOrderProduct, amount: number) => {
+  //   const productCart = getLocalProductCart()
+  //   const parseData = productCart ? JSON.parse(productCart) : {}
+  //   const listOrderItems = convertUpdateProductToCart(orderItems, {
+  //     name: item.name,
+  //     amount: amount,
+  //     image: item.image,
+  //     price: item.price,
+  //     discount: item.discount,
+  //     id: item.id,
+  //     slug: item.slug
+  //   })
+  //   if (user) {
+  //     dispatch(
+  //       updateProductToCart({
+  //         orderItems: listOrderItems
+  //       })
+  //     )
+  //     setLocalProductToCart({ ...parseData, [user?.id]: listOrderItems })
+  //   }
+  // }
+  // const handleDeleteProductCart = (id: string) => {
+  //   const productCart = getLocalProductCart()
+  //   const parseData = productCart ? JSON.parse(productCart) : {}
+  //   const cloneOrderItems = cloneDeep(orderItems)
+  //   const filteredItems = cloneOrderItems.filter((item: TItemOrderProduct) => item.id !== id)
+  //   if (user) {
+  //     dispatch(
+  //       updateProductToCart({
+  //         orderItems: filteredItems
+  //       })
+  //     )
+  //     setLocalProductToCart({ ...parseData, [user?.id]: filteredItems })
+  //   }
+  // }
   const handleChangeCheckbox = (value: string) => {
     const isChecked = selectedRows.includes(value)
     if (isChecked) {

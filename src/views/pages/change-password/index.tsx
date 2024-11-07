@@ -38,6 +38,7 @@ import FallbackSpinner from 'src/components/fall-back'
 import toast from 'react-hot-toast'
 import { useAuth } from 'src/hooks/useAuth'
 import { changePasswordMeAsync } from 'src/stores/auth/action'
+import { getAllNotificationsAsync } from 'src/stores/notification/action'
 
 type TProps = {}
 
@@ -57,7 +58,7 @@ const ChangePasswordPage: NextPage<TProps> = () => {
   const router = useRouter()
 
   // ** auth
-  const { logout } = useAuth()
+  const { logout,user } = useAuth()
 
   // ** Translate
   const { t } = useTranslation()

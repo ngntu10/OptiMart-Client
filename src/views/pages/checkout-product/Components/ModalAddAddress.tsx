@@ -41,6 +41,7 @@ import toast from 'react-hot-toast'
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
 import { updateAuthMeAsync } from 'src/stores/auth/action'
+import { getAllNotificationsAsync } from 'src/stores/notification/action'
 interface TModalAddAddress {
   open: boolean
   onClose: () => void
@@ -61,6 +62,7 @@ const ModalAddAddress = (props: TModalAddAddress) => {
   // State
   const [loading, setLoading] = useState(false)
   const [optionCities, setOptionCities] = useState<{ label: string; value: string }[]>([])
+  const [city, setCity] = useState<any>([])
   const [activeTab, setActiveTab] = useState(1)
   const [addresses, setAddresses] = useState<TUserAddresses[]>([])
   const [isEdit, setIsEdit] = useState({
@@ -103,6 +105,8 @@ const ModalAddAddress = (props: TModalAddAddress) => {
   })
   // handle
   const onSubmit = (data: any) => {
+    console.log(data);
+    const findCity = city.find((item:any) => item.id = data.city)
     if (!Object.keys(errors).length) {
       if (activeTab === 2) {
         const isHaveDefault = addresses?.some(item => item.isDefault)
@@ -112,7 +116,7 @@ const ModalAddAddress = (props: TModalAddAddress) => {
           const findAddress = cloneAddresses[isEdit.index]
           if (findAddress) {
             findAddress.address = data.address
-            findAddress.city = data.city
+            findAddress.city = findCity
             findAddress.firstName = firstName
             findAddress.lastName = lastName
             findAddress.middleName = middleName
@@ -121,13 +125,13 @@ const ModalAddAddress = (props: TModalAddAddress) => {
           setAddresses(cloneAddresses)
         } else {
           setAddresses([
-            ...addresses,
+            ...(Array.isArray(addresses) ? addresses : []),
             {
               firstName,
               lastName,
               middleName,
               address: data.address,
-              city: data.city,
+              city: findCity,
               isDefault: !isHaveDefault,
               phoneNumber: data.phoneNumber
             }
@@ -151,6 +155,10 @@ const ModalAddAddress = (props: TModalAddAddress) => {
     })
   }
 
+  const handleGetListNotification = () => {
+    dispatch(getAllNotificationsAsync({ params: { limit: -1, page: -1, userId: user?.id} }))
+  }
+
   // fetch api
   const fetchAllCities = async () => {
     setLoading(true)
@@ -158,6 +166,7 @@ const ModalAddAddress = (props: TModalAddAddress) => {
       .then(res => {
         const data = res?.data
         if (data) {
+          setCity(data)
           setOptionCities(data?.map((item: { name: string; id: string }) => ({ label: item.name, value: item.id })))
         }
         setLoading(false)
@@ -226,8 +235,6 @@ const ModalAddAddress = (props: TModalAddAddress) => {
       setAddresses(user?.addresses)
     }
   }, [user?.addresses])
-
-
 
   return (
     <>

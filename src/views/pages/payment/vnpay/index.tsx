@@ -2,15 +2,22 @@ import { Box, Button, Card, Typography, useTheme } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useDispatch } from 'react-redux'
 import Icon from 'src/components/Icon'
 import { ROUTE_CONFIG } from 'src/configs/route'
+import { useAuth } from 'src/hooks/useAuth'
 import { getVNPayIpnPayment } from 'src/services/payment'
+import { AppDispatch } from 'src/stores'
+import { getAllNotificationsAsync } from 'src/stores/notification/action'
 import { formatNumberToLocal } from 'src/utils'
 
 const PaymentVNPay = () => {
   const { t } = useTranslation()
   const theme = useTheme()
   const router = useRouter()
+  const { user } = useAuth()
+  // ** redux
+  const dispatch: AppDispatch = useDispatch()
   const { vnp_SecureHash, vnp_ResponseCode, vnp_TxnRef, ...rests } = router.query
   // ** State
   const [statusPayment, setStatusPayment] = useState('')
@@ -34,7 +41,13 @@ const PaymentVNPay = () => {
       }
     })
   }
+
+  const handleGetListNotification = () => {
+    dispatch(getAllNotificationsAsync({ params: { limit: -1, page: -1, userId: user?.id} }))
+  }
+
   useEffect(() => {
+    handleGetListNotification()
     if (vnp_SecureHash && vnp_ResponseCode && vnp_TxnRef) {
       fetchGetIpnVNPay({ vnp_ResponseCode, vnp_SecureHash, orderId: vnp_TxnRef, vnp_TxnRef, ...rests })
     }

@@ -34,6 +34,7 @@ import toast from 'react-hot-toast'
 // ** Types
 import { TItemOrderProductMe } from 'src/types/order-product'
 import { resetInitialState } from 'src/stores/order-product'
+import { getAllNotificationsAsync } from 'src/stores/notification/action'
 
 type TProps = {}
 
@@ -115,6 +116,7 @@ const MyOrderPage: NextPage<TProps> = () => {
     handleGetListOrdersOfMe()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, pageSize, statusSelected, searchBy])
+
 
   useEffect(() => {
     if (isSuccessCancelMe) {

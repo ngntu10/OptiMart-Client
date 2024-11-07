@@ -229,6 +229,8 @@ const ReviewListPage: NextPage<TProps> = () => {
       />
     )
   }
+  
+  
   useEffect(() => {
     handleGetListReviews()
     // eslint-disable-next-line react-hooks/exhaustive-deps

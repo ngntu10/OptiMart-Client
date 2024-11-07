@@ -8,7 +8,7 @@ import instanceAxios from 'src/helpers/axios'
 // ** Types
 import { TLoginAuth, TRegisterAuth, TChangePassword, TForgotPasswordAuth, TResetPasswordAuth } from 'src/types/auth'
 
-export const loginAuth = async (data: TLoginAuth) => {
+export const loginAuth = async (data: any) => {
   try {
     const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/login`, data)
     return res.data
@@ -69,8 +69,8 @@ export const changeAvatar = async (file: File) => {
   }
 }
 
-export const loginAuthFacebook = async (idToken: string) => {
-  const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/login-facebook`, { idToken })
+export const loginAuthFacebook = async (idToken: string, deviceToken: String) => {
+  const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/login-facebook`, { idToken, deviceToken })
   return res.data
 }
 
@@ -83,8 +83,8 @@ export const registerAuthFacebook = async (idToken: string) => {
   }
 }
 
-export const loginAuthGoogle = async (idToken: string) => {
-  const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/login-google`, { idToken })
+export const loginAuthGoogle = async (idToken: string, deviceToken: String) => {
+  const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/login-google`, { idToken, deviceToken })
   return res.data
 }
 

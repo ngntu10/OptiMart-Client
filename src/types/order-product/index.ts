@@ -18,6 +18,12 @@ export type TItemProductMe = {
   countInStock: number
   slug: string
 }
+export type TParamsStatusOrderUpdate = {
+  id: string
+  isDelivered?: number
+  isPaid?: number
+  status?: number
+}
 
 export type TParamsEditOrderProduct = {
   shippingAddress: {
@@ -57,7 +63,7 @@ export type TItemOrderProductMe = {
     fullName: string
     address: string
     city: {
-      id: string,
+      id: string
       name: string
     }
     phone: string

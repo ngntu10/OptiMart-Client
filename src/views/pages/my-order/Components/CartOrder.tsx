@@ -37,6 +37,7 @@ import Icon from 'src/components/Icon'
 import { PAYMENT_TYPES } from 'src/configs/payment'
 import { createURLpaymentVNPay } from 'src/services/payment'
 import Spinner from 'src/components/spinner'
+import { getAllNotificationsAsync } from 'src/stores/notification/action'
 
 type TProps = {
   dataOrder: any
@@ -93,7 +94,12 @@ const CardOrder: NextPage<TProps> = props => {
     })
   }
 
+  const handleGetListNotification = () => {
+    dispatch(getAllNotificationsAsync({ params: { limit: -1, page: -1, userId: user?.id} }))
+  }
+
   useEffect(() => {
+    handleGetListNotification()
     if (isSuccessCancelMe) {
       handleCloseDialog()
     }
@@ -142,9 +148,9 @@ const CardOrder: NextPage<TProps> = props => {
     router.push(`${ROUTE_CONFIG.MY_ORDER}/${dataOrder.id}`)
   }
 
-  const memeDisabledBuyAgain = useMemo(() => {
-    return dataOrder?.orderItemList?.some((item: any) => !item.countInStock)
-  }, [dataOrder.orderItemList])
+  // const memeDisabledBuyAgain = useMemo(() => {
+  //   return dataOrder?.orderItemList?.some((item: any) => !item.countInStock)
+  // }, [dataOrder.orderItemList])
 
   return (
     <>

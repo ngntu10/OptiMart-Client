@@ -38,7 +38,6 @@ import MuiBackdrop from './backdrop'
 import MuiDataGrid from './dataGrid'
 import MuiProgress from './progress'
 import MuiSnackbar from './snackbar'
-import MuiSwitches from './switches'
 import MuiTimeline from './timeline'
 import MuiAccordion from './accordion'
 import MuiPagination from './pagination'
@@ -75,7 +74,6 @@ const Overrides = (settings: Settings) => {
   const dataGrid = MuiDataGrid()
   const progress = MuiProgress()
   const drawer = MuiDrawer(skin)
-  const switches = MuiSwitches()
   const timeline = MuiTimeline()
   const popover = MuiPopover(skin)
   const accordion = MuiAccordion()
@@ -112,7 +110,6 @@ const Overrides = (settings: Settings) => {
     MuiPaper,
     progress,
     snackbar,
-    switches,
     timeline,
     accordion,
     MuiSelect,

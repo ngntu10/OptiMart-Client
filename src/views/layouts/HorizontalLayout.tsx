@@ -27,6 +27,7 @@ import { useRouter } from 'next/router'
 
 // config
 import { ROUTE_CONFIG } from 'src/configs/route'
+import NotificationDropdown from './components/notification-dropdown'
 
 const drawerWidth: number = 240
 
@@ -98,7 +99,7 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHideMenu }) 
         </IconButton>
         <Typography
           component='h1'
-          variant='h6'  
+          variant='h6'
           color='primary'
           noWrap
           sx={{ flexGrow: 1, fontWeight: '600', cursor: 'pointer' }}
@@ -111,7 +112,10 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHideMenu }) 
         <ModeToggle />
         <CartProduct />
         {user ? (
-          <UserDropDown />
+          <>
+            <NotificationDropdown />
+            <UserDropDown />
+          </>
         ) : (
           <Button variant='contained' sx={{ ml: 2, width: 'auto' }} onClick={handleNavigateLogin}>
             Sign In

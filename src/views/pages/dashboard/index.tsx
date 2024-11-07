@@ -37,7 +37,7 @@ export interface TProductPopular {
   price: string
   image: string
   slug: string
-  _id: string
+  id: string
   type: {
     name: string
   }

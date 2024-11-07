@@ -73,7 +73,7 @@ const CardCountOrderStatus = (props: TProps) => {
         data={dataChart}
         options={{
           plugins: {
-            title: { display: true, text: `${t('Count_user_by_status')}` }
+            title: { display: true, text: `${t('Count_order_by_status')}` }
           },
           scales: {
             r: {

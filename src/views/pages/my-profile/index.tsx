@@ -46,6 +46,8 @@ import FallbackSpinner from 'src/components/fall-back'
 import toast from 'react-hot-toast'
 import Spinner from 'src/components/spinner'
 import CustomSelect from 'src/components/custom-select'
+import { getAllNotificationsAsync } from 'src/stores/notification/action'
+import { useAuth } from 'src/hooks/useAuth'
 
 type TProps = {}
 
@@ -78,6 +80,7 @@ const MyProfilePage: NextPage<TProps> = () => {
 
   // ** theme
   const theme = useTheme()
+  const {user} = useAuth()
 
   const schema = yup.object().shape({
     email: yup.string().required(t('Required_field')).matches(EMAIL_REG, 'The field is must email type'),
@@ -114,6 +117,7 @@ const MyProfilePage: NextPage<TProps> = () => {
       .then(async response => {
         setAvatar(response.imageUrl)
         const data = response
+        console.log(data);
         if (data) {
           setIsDisabledRole(!data?.role?.permissions.length)
           reset({
@@ -171,7 +175,12 @@ const MyProfilePage: NextPage<TProps> = () => {
     fetchGetAuthMe()
   }, [i18n.language])
 
+  const handleGetListNotification = () => {
+    dispatch(getAllNotificationsAsync({ params: { limit: -1, page: -1, userId: user?.id} }))
+  }
+  
   useEffect(() => {
+    handleGetListNotification()
     if (messageUpdateMe) {
       if (isErrorUpdateMe) {
         toast.error(messageUpdateMe)
@@ -331,6 +340,7 @@ const MyProfilePage: NextPage<TProps> = () => {
                           </label>
                           <CustomSelect
                             fullWidth
+                            disabled
                             onChange={onChange}
                             options={optionRoles}
                             error={Boolean(errors?.role)}

@@ -10,7 +10,8 @@ import {
   getAllOrderProductsAsync,
   getAllOrderProductsByMeAsync,
   serviceName,
-  updateOrderProductAsync
+  updateOrderProductAsync,
+  updateStatusOrderProductAsync
 } from 'src/stores/order-product/actions'
 
 const initialState = {
@@ -22,6 +23,7 @@ const initialState = {
   messageErrorCancelMe: '',
   isSuccessEdit: false,
   isErrorEdit: false,
+  isSuccessUpdate: false,
   messageErrorEdit: '',
   isSuccessDelete: false,
   isErrorDelete: false,
@@ -56,6 +58,7 @@ export const orderProductSlice = createSlice({
       state.isErrorCancelMe = true
       state.messageErrorCancelMe = ''
       state.isSuccessEdit = false
+      state.isSuccessUpdate = false
       state.isErrorEdit = true
       state.messageErrorEdit = ''
       state.isSuccessDelete = false
@@ -87,11 +90,10 @@ export const orderProductSlice = createSlice({
       state.isSuccessCreate = !!action.payload?.data
       state.isErrorCreate = !action.payload?.data
       state.messageErrorCreate = action.payload?.data?.data?.message
-      // state.typeError = action.payload?.typeError
     })
 
-     // ** cancel order product of me
-     builder.addCase(cancelOrderProductOfMeAsync.pending, (state, action) => {
+    // ** cancel order product of me
+    builder.addCase(cancelOrderProductOfMeAsync.pending, (state, action) => {
       state.isLoading = true
     })
     builder.addCase(cancelOrderProductOfMeAsync.fulfilled, (state, action) => {
@@ -100,7 +102,6 @@ export const orderProductSlice = createSlice({
       state.isErrorCancelMe = !action.payload?.data?.id
       state.messageErrorCancelMe = action.payload?.message
       state.typeError = action.payload?.typeError
-
     }) // ** get all order products
     builder.addCase(getAllOrderProductsAsync.pending, (state, action) => {
       state.isLoading = true
@@ -127,7 +128,20 @@ export const orderProductSlice = createSlice({
       state.messageErrorEdit = action.payload?.message
       state.typeError = action.payload?.typeError
     })
-    
+
+    // ** update status order product
+    builder.addCase(updateStatusOrderProductAsync.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(updateStatusOrderProductAsync.fulfilled, (state, action) => {
+      state.isLoading = false
+      state.isSuccessUpdate = !!action.payload?.data?.id
+      state.isSuccessEdit = !!action.payload?.data?.id
+      state.isErrorEdit = !action.payload?.data?.id
+      state.messageErrorEdit = action.payload?.message
+      state.typeError = action.payload?.typeError
+    })
+
     // ** delete orders product
     builder.addCase(deleteOrderProductAsync.pending, (state, action) => {
       state.isLoading = true
@@ -142,7 +156,6 @@ export const orderProductSlice = createSlice({
   }
 })
 
-
 export const { resetInitialState } = orderProductSlice.actions
-export const { updateProductToCart } = orderProductSlice.actions;
+export const { updateProductToCart } = orderProductSlice.actions
 export default orderProductSlice.reducer

@@ -1,5 +1,5 @@
 // ** Products
-import { TParamsCreateOrderProduct, TParamsEditOrderProduct, TParamsGetOrderProducts } from 'src/types/order-product'
+import { TParamsCreateOrderProduct, TParamsEditOrderProduct, TParamsGetOrderProducts, TParamsStatusOrderUpdate } from 'src/types/order-product'
 // api endPoint
 import { API_ENDPOINT } from 'src/configs/api'
 // Axios
@@ -41,4 +41,9 @@ export const updateOrderProduct = async (data: TParamsEditOrderProduct) => {
   const { id, ...rests } = data
   const res = await instanceAxios.put(`${API_ENDPOINT.MANAGE_ORDER.ORDER.INDEX}/${id}`, rests)
   return res.data
+}
+export const updateStatusOrderProduct = async (data: TParamsStatusOrderUpdate) => {
+    const res = await instanceAxios.post(`${API_ENDPOINT.MANAGE_ORDER.ORDER.INDEX}/status/${data.id}`, data)
+    return res.data
+
 }

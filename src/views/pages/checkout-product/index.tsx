@@ -62,6 +62,7 @@ import { getAllDeliveryTypes } from 'src/services/delivery-type'
 import toast from 'react-hot-toast'
 import { resetInitialState, updateProductToCart } from 'src/stores/order-product'
 import { getAllCities } from 'src/services/city'
+import { getAllNotificationsAsync } from 'src/stores/notification/action'
 
 type TProps = {}
 
@@ -201,6 +202,11 @@ const CheckoutProductPage: NextPage<TProps> = () => {
       }
     })
   }
+
+  
+  const handleGetListNotification = () => {
+    dispatch(getAllNotificationsAsync({ params: { limit: -1, page: -1, userId: user?.id} }))
+  }
   // ** Fetch API
   const handleGetListPaymentMethod = async () => {
     setLoading(true)
@@ -262,6 +268,7 @@ const CheckoutProductPage: NextPage<TProps> = () => {
     fetchAllCities()
     handleGetListPaymentMethod()
     handleGetListDeliveryMethod()
+    handleGetListNotification()
     setLoading(false)
   }, [])
 
@@ -296,6 +303,7 @@ const CheckoutProductPage: NextPage<TProps> = () => {
 
   useEffect(() => {
     if (isSuccessCreate) {
+      handleGetListNotification()
       Swal.fire({
         title: t('Congraturation!'),
         text: t('Order_product_success'),
@@ -312,6 +320,7 @@ const CheckoutProductPage: NextPage<TProps> = () => {
 
       dispatch(resetInitialState())
     } else if (isErrorCreate && messageErrorCreate) {
+      handleGetListNotification()
       toast.error(t('Order_product_error'))
       Swal.fire({
         title: t('Opps!'),

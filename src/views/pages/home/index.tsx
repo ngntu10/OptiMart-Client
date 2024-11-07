@@ -36,6 +36,8 @@ import { OBJECT_TYPE_ERROR_PRODUCT } from 'src/configs/error'
 import CardProduct from 'src/views/pages/product/Components/CartProduct'
 import CustomSelect from 'src/components/custom-select'
 import CardSkeleton from 'src/views/pages/product/Components/CardSkeleton'
+import { getAllNotificationsAsync } from 'src/stores/notification/action'
+import { useAuth } from 'src/hooks/useAuth'
 
 type TProps = {}
 const StyledTabs = styled(Tabs)<TabsProps>(({ theme }) => ({
@@ -83,6 +85,7 @@ const HomePage: NextPage<TProps> = () => {
 
   // ** theme
   const theme = useTheme()
+  const {user} = useAuth()
 
   // fetch api
   const handleGetListProducts = async () => {
@@ -154,9 +157,16 @@ const HomePage: NextPage<TProps> = () => {
       })
   }
 
+  const handleGetListNotification = () => {
+    if (user) {
+      dispatch(getAllNotificationsAsync({ params: { limit: -1, page: -1, userId: user?.id} }))
+    }
+  }
+
   useEffect(() => {
     fetchAllTypes()
     fetchAllCities()
+    handleGetListNotification()
   }, [])
 
   useEffect(() => {

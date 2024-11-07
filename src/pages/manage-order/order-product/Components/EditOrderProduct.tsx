@@ -308,23 +308,6 @@ const EditOrderProduct = (props: TCreateEditProduct) => {
                                 >
                                   {t('Status_delivery')}: {Boolean(value) ? t('Delivery') : t('Not_delivery')}
                                 </InputLabel>
-                                {/* <FormControlLabel
-                                  sx={{
-                                    fontSize: '13px',
-                                    marginLeft: '10px',
-                                  }}
-                                  control={
-                                    // <Switch
-                                    //   value={value}
-                                    //   checked={Boolean(value)}
-                                    //   onChange={e => {
-                                    //     onChange(e.target.checked ? 1 : 0)
-                                    //   }}
-                                    // />
-                                    <Box></Box>
-                                  }
-                                  label={Boolean(value) ? t('Delivery') : t('Not_delivery')}
-                                /> */}
                               </Box>
                             )
                           }}
@@ -348,19 +331,6 @@ const EditOrderProduct = (props: TCreateEditProduct) => {
                                 >
                                   {t('Status_payment')}: {Boolean(value) ? t('Paid') : t('Not_pay')}
                                 </InputLabel>
-                                {/* <FormControlLabel
-                                  control={
-                                    // <Switch
-                                    //   value={value}
-                                    //   checked={Boolean(value)}
-                                    //   onChange={e => {
-                                    //     onChange(e.target.checked ? 1 : 0)
-                                    //   }}
-                                    // />
-                                    <Box></Box>
-                                  }
-                                  label={Boolean(value) ? t('Paid') : t('Not_pay')}
-                                /> */}
                               </Box>
                             )
                           }}
@@ -373,9 +343,6 @@ const EditOrderProduct = (props: TCreateEditProduct) => {
               </Grid>
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-              {/* <Button type='submit' variant='contained' sx={{ mt: 3, mb: 2 }}>
-                {!idOrder ? t('Create') : t('Update')}
-              </Button> */}
             </Box>
           </form>
         </Box>

@@ -13,18 +13,18 @@ import { GridColDef, GridSortModel } from '@mui/x-data-grid'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
 import { resetInitialState } from 'src/stores/user'
-import { deleteOrderProductAsync, getAllOrderProductsAsync } from 'src/stores/order-product/actions'
+import {
+  deleteOrderProductAsync,
+  getAllOrderProductsAsync,
+  updateStatusOrderProductAsync
+} from 'src/stores/order-product/actions'
 
 // ** Components
-import GridDelete from 'src/components/grid-delete'
-import GridEdit from 'src/components/grid-edit'
-import GridCreate from 'src/components/grid-create'
 import InputSearch from 'src/components/input-search'
 import CustomDataGrid from 'src/components/custom-data-grid'
 import Spinner from 'src/components/spinner'
 import ConfirmationDialog from 'src/components/confirmation-dialog'
 import CustomPagination from 'src/components/custom-pagination'
-import TableHeader from 'src/components/table-header'
 import CustomSelect from 'src/components/custom-select'
 
 // ** Others
@@ -44,11 +44,12 @@ import { STATUS_ORDER_PRODUCT } from 'src/configs/orderProduct'
 import { getAllCities } from 'src/services/city'
 
 // ** Types
-import { TItemProductMe } from 'src/types/order-product'
+import { TItemProductMe, TParamsStatusOrderUpdate } from 'src/types/order-product'
 import EditOrderProduct from './Components/EditOrderProduct'
 import GridView from 'src/components/grid-view'
 import { getCountOrderStatus } from 'src/services/report'
 import CardCountStatusOrder from './Components/CardCountOrderStatus'
+import MoreButton from './Components/MoreButton'
 type TProps = {}
 type TSelectedRow = { id: string; role: { name: string; permissions: string[] } }
 interface StatusOrderChipT extends ChipProps {
@@ -94,6 +95,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
   const {
     orderProducts,
     isSuccessEdit,
+    isSuccessUpdate,
     isErrorEdit,
     isLoading,
     messageErrorEdit,
@@ -157,6 +159,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
     setPage(page)
     setPageSize(pageSize)
   }
+
   const columns: GridColDef[] = [
     {
       field: 'items',
@@ -238,7 +241,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
     {
       field: 'action',
       headerName: t('Actions'),
-      minWidth: 150,
+      minWidth: 180,
       sortable: false,
       align: 'left',
       renderCell: params => {
@@ -254,15 +257,8 @@ const OrderProductListPage: NextPage<TProps> = () => {
                 })
               }
             />
-            <GridDelete
-              disabled={!DELETE}
-              onClick={() =>
-                setOpenDeleteOrder({
-                  open: true,
-                  id: String(params.id)
-                })
-              }
-            />
+
+            <MoreButton data={row} memoOptionStatus={memoOptionStatus} />
           </>
         )
       }
@@ -326,7 +322,8 @@ const OrderProductListPage: NextPage<TProps> = () => {
   }, [])
 
   useEffect(() => {
-    if (isSuccessEdit) {
+    console.log(isSuccessUpdate);
+    if (isSuccessEdit || isSuccessUpdate) {
       handleGetListOrderProducts()
       handleCloseEdit()
       dispatch(resetInitialState())
@@ -340,7 +337,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
       dispatch(resetInitialState())
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSuccessEdit, isErrorEdit, messageErrorEdit, typeError])
+  }, [isSuccessEdit, isErrorEdit, messageErrorEdit, typeError, isSuccessUpdate])
 
   useEffect(() => {
     if (isSuccessDelete) {

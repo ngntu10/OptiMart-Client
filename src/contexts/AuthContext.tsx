@@ -38,6 +38,7 @@ import { AppDispatch } from 'src/stores'
 import { updateProductToCart } from 'src/stores/order-product'
 import { signOut } from 'next-auth/react'
 import { ROUTE_CONFIG } from 'src/configs/route'
+import useFcmToken from 'src/hooks/userFcmToken'
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
@@ -57,24 +58,6 @@ type Props = {
   children: ReactNode
 }
 
-// const cleanUserData = (data: any): UserDataType => {
-//   return {
-//     id: data.id,
-//     role: data.role,
-//     email: data.email,
-//     fullName: data.fullName,
-//     firstName: data.firstName,
-//     lastName: data.lastName,
-//     middleName: data.middleName,
-//     username: data.userName,
-//     imageUrl: data.imageUrl,
-//     likedProducts: [],
-//     city: data.city.name,
-//     phoneNumber: data.phoneNumber,
-//     address: data.address,
-//     addresses:data.addresses
-//   }
-// }
 
 const AuthProvider = ({ children }: Props) => {
   // ** States
@@ -83,6 +66,7 @@ const AuthProvider = ({ children }: Props) => {
 
   // ** Hooks
   const router = useRouter()
+  const { fcmToken } = useFcmToken();
 
   const { t } = useTranslation()
 
@@ -122,7 +106,7 @@ const AuthProvider = ({ children }: Props) => {
   }, [])
 
   const handleLoginGoogle = (params: LoginGoogleParams, errorCallback?: ErrCallbackType) => {
-    loginAuthGoogle(params?.idToken)
+    loginAuthGoogle(params?.idToken, fcmToken)
       .then(async response => {
         setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
 
@@ -137,7 +121,7 @@ const AuthProvider = ({ children }: Props) => {
       })
   }
   const handleLoginFacebook = (params: LoginFacebookParams, errorCallback?: ErrCallbackType) => {
-    loginAuthFacebook(params?.idToken)
+    loginAuthFacebook(params?.idToken, fcmToken)
       .then(async (response: any) => {
         setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
         toast.success(t('Login_success'))
@@ -151,7 +135,7 @@ const AuthProvider = ({ children }: Props) => {
       })
   }
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
-    loginAuth({ email: params.email, password: params.password })
+    loginAuth({ email: params.email, password: params.password, deviceToken: fcmToken  })
       .then(async response => {
         if (response.data) {
           const user = response.data.user
