@@ -98,7 +98,7 @@ const NotificationItem = (props: TProps) => {
           </MenuItemTitle>
           <MenuItemSubtitle variant='body2'>{notification.body}</MenuItemSubtitle>
           <Typography variant='body2' sx={{ color: 'text.disabled' }}>
-            {/* {formatDate(notification.createdAt, { dateStyle: 'short' })} */}
+            {formatDate(notification.createdAt, { dateStyle: 'medium' })}
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px' }}>
