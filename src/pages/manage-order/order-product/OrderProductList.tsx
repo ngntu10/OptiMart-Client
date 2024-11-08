@@ -322,7 +322,6 @@ const OrderProductListPage: NextPage<TProps> = () => {
   }, [])
 
   useEffect(() => {
-    console.log(isSuccessUpdate);
     if (isSuccessEdit || isSuccessUpdate) {
       handleGetListOrderProducts()
       handleCloseEdit()

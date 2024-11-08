@@ -186,7 +186,7 @@ const RoleListPage: NextPage<TProps> = () => {
   useEffect(() => {
     if (isSuccessCreateEdit) {
       if (!openCreateEdit.id) {
-        toast.success(t('Create_role_success'))
+        toast.success(t('Create_Edit_role_success'))
       } else {
         toast.success(t('Update_role_success'))
       }

@@ -21,6 +21,7 @@
   "The_email_or_password_wrong": "Email or password is incorrect",
   "Login_success": "Login successful",
   "Manage_system": "System Management",
+  "Create_Edit_role_success" : "Role updated successfully",
   "Name": "Name",
   "View": "View",
   "Order_name_user": "Name",
