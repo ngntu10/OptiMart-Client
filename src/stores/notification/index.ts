@@ -49,8 +49,6 @@ export const deliveryTypeSlice = createSlice({
       state.isLoading = true
     })
     builder.addCase(getAllNotificationsAsync.fulfilled, (state, action) => {
-      console.log(action);
-      console.log(action.payload?.totalNew);
       state.isLoading = false
       state.notifications.data = action.payload?.data || []
       state.notifications.total = action.payload?.totalCount

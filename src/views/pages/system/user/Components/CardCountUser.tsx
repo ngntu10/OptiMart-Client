@@ -58,7 +58,7 @@ const CardCountUser = (props: any) => {
           </Typography>
           <Box sx={{ mb: 1, columnGap: 1.5, display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
             <Typography variant='h4' sx={{ color: theme.palette.customColors.lightPaperBg, fontWeight: 'bold' }}>
-              {(mapUserType as any)[userType]?.count}
+              {(mapUserType as any)[userType]?.count || 0}
             </Typography>
           </Box>
         </Box>

@@ -38,6 +38,7 @@ import CustomSelect from 'src/components/custom-select'
 import CardSkeleton from 'src/views/pages/product/Components/CardSkeleton'
 import { getAllNotificationsAsync } from 'src/stores/notification/action'
 import { useAuth } from 'src/hooks/useAuth'
+import ChatBotAI from 'src/components/chat-bot-ai'
 
 type TProps = {}
 const StyledTabs = styled(Tabs)<TabsProps>(({ theme }) => ({
@@ -218,6 +219,7 @@ const HomePage: NextPage<TProps> = () => {
   return (
     <>
       {loading && <Spinner />}
+      {/* <ChatBotAI /> */}
       <Box
         sx={{
           height: '100%',

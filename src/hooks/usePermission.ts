@@ -38,7 +38,7 @@ export const usePermission = (key: string, actions: TActions[]) => {
     actions.forEach(mode => {
       if (userPermission?.includes(PERMISSIONS.ADMIN)) {
         defaultValues[mode] = true
-      } else if (userPermission?.includes(mapPermission[mode])) {
+      } else if (mapPermission[mode] && userPermission?.includes(mapPermission[mode])) {
         defaultValues[mode] = true
       } else {
         defaultValues[mode] = false

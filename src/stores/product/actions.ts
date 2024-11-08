@@ -28,6 +28,7 @@ export const getAllProductsAsync = createAsyncThunk(
   }
 )
 export const createProductAsync = createAsyncThunk(`${serviceName}/create`, async (data: TParamsCreateProduct) => {
+  console.log(data);
   const response = await createProduct(data)
 
   return response

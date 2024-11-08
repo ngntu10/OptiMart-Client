@@ -105,9 +105,9 @@ const DetailsProductPage: NextPage<TProps> = () => {
   } = useSelector((state: RootState) => state.reviews)
 
   // fetch api
-  const fetchGetDetailsProduct = async (slug: string) => {
+  const fetchGetDetailsProduct = async (slug: string, isViewed?: boolean, userId?: string) => {
     setLoading(true)
-    await getDetailsProductPublicBySlug(slug)
+    await getDetailsProductPublicBySlug(slug, isViewed, user?.id)
       .then(async response => {
         setLoading(false)
         const data = response?.data
@@ -258,7 +258,7 @@ const DetailsProductPage: NextPage<TProps> = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (productId) {
-        await fetchGetDetailsProduct(productId)
+        await fetchGetDetailsProduct(productId, true)
         fetchListRelatedProduct(productId)
         fetchListCommentProduct()
       }
@@ -863,7 +863,16 @@ const DetailsProductPage: NextPage<TProps> = () => {
               </Typography>
               <Box sx={{ width: '100%' }}>
                 <CommentInput onApply={handleComment} />
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: "30px", maxHeight: "500px", overflow: "auto" }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '8px',
+                    marginTop: '30px',
+                    maxHeight: '500px',
+                    overflow: 'auto'
+                  }}
+                >
                   {listComment?.data?.map((comment: TCommentItemProduct) => {
                     const level: number = -1
                     return <Fragment key={comment.id}>{renderCommentItem(comment, level)}</Fragment>

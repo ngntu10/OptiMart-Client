@@ -47,6 +47,7 @@ const StyleCard = styled(Card)(({ theme }) => ({
 const CardProduct = (props: any) => {
   // ** Props
   const { item } = props
+  console.log(item)
   const { t } = useTranslation()
   const theme = useTheme()
   const router = useRouter()
@@ -223,18 +224,51 @@ const CardProduct = (props: any) => {
             {t('No_sell_product')}
           </Typography>
         )}
-        {item?.city?.name && (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px', mt: 2 }}>
-            <Icon icon='carbon:location' />
-            <Typography
-              variant='h6'
-              sx={{
-                fontWeight: 'bold',
-                fontSize: '14px'
-              }}
-            >
-              {item?.city?.name}
-            </Typography>
+        {(item?.city?.name || item.views) && (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px', mt: 2 }}>
+            {item?.city?.name && (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                <Icon icon='carbon:location' />
+
+                <Typography
+                  variant='h6'
+                  sx={{
+                    fontWeight: 'bold',
+                    fontSize: '14px'
+                  }}
+                >
+                  {item?.city?.name}
+                </Typography>
+              </Box>
+            )}
+            {true && (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                <Icon icon='lets-icons:view-light' />
+                <Typography
+                  variant='h6'
+                  sx={{
+                    fontWeight: 'bold',
+                    fontSize: '14px'
+                  }}
+                >
+                  {item?.views || 0}
+                </Typography>
+              </Box>
+            )}
+            {!!item?.totalLikes && (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                <Icon icon='icon-park-outline:like' />
+                <Typography
+                  variant='h6'
+                  sx={{
+                    fontWeight: 'bold',
+                    fontSize: '14px'
+                  }}
+                >
+                  {item?.totalLikes}
+                </Typography>
+              </Box>
+            )}
           </Box>
         )}
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -250,14 +284,8 @@ const CardProduct = (props: any) => {
                   readOnly
                 />
               </Typography>
-                ) : (
-                  <Rating
-                    name='read-only'
-                    sx={{ fontSize: '16px' }}
-                    defaultValue={0}
-                    precision={0.5}
-                    readOnly
-                  />
+            ) : (
+              <Rating name='read-only' sx={{ fontSize: '16px' }} defaultValue={0} precision={0.5} readOnly />
             )}
             <Typography sx={{ display: 'flex', alignItems: 'center' }}>
               {!!item.reviewList ? (
