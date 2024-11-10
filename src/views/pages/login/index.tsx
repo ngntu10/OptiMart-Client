@@ -54,8 +54,6 @@ import { Icon } from '@iconify/react/dist/iconify.js'
 // ** Images
 import LoginDark from '/public/images/login-dark.png'
 import LoginLight from '/public/images/login-light.png'
-import FacebookSVG from '/public/svgs/facebook.svg'
-import GoogleSVG from '/public/svgs/google.svg'
 import themeConfig from 'src/configs/themeConfig'
 import UseBgColor from 'src/hooks/useBgColor'
 

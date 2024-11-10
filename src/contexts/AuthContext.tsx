@@ -67,6 +67,7 @@ const AuthProvider = ({ children }: Props) => {
   // ** Hooks
   const router = useRouter()
   const { fcmToken } = useFcmToken();
+  console.log(fcmToken);
 
   const { t } = useTranslation()
 
