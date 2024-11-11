@@ -119,7 +119,7 @@ export const orderProductSlice = createSlice({
 
     // ** update order product
     builder.addCase(updateOrderProductAsync.pending, (state, action) => {
-      state.isLoading = true
+      state.isLoading = false
     })
     builder.addCase(updateOrderProductAsync.fulfilled, (state, action) => {
       state.isLoading = false
@@ -131,7 +131,7 @@ export const orderProductSlice = createSlice({
 
     // ** update status order product
     builder.addCase(updateStatusOrderProductAsync.pending, (state, action) => {
-      state.isLoading = true
+      state.isLoading = false
     })
     builder.addCase(updateStatusOrderProductAsync.fulfilled, (state, action) => {
       state.isLoading = false
