@@ -26,7 +26,7 @@ import {
 } from './types'
 
 // ** services
-import { loginAuth, loginAuthFacebook, loginAuthGoogle } from 'src/services/auth'
+import { loginAuth, loginAuthFacebook, loginAuthGoogle, Logout } from 'src/services/auth'
 
 // ** helper
 import { clearLocalUserData, setLocalUserData, setTemporaryToken } from 'src/helpers/storage'
@@ -162,7 +162,8 @@ const AuthProvider = ({ children }: Props) => {
       })
   }
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await Logout()
     setUser(null)
     clearLocalUserData()
     if (!LIST_PAGE_PUBLIC?.some(item => router.asPath?.startsWith(item))) {

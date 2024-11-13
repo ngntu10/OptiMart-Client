@@ -109,3 +109,8 @@ export const resetPasswordAuth = async (data: TResetPasswordAuth) => {
     return error
   }
 }
+
+export const Logout = async () => {
+    const res = await instanceAxios.post(`${API_ENDPOINT.AUTH.INDEX}/logout`)
+    return res
+}
